@@ -1,28 +1,29 @@
 #+TITLE: Emacs Configuration File
 #+PROPERTY: header-args:emacs-lisp :tangle "~/.emacs.d/init.el"
 
-This org document is used for the configuration of my Emacs init.el, which it is generatable from.
-
 * Info
-** Startup Performance
+
+This org document is used for the configuration of my emacs init.el, which it is generatable from.
+
+* Startup Performance
 
 #+begin_src emacs-lisp
 
   ;; The default is 800 kilobytes.  Measured in bytes.
   (setq gc-cons-threshold (* 50 1000 1000))
 
-  (defun efs/display-startup-time ()
+  (defun display-startup-time ()
     (message "Emacs loaded in %s with %d garbage collections."
              (format "%.2f seconds"
                      (float-time
-                      (time-subtract after-init-time before-init-time)))
+                       (time-subtract after-init-time before-init-time)))
              gcs-done))
 
-  (add-hook 'emacs-startup-hook #'efs/display-startup-time)
+  (add-hook 'emacs-startup-hook #'display-startup-time)
 
 #+end_src
 
-** Package System Setup
+* Package System Setup
 
 Emacs has a built in package manager but it doesn't make it easy to automatically install packages on a new system the first time you pull down your configuration.  [[https://github.com/jwiegley/use-package][use-package]] is a really helpful package used in this configuration to make it a lot easier to automate the installation and configuration of everything else we use.
 
@@ -39,7 +40,7 @@ Emacs has a built in package manager but it doesn't make it easy to automaticall
   (unless package-archive-contents
     (package-refresh-contents))
 
-  ;; Initialize use-package on non-Linux platforms
+    ;; Initialize use-package on non-Linux platforms
   (unless (package-installed-p 'use-package)
     (package-install 'use-package))
 
@@ -48,7 +49,7 @@ Emacs has a built in package manager but it doesn't make it easy to automaticall
 
 #+end_src
 
-*** Automatic Package Updates
+** Automatic Package Updates
 
 The auto-package-update package helps us keep our Emacs packages up to date!  It will prompt you after a certain number of days either at startup or at a specific time of day to remind you to update your packages.
 
@@ -67,23 +68,7 @@ You can also use =M-x auto-package-update-now= to update right now!
 
 #+end_src
 
-*** PATH Variables
-
-Emacs only inherits the PATH variables from its parent application, so if it is launched from the desktop environment instead of, for example, Bash, it will not have the correct PATH variables set in .bashrc. The package [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] ensures that Emacs has the same PATH environment variables as the user's shell.
-
-#+begin_src emacs-lisp
-
-  (use-package exec-path-from-shell
-    :ensure t
-    :config
-    (when (memq window-system '(mac ns x))
-      (exec-path-from-shell-initialize))
-    (when (daemonp)
-      (exec-path-from-shell-initialize)))
-
-#+end_src
-
-** Keep Folders Clean
+* Keep Folders Clean
 
 We use the [[https://github.com/emacscollective/no-littering/blob/master/no-littering.el][no-littering]] package to keep folders where we edit files and the Emacs configuration folder clean!  It knows about a wide variety of variables for built in Emacs features as well as those from community packages so it can be much easier than finding and setting these variables yourself.
 
@@ -109,68 +94,7 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
 
 #+end_src
 
-* Keybinding Configuration
-This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil-mode]] for a Vi-like modal editing experience.  [[https://github.com/noctuid/general.el][general.el]] is used for easy keybinding configuration that integrates well with which-key.  [[https://github.com/emacs-evil/evil-collection][evil-collection]] is used to automatically configure various Emacs modes with Vi-like keybindings for evil-mode.
-
-#+begin_src emacs-lisp
-
-  ;; Make ESC quit prompts
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-  ;; Shortcut for recentf
-  (global-set-key (kbd "C-c r f") 'recentf-open-files)
-
-  ;; Repeat mode
-  (setq repeat-mode t)
-
-  ;; Shortcut To reload init.el
-  (defun reload-init-el ()
-    "Loads init.el the same as M-x load-file, reloading Emacs' configuration. Note that not all changes may occur immediately and may require Emacs to be restarted."
-    (interactive)
-    (load-file user-init-file)
-    (message "Init file reloaded"))
-  (global-set-key (kbd "C-c r i") 'reload-init-el)
-
-  (use-package general
-    :after evil
-    :config
-    (general-create-definer efs/leader-keys
-  						  :keymaps '(normal insert visual emacs)
-  						  :prefix "SPC"
-  						  :global-prefix "C-SPC")
-
-    (efs/leader-keys
-     "t"  '(:ignore t :which-key "toggles")
-     "tt" '(counsel-load-theme :which-key "choose theme")
-     "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org")))))
-
-  (use-package evil
-    :init
-    (setq evil-want-integration t)
-    (setq evil-want-keybinding nil)
-    (setq evil-want-C-u-scroll t)
-    (setq evil-want-C-i-jump nil)
-    :config
-    (evil-mode 1)
-    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-
-    ;; Use visual line motions even outside of visual-line-mode buffers
-    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
-    (evil-set-initial-state 'messages-buffer-mode 'normal)
-    (evil-set-initial-state 'dashboard-mode 'normal))
-
-  (use-package evil-collection
-    :after evil
-    :config
-    (evil-collection-init))
-
-#+end_src
-
-* UI
-** Basic UI Configuration
+* Basic UI Configuration
 
 This section configures basic UI settings that remove unneeded elements to make Emacs look a lot more minimal and modern.  If you're just getting started in Emacs, the menu bar might be helpful so you can remove the =(menu-bar-mode -1)= line if you'd like to still see that.
 
@@ -182,53 +106,54 @@ This section configures basic UI settings that remove unneeded elements to make 
   (tool-bar-mode -1)          ; Disable the toolbar
   (tooltip-mode -1)           ; Disable tooltips
   (set-fringe-mode 10)        ; Give some breathing room
-
-  (menu-bar-mode -1)            ; Disable the menu bar
-
-  ;; Set up the visible bell
-  (setq visible-bell t)
+  (menu-bar-mode -1)          ; Disable the menu bar
+  (setq visible-bell t)	      ; Set up the visible bell
 
   (column-number-mode)
   (global-display-line-numbers-mode t)
-  (setq display-line-numbers 'relative)
+  (setq display-line-numbers t)
   (setq display-line-numbers-width-start t)
 
-  ;; Minibuffer/Echo area configuration
-  (setq what-cursor-show-names t)
-
   ;; Set frame transparency
-  ;; (set-frame-parameter (selected-frame) 'alpha efs/frame-transparency)
-  ;; (add-to-list 'default-frame-alist `(alpha . ,efs/frame-transparency))
+  ;; (set-frame-parameter (selected-frame) 'alpha frame-transparency)
+  ;; (add-to-list 'default-frame-alist `(alpha . ,frame-transparency))
   ;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
   ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
   ;; Disable line numbers for some modes
-  (dolist (hook '(org-mode-hook
+  (dolist (mode '(org-mode-hook
   		term-mode-hook
   		shell-mode-hook
   		treemacs-mode-hook
-  		eshell-mode-hook
-  		pdf-view-mode-hook
-  		dired-mode-hook
-  		magit-mode-hook))
-    (add-hook hook (lambda () (setq display-line-numbers nil))))
+  		eshell-mode-hook))
+    (add-hook mode (lambda () (setq display-line-numbers nil))))
 
 #+end_src
 
-** Advanced UI Configuration
+* Keybinding Configuration
 
-*** Command Log Mode
-
-[[https://github.com/lewang/command-log-mode][command-log-mode]] is useful for displaying a panel showing each key binding you use in a panel on the right side of the frame.  Great for live streams and screencasts!
+This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil-mode]] for a Vi-like modal editing experience.  [[https://github.com/noctuid/general.el][general.el]] is used for easy keybinding configuration that integrates well with which-key.  [[https://github.com/emacs-evil/evil-collection][evil-collection]] is used to automatically configure various Emacs modes with Vi-like keybindings for evil-mode.
 
 #+begin_src emacs-lisp
 
-  (use-package command-log-mode
-    :commands command-log-mode)
+  ;; Make ESC quit prompts
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+  ;; Opens this config file
+  (global-set-key (kbd "C-c f d e") '(lambda () "Opens org-literate init.el file." (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org"))))
+
+  ;; Shortcut to reload init.el
+  (defun reload-init-el ()
+    "Loads init.el the same as M-x load-file, reloading Emacs' configuration. Note that not all changes may occur immediately and may require Emacs to be restarted."
+    (interactive)
+    (load-file user-init-file)
+    (message "Init file reloaded"))
+  (global-set-key (kbd "C-c r i") 'reload-init-el)
 
 #+end_src
 
-*** Color Theme
+* UI Configuration
+** Color Theme
 
 [[https://github.com/catppuccin/emacs][catppuchin]] is the chosen theme of Emacs. Options for flavor are: 'latte (light), 'frappe, 'macchiato, 'mocha (darkest)
 
@@ -241,7 +166,7 @@ This section configures basic UI settings that remove unneeded elements to make 
 
 #+end_src
 
-*** Better Modeline
+** Better Modeline
 
 [[https://github.com/seagle0128/doom-modeline][doom-modeline]] is a very attractive and rich (yet still minimal) mode line configuration for Emacs.  The default configuration is quite good but you can check out the [[https://github.com/seagle0128/doom-modeline#customize][configuration options]] for more things you can enable or disable.
 
@@ -257,7 +182,7 @@ This section configures basic UI settings that remove unneeded elements to make 
 
 #+end_src
 
-*** Which Key
+** Which Key
 
 [[https://github.com/justbur/emacs-which-key][which-key]] is a useful UI panel that appears when you start pressing any key binding in Emacs to offer you all possible completions for the prefix.  For example, if you press =C-c= (hold control and press the letter =c=), a panel will appear at the bottom of the frame displaying all of the bindings under that prefix and which command they run.  This is very useful for learning the possible key bindings in the mode of your current buffer.
 
@@ -272,7 +197,7 @@ This section configures basic UI settings that remove unneeded elements to make 
 
 #+end_src
 
-*** Ivy and Counsel
+** Ivy and Counsel
 
 [[https://oremacs.com/swiper/][Ivy]] is an excellent completion framework for Emacs.  It provides a minimal yet powerful selection menu that appears when you open files, switch buffers, and for many other tasks in Emacs.  Counsel is a customized set of commands to replace `find-file` with `counsel-find-file`, etc which provide useful commands for each of the default completion commands.
 
@@ -314,7 +239,7 @@ This section configures basic UI settings that remove unneeded elements to make 
 
 #+end_src
 
-**** Improved Candidate Sorting with prescient.el
+*** Improved Candidate Sorting with prescient.el
 
 prescient.el provides some helpful behavior for sorting Ivy completion candidates based on how recently or frequently you select them.  This can be especially helpful when using =M-x= to run commands that you don't have bound to a key but still need to access occasionally.
 
@@ -333,7 +258,7 @@ This Prescient configuration is optimized for use in System Crafters videos and 
 
 #+end_src
 
-*** Helpful Help Commands
+** Helpful Help Commands
 
 [[https://github.com/Wilfred/helpful][Helpful]] adds a lot of very helpful (get it?) information to Emacs' =describe-= command buffers.  For example, if you use =describe-function=, you will not only get the documentation about the function, you will also see the source code of the function and where it gets used in other places in the Emacs configuration.  It is very useful for figuring out how things work in Emacs.
 
@@ -352,7 +277,7 @@ This Prescient configuration is optimized for use in System Crafters videos and 
 
 #+end_src
 
-*** Text Scaling
+** Text Scaling
 
 This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to design a transient key binding for quickly adjusting the scale of the text on screen.  We define a hydra that is bound to =C-s t s= and, once activated, =j= and =k= increase and decrease the text scale.  You can press any other key (or =f= specifically) to exit the transient key map.
 
@@ -367,14 +292,13 @@ This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to desig
     ("k" text-scale-decrease "out")
     ("f" nil "finished" :exit t))
 
-  (efs/leader-keys
-    "ts" '(hydra-text-scale/body :which-key "scale text"))
+  (global-set-key (kbd "C-c t s") '(hydra-text-scale/body :which-key "scale text"))
 
 #+end_src
 
-*** Windowing
+** Windowing
 
-Emacs's default window selection can be tough to intuit at times. Using windmove, keybindings for using =M-<direction>= allows focus to shift to the frame in =<direction>=.
+Emac's default window selection can be tough to intuit at times. Using windmove, keybindings for using =M-<direction>= allows focus to shift to the frame in =<direction>=.
 
 #+begin_src emacs-lisp
 
@@ -385,16 +309,17 @@ Emacs's default window selection can be tough to intuit at times. Using windmove
 
 #+end_src
 
-* Org Mode And Text Formatting
+* Org Mode
+
 [[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
 
 ** Better Font Faces
 
-The =efs/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.
+The =org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.
 
 #+begin_src emacs-lisp
 
-  (defun efs/org-font-setup ()
+  (defun org-font-setup ()
     ;; Set faces for heading levels
     (dolist (face '((org-level-1 . 1.2)
                     (org-level-2 . 1.1)
@@ -427,7 +352,7 @@ This section contains the basic configuration for =org-mode= plus the configurat
 
 #+begin_src emacs-lisp
 
-  (defun efs/org-mode-setup ()
+  (defun org-mode-setup ()
     (org-indent-mode)
     (variable-pitch-mode 1)
     (visual-line-mode 1))
@@ -435,12 +360,12 @@ This section contains the basic configuration for =org-mode= plus the configurat
   (use-package org
     :pin gnu
     :commands (org-capture org-agenda)
-    :hook (org-mode . efs/org-mode-setup)
+    :hook (org-mode . org-mode-setup)
     :init
     ;; Replace list hyphen with dot
     (font-lock-add-keywords 'org-mode
-  			    '(("^ *\\([-]\\) "
-  			       (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+			    '(("^ *\\([-]\\) "
+			       (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
     :config
     (setq org-ellipsis " ▾")
@@ -454,16 +379,16 @@ This section contains the basic configuration for =org-mode= plus the configurat
     (setq org-habit-graph-column 60)
 
     (setq org-todo-keywords
-  	  '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-  	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+	  '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
+	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
     ;; Save Org buffers after refiling!
     (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
     (define-key global-map (kbd "C-c j")
-  		(lambda () (interactive) (org-capture nil "jj")))
+		(lambda () (interactive) (org-capture nil "jj")))
 
-    (efs/org-font-setup))
+    (org-font-setup))
 
 #+end_src
 
@@ -485,13 +410,13 @@ We use [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]
 
 #+begin_src emacs-lisp
 
-  (defun efs/org-mode-visual-fill ()
-    (setq visual-fill-column-width 100
-          visual-fill-column-center-text t)
-    (visual-fill-column-mode 1))
+  ;; (defun org-mode-visual-fill ()
+  ;;   (setq visual-fill-column-width 100
+  ;;         visual-fill-column-center-text t)
+  ;;   (visual-fill-column-mode 1))
 
   ;; (use-package visual-fill-column
-  ;;   :hook (org-mode . efs/org-mode-visual-fill))
+  ;;   :hook (org-mode . org-mode-visual-fill))
 
 #+end_src
 
@@ -546,19 +471,19 @@ You can add more =src= block templates below by copying one of the lines and cha
 
 ** Auto-tangle Configuration Files
 
-This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-config= gets executed each time such a buffer gets saved.  This function checks to see if the file being saved is the Emacs.org file you're looking at right now, and if so, automatically exports the configuration here to the associated output files.
+This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config= gets executed each time such a buffer gets saved.  This function checks to see if the file being saved is the Emacs.org file you're looking at right now, and if so, automatically exports the configuration here to the associated output files.
 
 #+begin_src emacs-lisp
 
   ;; Automatically tangle our Emacs.org config file when we save it
-  (defun efs/org-babel-tangle-config ()
+  (defun org-babel-tangle-config ()
     (when (string-equal (file-name-directory (buffer-file-name))
                         (expand-file-name user-emacs-directory))
       ;; Dynamic scoping to the rescue
       (let ((org-confirm-babel-evaluate nil))
         (org-babel-tangle))))
 
-  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
+  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'org-babel-tangle-config)))
 
 #+end_src
 
@@ -574,12 +499,6 @@ This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-con
     :init
     (setq org-roam-v2-ack t)
     :custom
-     (add-to-list 'display-buffer-alist
-                  '("\\*org-roam\\*"
-                    (display-buffer-in-direction)
-                    (direction . down)
-                    (window-width . 0.33)
-                    (window-height . fit-window-to-buffer)))
     (org-roam-directory "~/RoamNotes")
     (org-roam-completion-everywhere t)
     (org-roam-capture-templates
@@ -588,7 +507,7 @@ This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-con
         :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
         :unnarrowed t)
   	 ("n" "note" plain
-  	  ;; (file "~/RoamNotes/templates/note.org") 
+  	  (file "~/roam/templates/note.org")
         :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
   	  :unnarrowed t)))
     :bind (("C-c n l" . org-roam-buffer-toggle)
@@ -609,75 +528,16 @@ This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-con
 
   ;; Dependencies for Roam UI are websocket and simple-httpd
   (use-package simple-httpd)
-  (use-package websocket
-              :after org-roam)
-
+  (use-package websocket)
   (use-package org-roam-ui
-  	      :after org-roam ;; or :after org
-  	      ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-  	      ;;         a hookable mode anymore, you're advised to pick something yourself
-  	      ;;         if you don't care about startup time, use
-  	      ;;  :hook (after-init . org-roam-ui-mode)
-  	      :config
-  	      (setq org-roam-ui-sync-theme t
-  		    org-roam-ui-follow t
-  		    org-roam-ui-update-on-save t
-  		    org-roam-ui-open-on-start t))
+    :after
+    (Org-Roam))
 
-#+end_src
-
-** Spell Checking
-
-[[https://github.com/minad/jinx][Jinx]] is a fast JIT spell-checker utilizing the [[https://rrthomas.github.io/enchant/][Enchant]] library, utilizing backends like Hunspell, Aspell, Nuspell, and so on.
-
-#+begin_src emacs-lisp
-
-  (use-package jinx
-    :hook (emacs-startup . global-jinx-mode)
-    :bind (("M-$" . jinx-correct)
-           ("C-M-$" . jinx-languages)))
-
-
-#+end_src
-** TeX
-Emacs features powerful TeX editing and formatting systems such as LaTeX and BibTeX that make it a powerful tool for creating vector diagrams and high-quality papers and PDFs. [[https://www.gnu.org/software/auctex/][AUCTeX]] is a package meant for writing and formatting TeX files, also including preview-latex for visualizing source chunks directly as images in the source buffer.
-
-#+begin_src emacs-lisp
-
-  (use-package auctex
-    :ensure t)
-  
 #+end_src
 
 * Development
-** Company Mode
-
-[[http://company-mode.github.io/][Company Mode]] provides a nicer in-buffer completion interface than =completion-at-point= which is more reminiscent of what you would expect from an IDE.  We add a simple configuration to make the keybindings a little more useful (=TAB= now completes the selection and initiates completion at the current location if needed).
-
-We also use [[https://github.com/sebastiencs/company-box][company-box]] to further enhance the look of the completions with icons and better overall presentation.
-
-#+begin_src emacs-lisp
-
-(use-package company
-:after lsp-mode
-:hook (lsp-mode . company-mode)
-:bind (:map company-active-map
-        ("<tab>" . company-complete-selection))
-        (:map lsp-mode-map
-        ("<tab>" . company-indent-or-complete-common))
-:custom
-(company-minimum-prefix-length 1)
-(company-idle-delay 0.0))
-
-(use-package company-box
-:hook (company-mode . company-box-mode))
-
-#+end_src
-
 ** Languages
-
 *** IDE Features with lsp-mode
-
 **** lsp-mode
 
 We use the excellent [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]] to enable IDE-like functionality for many different programming languages via "language servers" that speak the [[https://microsoft.github.io/language-server-protocol/][Language Server Protocol]].  Before trying to set up =lsp-mode= for a particular language, check out the [[https://emacs-lsp.github.io/lsp-mode/page/languages/][documentation for your language]] so that you can learn which language servers are available and how to install them.
@@ -688,13 +548,13 @@ The =which-key= integration adds helpful descriptions of the various keys so you
 
 #+begin_src emacs-lisp
 
-  (defun efs/lsp-mode-setup ()
+  (defun lsp-mode-setup ()
     (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
     (lsp-headerline-breadcrumb-mode))
 
   (use-package lsp-mode
     :commands (lsp lsp-deferred)
-    :hook (lsp-mode . efs/lsp-mode-setup)
+    :hook (lsp-mode . lsp-mode-setup)
     :init
     (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
     :config
@@ -844,7 +704,7 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =
 
 *** C/C++
 
-Sets the default behavior for C and C++ mode styles.
+Sets the default behaviour for C and C++ mode styles.
 
 #+begin_src emacs-lisp
 (setq c-default-style '((java-mode . "java")
@@ -871,7 +731,7 @@ Sets the default behavior for C and C++ mode styles.
 
 *** Zig
 
-[[https://github.com/ziglang/zig-mode][Zig-mode]] provides syntax highlighting and automatic indentation for Zig in Emacs. 
+[[https://github.com/ziglang/zig-mode][Zig-mode]] provdes syntax highlighting and automatic indentation for Zig in Emacs. 
 
 *** Racket
 
@@ -894,14 +754,52 @@ Racket is a general-purpose, multi-paradigm programming language in the Lisp fam
     (setq read-extended-command-predicate #'command-completion-default-include-p))
 #+end_src
 
-*** Lisp
+** LLM Integration
+*** Ellama
 
-[[https://slime.common-lisp.dev/][SLIME]] is The Superior Lisp Interaction Mode for Emacs, a mode for Elisp and Clisp development. Features slime-mode, a minor-mode to enhance lisp-mode, SLDB as a Common Lisp debugger, a REPL, the ability to annotate compiler messages directly into source buffers, and an interactive object-inspector in an Emacs buffer.
+[[https://github.com/s-kostyaev/ellama][Ellama]] allows integration between Emacs and [[https://ollama.com/][Ollama]]. The desired ollama model is pulled with the terminal command =ollama pull MODEL=.
 
 #+begin_src emacs-lisp
 
-  (use-package slime
-    :config (setq inferior-lisp-program "sbcl"))
+  (use-package ellama
+  :ensure t
+  :bind ("C-c e" . ellama)
+  ;; send last message in chat buffer with C-c C-c
+  :hook (org-ctrl-c-ctrl-c-final . ellama-chat-send-last-message)
+  :init (setopt ellama-auto-scroll t)
+  :config
+  ;; show ellama session id in header line in all buffers
+  ((ellama-session-header-line-global-mode +1)
+  (setq ellama-provider
+        (make-llm-ollama
+         :host "https://localhost"
+         :port 11434
+         :chat-model "gpt-oss:20b"
+         :embedding-model "gpt-oss:20b"))))
+
+#+end_src
+
+** Company Mode
+
+[[http://company-mode.github.io/][Company Mode]] provides a nicer in-buffer completion interface than =completion-at-point= which is more reminiscent of what you would expect from an IDE.  We add a simple configuration to make the keybindings a little more useful (=TAB= now completes the selection and initiates completion at the current location if needed).
+
+We also use [[https://github.com/sebastiencs/company-box][company-box]] to further enhance the look of the completions with icons and better overall presentation.
+
+#+begin_src emacs-lisp
+
+(use-package company
+:after lsp-mode
+:hook (lsp-mode . company-mode)
+:bind (:map company-active-map
+        ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+        ("<tab>" . company-indent-or-complete-common))
+:custom
+(company-minimum-prefix-length 1)
+(company-idle-delay 0.0))
+
+(use-package company-box
+:hook (company-mode . company-box-mode))
 
 #+end_src
 
@@ -948,17 +846,6 @@ Racket is a general-purpose, multi-paradigm programming language in the Lisp fam
 
 #+end_src
 
-** Commenting
-
-Emacs' built in commenting functionality =comment-dwim= (usually bound to =M-;=) doesn't always comment things in the way you might expect so we use [[https://github.com/redguardtoo/evil-nerd-commenter][evil-nerd-commenter]] to provide a more familiar behavior.  I've bound it to =M-/= since other editors sometimes use this binding but you could also replace Emacs' =M-;= binding with this command.
-
-#+begin_src emacs-lisp
-
-  (use-package evil-nerd-commenter
-    :bind ("M-/" . evilnc-comment-or-uncomment-lines))
-
-#+end_src
-
 ** Rainbow Delimiters
 
 [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] is useful in programming modes because it colorizes nested parentheses and brackets according to their nesting depth.  This makes it a lot easier to visually match parentheses in Emacs Lisp code without having to count them yourself.
@@ -993,10 +880,6 @@ Emacs' built in commenting functionality =comment-dwim= (usually bound to =M-;=)
     :after (treemacs lsp-mode)
     :ensure t)
 
-  (use-package treemacs-evil
-    :after (treemacs evil)
-    :ensure t)
-
   (use-package treemacs-projectile
     :after (treemacs projectile)
     :ensure t)
@@ -1013,12 +896,12 @@ Emacs' built in commenting functionality =comment-dwim= (usually bound to =M-;=)
 
 #+end_src
 
-** Terminals
-*** term-mode
+* Terminals
+** term-mode
 
 =term-mode= is a built-in terminal emulator in Emacs.  Because it is written in Emacs Lisp, you can start using it immediately with very little configuration.  If you are on Linux or macOS, =term-mode= is a great choice to get started because it supports fairly complex terminal applications (=htop=, =vim=, etc) and works pretty reliably.  However, because it is written in Emacs Lisp, it can be slower than other options like =vterm=.  The speed will only be an issue if you regularly run console apps with a lot of output.
 
-One important thing to understand is =line-mode= versus =char-mode=.  =line-mode= enables you to use normal Emacs keybindings while moving around in the terminal buffer while =char-mode= sends most of your key presses to the underlying terminal.  While using =term-mode=, you will want to be in =char-mode= for any terminal applications that have their own keybindings.  If you're just in your usual shell, =line-mode= is sufficient and feels more integrated with Emacs.
+One important thing to understand is =line-mode= versus =char-mode=.  =line-mode= enables you to use normal Emacs keybindings while moving around in the terminal buffer while =char-mode= sends most of your keypresses to the underlying terminal.  While using =term-mode=, you will want to be in =char-mode= for any terminal applications that have their own keybindings.  If you're just in your usual shell, =line-mode= is sufficient and feels more integrated with Emacs.
 
 With =evil-collection= installed, you will automatically switch to =char-mode= when you enter Evil's insert mode (press =i=).  You will automatically be switched back to =line-mode= when you enter Evil's normal mode (press =ESC=).
 
@@ -1044,7 +927,7 @@ Run a terminal with =M-x term!=
 
 #+end_src
 
-**** Better term-mode colors
+*** Better term-mode colors
 
 The =eterm-256color= package enhances the output of =term-mode= to enable handling of a wider range of color codes so that many popular terminal applications look as you would expect them to.  Keep in mind that this package requires =ncurses= to be installed on your machine so that it has access to the =tic= program.  Most Linux distributions come with this program installed already so you may not have to do anything extra to use it.
 
@@ -1055,7 +938,7 @@ The =eterm-256color= package enhances the output of =term-mode= to enable handli
 
 #+end_src
 
-*** vterm
+** vterm
 
 [[https://github.com/akermu/emacs-libvterm/][vterm]] is an improved terminal emulator package which uses a compiled native module to interact with the underlying terminal applications.  This enables it to be much faster than =term-mode= and to also provide a more complete terminal emulation experience.
 
@@ -1072,7 +955,7 @@ Make sure that you have the [[https://github.com/akermu/emacs-libvterm/#requirem
 
 #+end_src
 
-*** shell-mode
+** shell-mode
 
 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Interactive-Shell.html#Interactive-Shell][shell-mode]] is a middle ground between =term-mode= and Eshell.  It is *not* a terminal emulator so more complex terminal programs will not run inside of it.  It does have much better integration with Emacs because all command input in this mode is handled by Emacs and then sent to the underlying shell once you press Enter.  This means that you can use =evil-mode='s editing motions on the command line, unlike in the terminal emulator modes above.
 
@@ -1093,7 +976,7 @@ One advantage of =shell-mode= on Windows is that it's the only way to run =cmd.e
 
 #+end_src
 
-*** Eshell
+** Eshell
 
 [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html#Contributors-to-Eshell][Eshell]] is Emacs' own shell implementation written in Emacs Lisp.  It provides you with a cross-platform implementation (even on Windows!) of the common GNU utilities you would find on Linux and macOS (=ls=, =rm=, =mv=, =grep=, etc).  It also allows you to call Emacs Lisp functions directly from the shell and you can even set up aliases (like aliasing =vim= to =find-file=).  Eshell is also an Emacs Lisp REPL which allows you to evaluate full expressions at the shell.
 
@@ -1114,17 +997,12 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 
 #+begin_src emacs-lisp
 
-  (defun efs/configure-eshell ()
+  (defun configure-eshell ()
     ;; Save command history when commands are entered
     (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
 
     ;; Truncate buffer for performance
     (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
-
-    ;; Bind some useful keys for evil-mode
-    (evil-define-key '(normal insert visual) eshell-mode-map (kbd "C-r") 'counsel-esh-history)
-    (evil-define-key '(normal insert visual) eshell-mode-map (kbd "<home>") 'eshell-bol)
-    (evil-normalize-keymaps)
 
     (setq eshell-history-size         10000
           eshell-buffer-maximum-lines 10000
@@ -1135,7 +1013,7 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
     :after eshell)
 
   (use-package eshell
-    :hook (eshell-first-time-mode . efs/configure-eshell)
+    :hook (eshell-first-time-mode . configure-eshell)
     :config
 
     (with-eval-after-load 'esh-opt
@@ -1149,6 +1027,7 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 
 * File Management
 ** Dired
+
 Dired is a built-in file manager for Emacs that does some pretty amazing things!  Here are some key bindings you should try out:
 
 *** Key Bindings
@@ -1164,7 +1043,7 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
 - =S-RET= / =g O= - Open file in "other" window
 - =M-RET= - Show file in other window without focusing (previewing files)
 - =g o= (=dired-view-file=) - Open file but in a "preview" mode, close with =q=
-- =g= / =g r= Refresh the buffer with =revert-buffer= after changing configuration (and after file system changes!)
+- =g= / =g r= Refresh the buffer with =revert-buffer= after changing configuration (and after filesystem changes!)
 
 **** Marking files
 
@@ -1216,19 +1095,16 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
   (use-package dired
     :ensure nil
     :commands (dired dired-jump)
+    :hook
+    (dired-mode . (lambda () (setq dired-hide-details-mode t)))
     :bind (("C-x C-j" . dired-jump))
-    :custom ((dired-listing-switches "-agho --group-directories-first"))
+    :custom ((dired-listing-switches "-alh --group-directories-first"))
     :config
-    (evil-collection-define-key 'normal 'dired-mode-map
-      "h" 'dired-single-up-directory
-      "l" 'dired-single-buffer)
     (setq dired-dwim-target t))
 
-  ;; (use-package dired-single
-  ;;   :commands (dired dired-jump))
-
-  (use-package all-the-icons-dired
-    :hook (dired-mode . all-the-icons-dired-mode))
+  (use-package nerd-icons-dired
+    :hook
+    (dired-mode . nerd-icons-dired-mode))
 
   (use-package dired-open
     :commands (dired dired-jump)
@@ -1238,23 +1114,13 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
     (setq dired-open-extensions '(("png" . "feh")
                                   ("mkv" . "mpv"))))
 
-  (use-package dired-hide-dotfiles
-    :hook (dired-mode . dired-hide-dotfiles-mode)
-    :config
-    (evil-collection-define-key 'normal 'dired-mode-map
-      "H" 'dired-hide-dotfiles-mode))
+  (use-package dired-hide-dotfiles)
 
-#+end_src
+  (defun my-dired-hooks ()
+    "Hides extra dired info and binds H to hiding dotfiles."
+    (local-set-key (kbd "H") 'dired-hide-dotfiles-mode))
+  (add-hook 'dired-mode-hook 'my-dired-hooks)
 
-* Media Viewing
-** PDF
-While Emacs has Doc-View built into it as a native package for viewing numerous document types, [[https://github.com/vedang/pdf-tools][PDF Tools]] provides a replacement way to view PDFs, among [[https://www.dailymotion.com/video/x2bc1is][other features.]]
-
-#+begin_src emacs-lisp
-
-  (use-package pdf-tools
-    :ensure t)
-  
 #+end_src
 
 * Applications
@@ -1290,7 +1156,3 @@ Dial the GC threshold back down so that garbage collection happens more frequent
   (setq gc-cons-threshold (* 2 1000 1000))
 
 #+end_src
-
-# Local Variables:
-# jinx-local-words: "Clisp Crafters Elisp Eshell Nuspell backends bashrc config generatable js lsp md minibuffer modeline pyvenv screencasts treemacs ui uncompress unmark unmarks vterm windmove zettelkasten"
-# End:
