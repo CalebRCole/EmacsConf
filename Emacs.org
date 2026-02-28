@@ -435,7 +435,6 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
        (css . t)
        (shell . t)
        (eshell . t)
-       (racket . t)
        (gnuplot . t)
        (python . t)))
 
@@ -463,9 +462,7 @@ You can add more =src= block templates below by copying one of the lines and cha
     (add-to-list 'org-structure-template-alist '("cp" . "src C++"))
     (add-to-list 'org-structure-template-alist '("cs" . "src css"))
     (add-to-list 'org-structure-template-alist '("py" . "src python"))
-    (add-to-list 'org-structure-template-alist '("gp" . "src gnuplot"))
-    (add-to-list 'org-structure-template-alist '("ra" . "src racket"))
-    (add-to-list 'org-structure-template-alist '("ras" . "src racket :lang sicp")))
+    (add-to-list 'org-structure-template-alist '("gp" . "src gnuplot")))
 
 #+end_src
 
@@ -569,9 +566,24 @@ The =which-key= integration adds helpful descriptions of the various keys so you
 #+begin_src emacs-lisp
 
   (use-package lsp-ui
+    :after lsp-mode
+    :ensure t
     :hook (lsp-mode . lsp-ui-mode)
     :custom
-    (lsp-ui-doc-position 'bottom))
+    (lsp-ui-sideline-show-diagnostics t)
+    (lsp-ui-sideline-show-hover t)
+    (lsp-ui-sideline-show-code-actions nil)
+    (lsp-ui-sideline-update-mode t)
+    (lsp-ui-sideline-delay 0.8)
+    (lsp-ui-sideline-diagnostic-max-lines 3)
+    (lsp-ui-peek-enable nil)
+    (lsp-ui-peek-show-directory t)
+    (lsp-ui-doc-enable t)
+    (lsp-ui-doc-position at-point)
+    (lsp-ui-doc-side right)
+    (lsp-ui-doc-delay 1)
+    (lsp-ui-doc-show-with-cursor t)
+    (lsp-ui-doc-show-with-mouse t))
 
 #+end_src
 
@@ -752,6 +764,71 @@ Racket is a general-purpose, multi-paradigm programming language in the Lisp fam
     :ensure t
     :config
     (setq read-extended-command-predicate #'command-completion-default-include-p))
+#+end_src
+
+*** Nix
+
+[[https://nixos.org/][Nix]] is a declaritive language used for project dependency reproduction, that can use [[https://search.nixos.org/packages][nixpkgs]] as its package manager. NixOS extends Nix to declare entire systems using the language and packages. Nix also enables use of flakes for generating lockfiles to maximize reproducibility and is the preferred way of writing nix.
+
+**** nix-mode
+[[https://github.com/NixOS/nix-mode][nix-mode]] is the major mode for the nix language. Also includes nix-unpack to unpackack a source of a nix attribute with =M-x attribute= followed by your nix path and attribute path aswell as nix-build to build nix derivations similar to =M-x compile=, building in the current directory if there is a default.nix present.nix.el also provides some basic functions for interfacing with Nix. Some variables are provided to point to the Nix binaries that can be used in Lisp code:
+
+    nix-executable
+    nix-build-executable
+    nix-instantiate-executable
+    nix-store-executable
+    nix-shell-executable
+
+Other useful functions for Lisp scripts are provided:
+    nix-system - Get the current system, detected by Nix
+
+nix-flake.el provides support for flake commands. These commands are experimental as of Nix 2.4. It uses transient.el to provide a magit-like interface. To run a command on the current flake, type:
+M-x nix-flake
+
+You can also initialize a flake from a template:
+M-x nix-flake-init
+
+nix-repl.el has two purposes.
+First, it provides an interface for completion, used by nix-company.el.
+Second, it provides an interactive function to open a repl. You can open this with:
+M-x nix-repl
+
+nix-store provides a command M-x nix-store-show-path. The command displays an overview of a store path. The information it shows is the realisation status, the hash and the size of the store path. Also it shows lists of derivers, references, referrers and requisites of the respective path.
+You can change the order in which that information is shown. See the documentation of the function nix-store-show-path for more information.
+When viewing a store buffer, the command M-x nix-store-show-log opens a local log file associated with a derivation.
+When nix-prettify-mode is enabled, hash-parts of the Nix store file names are prettified, i.e. displayed as nix-prettify-char character (… by default.).
+
+#+begin_src emacs-lisp
+  (use-package nix-mode
+    :after lsp-mode
+    :ensure t
+    :hook
+    (nix-mode . lsp-deferred)
+    :mode "\\.nix\\'"
+    :config
+    (setq lsp-nix-nixd-server-path "nixd"
+      lsp-nix-nixd-formatting-command [ "nixfmt" ]))
+#+end_src
+
+**** nixfmt
+
+[[https://github.com/purcell/emacs-nixfmt][nixfmt]] is the endorsed formatter for nix code using the nixfmt command. Requires the separate nixfmt package!!
+
+#+begin_src emacs-lisp
+  (use-package nixfmt
+    :after nix-mode
+    :ensure t
+    :bind ("C-c C-f" . nixfmt-buffer))
+
+  (add-hook 'nix-mode-hook 'nixfmt-on-save-mode)  
+#+end_src
+
+**** nixd
+
+[[https://github.com/nix-community/nixd][nixd]] is an lsp for nix using lsp-mode. Requires nixd package!!
+
+#+begin_src emacs-lisp
+  (add-hook 'nix-mode-hook #'lsp)
 #+end_src
 
 ** LLM Integration
