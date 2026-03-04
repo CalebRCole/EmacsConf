@@ -1128,20 +1128,20 @@ Emacs often will need the environment variables that are within the shell, but t
 
 #+begin_src emacs-lisp
   (use-package exec-path-from-shell
-  :if (memq window-system '(mac ns x)) ;; Not used on Windows
-  :custom
-  (exec-path-from-shell-variables '("PATH"
-                                    "MANPATH"
-                                    "SSH_AUTH_SOCK"
-                                    "PYTHONPATH"
-                                    "LANG"
-                                    "LC_ALL"
-                                    "SSH_AGENT_PID"
-                                    "GPG_AGENT_INFO"
-                                    "NIX_SSL_CERT_FILE"
-                                    "NIX_PATH"))
-  :config
-  (exec-path-from-shell-initialize))
+    :if (memq window-system '(mac ns x)) ;; Not used on Windows
+    :custom
+    (exec-path-from-shell-variables '("PATH"
+                                      "MANPATH"
+                                      "SSH_AUTH_SOCK"
+                                      "PYTHONPATH"
+                                      "LANG"
+                                      "LC_ALL"
+                                      "SSH_AGENT_PID"
+                                      "GPG_AGENT_INFO"
+                                      "NIX_SSL_CERT_FILE"
+                                      "NIX_PATH"))
+    :config
+    (exec-path-from-shell-initialize))
 
   #+end_src
 
