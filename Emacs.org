@@ -113,7 +113,21 @@ A set of bindings not set for packages.
       (display-line-numbers-mode 1))
   (add-hook 'prog-mode-hook #'auto-display-line-numbers)
 #+end_src
+** Navigation
+*** Avy
+[[https://github.com/abo-abo/avy][Avy]] allows you to navigate the on-screen buffer like a tree, using goto commands to navigate fast, sort of like Vimium hypertext search.
 
+#+begin_src emacs-lisp
+  (use-package avy
+    :bind
+    ("C-:" .  #'avy-goto-char)
+    ("C-\"" . #'avy-goto-char-timer)
+    ("M-g g" . #'avy-goto-line)
+    ("M-g w" . #'avy-goto-word-1)
+    ("M-g s" . #'avy-goto-word-0)
+    (:map org-mode-map
+  	("M-g h" . #'avy-org-goto-heading-timer)))
+#+end_src
 * UI Configuration
 ** Basic UI
 Defaults for GNU Emacs UI, excluding external packages.
@@ -1312,7 +1326,8 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
      ("TAB" . dirvish-subtree-toggle)
      ("M-t" . dirvish-layout-toggle)))
 #+end_src
-
+* Misc
+** Spellcheck Local Words
 # Local Variables:
-# jinx-local-words: "Clangd Dired Direnv Dirvish Eglot Ellama Eshell Flycheck Flymake Flyspell Orderless Vertico dape derivers distros eldoc init js lsp macchiato magit md nixd nixfmt ollama pyvenv realisation repl reproducibility tcsh vcs vterm windmove zsh"
+# jinx-local-words: "Clangd Dired Direnv Dirvish Eglot Ellama Eshell Flycheck Flymake Flyspell Orderless Vertico dape derivers distros eldoc goto init js lsp macchiato magit md nixd nixfmt ollama pyvenv realisation repl reproducibility tcsh vcs vterm windmove zsh"
 # End:
