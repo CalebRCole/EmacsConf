@@ -127,6 +127,15 @@ A set of bindings not set for packages.
     (:map org-mode-map
   	("M-g h" . #'avy-org-goto-heading-timer)))
 #+end_src
+*** Undo-Tree
+[[https://github.com/casouri/vundo][Vundo]] is a modern undo-tree, allowing non-linear undoing.
+
+#+begin_src emacs-lisp
+  (use-package vundo
+    :bind ("C-/" . #'vundo)
+    :config
+    (vundo-popup-mode 1))
+#+end_src
 ** Smartparens
 [[https://github.com/Fuco1/smartparens][Smartparens]] configures parentheses to be handles smartly, allowing easier navigation and editing.
 
