@@ -1126,9 +1126,35 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 
 
 #+end_src
+** Environment
+Emacs often will need the environment variables that are within the shell, but they are not always passed to it. [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] resolves this and is compatible with [bash, zsh, tcsh, fish, nu] shells. I personally run bash as my Emacs shell for portability when not using Eshell or vterm.
+
+#+begin_src emacs-lisp
+  (use-package exec-path-from-shell
+  :if (memq window-system '(mac ns x)) ;; Not used on Windows
+  :custom
+  (exec-path-from-shell-variables '("PATH"
+                                    "MANPATH"
+                                    "SSH_AUTH_SOCK"
+                                    "PYTHONPATH"
+                                    "LANG"
+                                    "LC_ALL"
+                                    "SSH_AGENT_PID"
+                                    "GPG_AGENT_INFO"
+                                    "NIX_SSL_CERT_FILE"
+                                    "NIX_PATH"))
+  :config
+  (exec-path-from-shell-initialize))
+
+  #+end_src
+
+*** SSH
+SSH allows remote access to other computers and is critical in software like git when using GitHub. [[https://github.com/magit/ssh-agency][SSH Agency]] helps set ssh variables for Windows upon startup along with allowing Unix-like systems to delay having to enter the passphrase untill the first push to remote.
+#+begin_src emacs-lisp
+  (use-package ssh-agency)
+#+end_src
 * File Management
 ** Dired
-
 Dired is a built-in file manager for Emacs that does some pretty amazing things!  Here are some key bindings you should try out:
 
 *** Key Bindings
@@ -1222,8 +1248,9 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
 
   (defun my-dired-hooks ()
     "Hides extra dired info and binds H to hiding dotfiles."
-    (local-set-key (kbd "H") 'dired-hide-dotfiles-mode))
+    (local-set-key (kbd "C-c C-h") 'dired-hide-dotfiles-mode))
   (add-hook 'dired-mode-hook 'my-dired-hooks)
+
 #+end_src
 
 ** Dirvish
