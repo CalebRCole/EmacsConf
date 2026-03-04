@@ -323,7 +323,7 @@ Defaults for GNU Emacs ui, excluding external packages.
            ;; M-g bindings in `goto-map'
            ("M-g e" . consult-compile-error)
            ("M-g r" . consult-grep-match)
-           ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+           ("M-g f" . consult-flycheck)               ;; Alternative: consult-flymake
            ("M-g g" . consult-goto-line)             ;; orig. goto-line
            ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
            ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
@@ -675,18 +675,20 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
 * Development
 ** Languages
 *** LSP with Eglot
-[[https://github.com/joaotavora/eglot][Eglot]] is the native Emac's lsp client. It can be run with [[https://github.com/blahgeek/emacs-lsp-booster][lsp-booster]] to convert JSON data into bytecode, massively speeding up Emac's interpreter and removing many stutters due to its single-threaded nature. Note that Emacs v30 introduced a JSON parser that decodes faster than bytecode, but has slower I/O. emacs-lsp-booster offers the option =--disable-bytecode=, which with setting =eglot-booster-io-only=t= will use to get the benefit of I/O buffering with the native JSON parser.
+[[https://github.com/joaotavora/eglot][Eglot]] is the native Emac's lsp client. It can be run with [[https://github.com/blahgeek/emacs-lsp-booster][lsp-booster]] to convert JSON data into bytecode, massively speeding up Emac's interpreter and removing many stutters due to its single-threaded nature. Note that Emacs v30 introduced a JSON parser that decodes faster than bytecode, but has slower I/O. emacs-lsp-booster offers the option =--disable-bytecode=, which with setting =eglot-booster-io-only=t= will use to get the benefit of I/O buffering with the native JSON parser. Eglot also uses Flymake as its syntax renderer, which can be swapped to Flycheck with another [[https://github.com/flycheck/flycheck-eglot][package]].
 
 #+begin_src emacs-lisp
 
-  (use-package eglot
-    )
+  (use-package eglot)
 
   ;; (use-package eglot-booster
   ;;   :after eglot
-    
   ;;   :config (eglot-booster-mode))
 
+  (use-package flycheck-eglot
+    :after (flycheck eglot)
+    :config
+    (global-flycheck-eglot-mode 1))
 #+end_src
 *** Debugging with dape
 [[https://github.com/svaante/dape][dape]] is the Debug Adapter Protocol for Emacs, functioning like dap-mode does. Invoking the =M-x dape= command begins a debugging session. Enabling repeat-mode and eldoc-mode is highly recommended.
@@ -1162,7 +1164,18 @@ SSH allows remote access to other computers and is critical in software like git
 #+begin_src emacs-lisp
   (use-package ssh-agency)
 #+end_src
+** Syntax
+[[https://github.com/flycheck/flycheck][Flycheck]] is a more feature-rich version of the built-in Flymake, providing out-of-the-box syntax highlighting in many languages. [[https://github.com/flycheck/flycheck-inline][Flycheck-inline]] adds a minor mode for displaying errors right below their reporting location using overlays, as well as displaying related errors from Flycheck checkers that support them.
 
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :hook
+    (add-hook 'after-init-hook #'global-flycheck-mode))
+
+  (use-package flycheck-inline
+    :after (flycheck)
+    :hook (flycheck-mode . flycheck-inline-mode))
+#+end_src
 * File Management
 ** Dired
 Dired is a built-in file manager for Emacs that does some pretty amazing things!  Here are some key bindings you should try out:
