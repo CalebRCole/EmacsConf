@@ -1330,7 +1330,22 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
      ("M-t" . dirvish-layout-toggle)))
 #+end_src
 * Misc
-** Spellcheck Local Words
+** Crux
+[[https://github.com/bbatsov/crux][Crux]] contains a variety of useful commands.
+
+#+begin_src emacs-lisp
+  (use-package crux
+    :bind
+    ("C-k"     . #'crux-smart-kill-line)
+    ("C-O"     . #'crux-smart-line-above)
+    ("C-c f"   . #'crux-recentf-find-file)
+    ("C-c F"   . #'crux-recentf-find-directory)
+    ("C-x 4 t" . #'crux-transpose-windows)
+    ("C-c d"   . #'crux-duplicate-current-line-or-region)
+    ("C-c M-d" . #'crux-duplicate-and-comment-current-line-or-region)
+    ("M-o"     . #'crux-other-window-or-switch-buffer))
+#+end_src
+
 # Local Variables:
 # jinx-local-words: "Clangd Dired Direnv Dirvish Eglot Ellama Eshell Flycheck Flymake Flyspell Orderless Vertico dape derivers distros eldoc goto init js lsp macchiato magit md nixd nixfmt ollama pyvenv realisation repl reproducibility tcsh vcs vterm windmove zsh"
 # End:
