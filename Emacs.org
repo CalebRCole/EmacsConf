@@ -128,7 +128,8 @@ A set of bindings not set for packages.
     (:map org-mode-map
   	("M-g h" . #'avy-org-goto-heading-timer)))
 #+end_src
-*** Undo-Tree
+** Editing
+*** Undo Tree
 [[https://github.com/casouri/vundo][Vundo]] is a modern undo-tree, allowing non-linear undoing.
 
 #+begin_src emacs-lisp
@@ -136,6 +137,14 @@ A set of bindings not set for packages.
     :bind ("C-/" . #'vundo)
     :config
     (vundo-popup-mode 1))
+#+end_src
+*** Multiple Cursors
+[[https://github.com/magnars/multiple-cursors.el][Multiple cursors]] functions like it does in other editors, allowing multiple lines to be edited with a single string of keys, as if editing one single line.
+
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :bind
+    ("C-S-c C-S-c" . #'mc/edit-lines))
 #+end_src
 ** Smartparens
 [[https://github.com/Fuco1/smartparens][Smartparens]] configures parentheses to be handles smartly, allowing easier navigation and editing.
