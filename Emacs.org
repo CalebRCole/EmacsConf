@@ -106,6 +106,7 @@ A set of bindings not set for packages.
 #+begin_src emacs-lisp
   (setq subword-mode t)
   (setq repeat-mode t)
+  (setq save-place-mode t)
 
   (defun auto-display-line-numbers ()
     "Enables line numbers in the current buffer."
@@ -557,6 +558,15 @@ Defaults for GNU Emacs UI, excluding external packages.
     (highlight-indent-guides-method 'bitmap)
     (highlight-indent-guides-responsive 'stack)
     :hook (prog-mode . highlight-indent-guides-mode))
+#+end_src
+
+** Volatile Highlights
+[[https://github.com/k-talo/volatile-highlights.el][Volatile Highlights]] makes actions like undoing cause the altered text to remain highlighted until the next command, helping visibility.
+
+#+begin_src emacs-lisp
+  (use-package volatile-highlights
+    :config
+    (volatile-highlights-mode 1))
 #+end_src
 
 ** Text Scaling
