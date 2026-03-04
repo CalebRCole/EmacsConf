@@ -1148,11 +1148,21 @@ Emacs often will need the environment variables that are within the shell, but t
 
   #+end_src
 
+*** Direnv
+[[https://github.com/wbolster/emacs-direnv][Direnv]] is an external package that has an emacs package as well to pass the current file's environment to Emacs, allowing programs started within emacs, such as inferior shells or linters, to have the correct $PATH and environment variables. Ensure that the external direnv package is installed!!
+
+#+begin_src emacs-lisp
+  (use-package direnv
+    :config
+    (direnv-mode))
+#+end_src
+
 *** SSH
 SSH allows remote access to other computers and is critical in software like git when using GitHub. [[https://github.com/magit/ssh-agency][SSH Agency]] helps set ssh variables for Windows upon startup along with allowing Unix-like systems to delay having to enter the passphrase untill the first push to remote.
 #+begin_src emacs-lisp
   (use-package ssh-agency)
 #+end_src
+
 * File Management
 ** Dired
 Dired is a built-in file manager for Emacs that does some pretty amazing things!  Here are some key bindings you should try out:
