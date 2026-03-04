@@ -179,7 +179,7 @@ A set of bindings not set for packages.
     ("C-c C-w h s" . #'sp-highligh-current-sexp)
     ("C-M-," . #'sp-skip-backward-to-symbol)
     ("C-M-." . #'sp-skip-forward-to-symbol)
-    ("C-M-<" . #'sp-backwards-kill-symbol)
+    ("C-M-<" . #'sp-backward-kill-symbol)
     ("C-M->" . #'sp-kill-symbol)
     :config
     (smartparens-global-mode t))
@@ -537,6 +537,17 @@ Defaults for GNU Emacs UI, excluding external packages.
     ([remap describe-variable] . helpful-variable)
     ([remap describe-key] . helpful-key))
 
+#+end_src
+
+** Highlighted Indenting
+[[https://github.com/DarthFennec/highlight-indent-guides][Highlight-indent-guides]] creates vertical bars where indents are to create a more visual indentation scope.
+
+#+begin_src emacs-lisp
+  (use-package highlight-indent-guides
+    :custom
+    (highlight-indent-guides-method 'bitmap)
+    (highlight-indent-guides-responsive 'stack)
+    :hook (prog-mode . highlight-indent-guides-mode))
 #+end_src
 
 ** Text Scaling
