@@ -1,7 +1,7 @@
 #+TITLE: Emacs Configuration File
 #+PROPERTY: header-args:emacs-lisp :tangle "~/.config/emacs/init.el"
 
-This org document serves as the configuration of emacs, tangling babel code into init.el with =C-c C-v t= (Tangle) and =C-c r i= (Reload init.el).
+This org document serves as the configuration of Emacs, tangling babel code into init.el with =C-c C-v t= (Tangle) and =C-c r i= (Reload init.el).
 
 * Startup Performance
 
@@ -22,7 +22,7 @@ This org document serves as the configuration of emacs, tangling babel code into
 #+end_src
 
 * Package System Setup
-Emacs has a built in package manager but it doesn't make it easy to automatically install packages on a new system the first time you pull down your configuration.  [[https://github.com/jwiegley/use-package][use-package]] is a really helpful package used in this configuration to make it a lot easier to automate the installation and configuration of everything else we use. [[https://github.com/radian-software/straight.el][Straight.el]] is a purely functional package manager that can be used alongside use-package for things like github packages. Straight.el can also be used for creating 'distros' of Emacs like with nix, but with greater flexibility.
+Emacs has a built in package manager but it doesn't make it easy to automatically install packages on a new system the first time you pull down your configuration.  [[https://github.com/jwiegley/use-package][use-package]] is a really helpful package used in this configuration to make it a lot easier to automate the installation and configuration of everything else we use. [[https://github.com/radian-software/straight.el][Straight.el]] is a purely functional package manager that can be used alongside use-package for things like GitHub packages. Straight.el can also be used for creating 'distros' of Emacs like with nix, but with greater flexibility.
 
 #+begin_src emacs-lisp
   (defvar bootstrap-version)
@@ -104,7 +104,7 @@ A set of bindings not set for packages.
 
 * UI Configuration
 ** Basic UI
-Defaults for GNU Emacs ui, excluding external packages.
+Defaults for GNU Emacs UI, excluding external packages.
 
 #+begin_src emacs-lisp
 
@@ -276,7 +276,7 @@ Defaults for GNU Emacs ui, excluding external packages.
 #+end_src
 
 ** Marginalia
-[[https://github.com/minad/marginalia][Marginalia]] adds to minibuffer completions in annotations, providing additional context.
+[[https://github.com/minad/marginalia][Marginalia]] adds to mini-buffer completions in annotations, providing additional context.
 
 #+begin_src emacs-lisp
 
@@ -394,7 +394,7 @@ Defaults for GNU Emacs ui, excluding external packages.
   #+end_src
 
 ** Embark
-- [[https://github.com/oantolin/embark][Embark]] provides minibuffer actions and a context menu, making it easy to choose a command based on what is near the point with  =embark-act= with =C-.=, like a right-click context menu. Running =embark-dwim= with =C-;= runs the default action instead.
+- [[https://github.com/oantolin/embark][Embark]] provides mini-buffer actions and a context menu, making it easy to choose a command based on what is near the point with  =embark-act= with =C-.=, like a right-click context menu. Running =embark-dwim= with =C-;= runs the default action instead.
 
   #+begin_src emacs-lisp
 
@@ -425,7 +425,7 @@ Defaults for GNU Emacs ui, excluding external packages.
   #+end_src
 
 ** Orderless
-[[https://github.com/oantolin/orderless][Orderless]] provides an orderless completion style. Used with Vertico.
+[[https://github.com/oantolin/orderless][Orderless]] provides an order-less completion style. Used with Vertico.
 
 #+begin_src emacs-lisp
 
@@ -474,7 +474,7 @@ This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to desig
 #+end_src
 
 ** Windowing
-Emac's default window selection can be tough to intuit at times. Using windmove, keybindings for using =M-<direction>= allows focus to shift to the frame in =<direction>=.
+Emacs's default window selection can be tough to intuit at times. Using windmove, keybindings for using =M-<direction>= allows focus to shift to the frame in =<direction>=.
 
 #+begin_src emacs-lisp
 
@@ -487,7 +487,7 @@ Emac's default window selection can be tough to intuit at times. Using windmove,
 * Org Mode
 [[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
 ** Better Font Faces
-The =org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly. Cantarell is the used font, so ensure it is installed on the system.
+The =org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (mono-space) fonts for code blocks and tables so that they display correctly. Cantarell is the used font, so ensure it is installed on the system.
 
 #+begin_src emacs-lisp
 
@@ -665,7 +665,7 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
 * Development
 ** Languages
 *** LSP with Eglot
-[[https://github.com/joaotavora/eglot][Eglot]] is the native Emac's lsp client. It can be run with [[https://github.com/blahgeek/emacs-lsp-booster][lsp-booster]] to convert JSON data into bytecode, massively speeding up Emac's interpreter and removing many stutters due to its single-threaded nature. Note that Emacs v30 introduced a JSON parser that decodes faster than bytecode, but has slower I/O. emacs-lsp-booster offers the option =--disable-bytecode=, which with setting =eglot-booster-io-only=t= will use to get the benefit of I/O buffering with the native JSON parser. Eglot also uses Flymake as its syntax renderer, which can be swapped to Flycheck with another [[https://github.com/flycheck/flycheck-eglot][package]].
+[[https://github.com/joaotavora/eglot][Eglot]] is the native Emacs's lsp client. It can be run with [[https://github.com/blahgeek/emacs-lsp-booster][lsp-booster]] to convert JSON data into bytecode, massively speeding up Emacs's interpreter and removing many stutters due to its single-threaded nature. Note that Emacs v30 introduced a JSON parser that decodes faster than bytecode, but has slower I/O. Emacs-lsp-booster offers the option =--disable-bytecode=, which with setting =eglot-booster-io-only=t= will use to get the benefit of I/O buffering with the native JSON parser. Eglot also uses Flymake as its syntax renderer, which can be swapped to Flycheck with another [[https://github.com/flycheck/flycheck-eglot][package]].
 
 #+begin_src emacs-lisp
 
@@ -785,7 +785,7 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.
 #+end_src
 
 *** C/C++
-Sets the default behaviour for C and C++ mode styles. Clangd is used as the lsp for C and C++. Make sure it is installed on your host!!
+Sets the default behavior for C and C++ mode styles. Clangd is used as the lsp for C and C++. Make sure it is installed on your host!!
 
 #+begin_src emacs-lisp
 
@@ -797,7 +797,7 @@ Sets the default behaviour for C and C++ mode styles. Clangd is used as the lsp 
 #+end_src
 
 *** Zig
-[[https://github.com/ziglang/zig-mode][Zig-mode]] provdes syntax highlighting and automatic indentation for Zig in Emacs. 
+[[https://github.com/ziglang/zig-mode][Zig-mode]] provides syntax highlighting and automatic indentation for Zig in Emacs. 
 
 #+begin_src emacs-lisp
 
@@ -825,9 +825,9 @@ Racket is a general-purpose, multi-paradigm programming language in the Lisp fam
 #+end_src
 
 *** Nix
-[[https://nixos.org/][Nix]] is a declaritive language used for project dependency reproduction, that can use [[https://search.nixos.org/packages][nixpkgs]] as its package manager. NixOS extends Nix to declare entire systems using the language and packages. Nix also enables use of flakes for generating lockfiles to maximize reproducibility and is the preferred way of writing nix.
+[[https://nixos.org/][Nix]] is a declarative language used for project dependency reproduction, that can use [[https://search.nixos.org/packages][nixpkgs]] as its package manager. NixOS extends Nix to declare entire systems using the language and packages. Nix also enables use of flakes for generating lock-files to increase reproducibility and is the preferred way of writing nix.
 **** nix-mode
-[[https://github.com/NixOS/nix-mode][nix-mode]] is the major mode for the nix language. Also includes nix-unpack to unpackack a source of a nix attribute with =M-x attribute= followed by your nix path and attribute path aswell as nix-build to build nix derivations similar to =M-x compile=, building in the current directory if there is a default.nix present.nix.el also provides some basic functions for interfacing with Nix. Some variables are provided to point to the Nix binaries that can be used in Lisp code:
+[[https://github.com/NixOS/nix-mode][nix-mode]] is the major mode for the nix language. Also includes nix-unpack to unpack a source of a nix attribute with =M-x attribute= followed by your nix path and attribute path as well as nix-build to build nix derivations similar to =M-x compile=, building in the current directory if there is a default.nix present.nix.el also provides some basic functions for interfacing with Nix. Some variables are provided to point to the Nix binaries that can be used in Lisp code:
 
 nix-executable
 nix-build-executable
@@ -988,7 +988,7 @@ Project.el is the native project system for Emacs and is required for Eglot to f
 
 =term-mode= is a built-in terminal emulator in Emacs.  Because it is written in Emacs Lisp, you can start using it immediately with very little configuration.  If you are on Linux or macOS, =term-mode= is a great choice to get started because it supports fairly complex terminal applications (=htop=, =vim=, etc) and works pretty reliably.  However, because it is written in Emacs Lisp, it can be slower than other options like =vterm=.  The speed will only be an issue if you regularly run console apps with a lot of output.
 
-One important thing to understand is =line-mode= versus =char-mode=.  =line-mode= enables you to use normal Emacs keybindings while moving around in the terminal buffer while =char-mode= sends most of your keypresses to the underlying terminal.  While using =term-mode=, you will want to be in =char-mode= for any terminal applications that have their own keybindings.  If you're just in your usual shell, =line-mode= is sufficient and feels more integrated with Emacs.
+One important thing to understand is =line-mode= versus =char-mode=.  =line-mode= enables you to use normal Emacs keybindings while moving around in the terminal buffer while =char-mode= sends most of your key-presses to the underlying terminal.  While using =term-mode=, you will want to be in =char-mode= for any terminal applications that have their own keybindings.  If you're just in your usual shell, =line-mode= is sufficient and feels more integrated with Emacs.
 
 With =evil-collection= installed, you will automatically switch to =char-mode= when you enter Evil's insert mode (press =i=).  You will automatically be switched back to =line-mode= when you enter Evil's normal mode (press =ESC=).
 
@@ -1133,7 +1133,7 @@ Emacs often will need the environment variables that are within the shell, but t
 #+end_src
 
 *** Direnv
-[[https://github.com/wbolster/emacs-direnv][Direnv]] is an external package that has an emacs package as well to pass the current file's environment to Emacs, allowing programs started within emacs, such as inferior shells or linters, to have the correct $PATH and environment variables. Ensure that the external direnv package is installed!!
+[[https://github.com/wbolster/emacs-direnv][Direnv]] is an external package that has an Emacs package as well to pass the current file's environment to Emacs, allowing programs started within Emacs, such as inferior shells or linters, to have the correct $PATH and environment variables. Ensure that the external Direnv package is installed!!
 
 #+begin_src emacs-lisp
   (use-package direnv
@@ -1142,7 +1142,7 @@ Emacs often will need the environment variables that are within the shell, but t
 #+end_src
 
 *** SSH
-SSH allows remote access to other computers and is critical in software like git when using GitHub. [[https://github.com/magit/ssh-agency][SSH Agency]] helps set ssh variables for Windows upon startup along with allowing Unix-like systems to delay having to enter the passphrase untill the first push to remote.
+SSH allows remote access to other computers and is critical in software like git when using GitHub. [[https://github.com/magit/ssh-agency][SSH Agency]] helps set ssh variables for Windows upon startup along with allowing Unix-like systems to delay having to enter the passphrase until the first push to remote.
 #+begin_src emacs-lisp
   (use-package ssh-agency)
 #+end_src
@@ -1159,7 +1159,7 @@ SSH allows remote access to other computers and is critical in software like git
     :hook (flycheck-mode . flycheck-inline-mode))
 #+end_src
 ** Spellchecking
-Emacs has the native Ispell spellchecking package, which has been superceeded by the more modern Flyspell package. However, [[https://github.com/minad/jinx][Jinx]] is an even more modern and more versatile spell-checker which can use several dictionaries like Hunspell and Aspell through the use of Enchant. Requires external enchant package!!
+Emacs has the native Ispell spellchecking package, which has been superseded by the more modern Flyspell package. However, [[https://github.com/minad/jinx][Jinx]] is an even more modern and more versatile spell-checker which can use several dictionaries like Hunspell and Aspell through the use of Enchant. Requires external enchant package!!
 
 #+begin_src emacs-lisp
   (use-package jinx
@@ -1188,7 +1188,7 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
 - =S-RET= / =g O= - Open file in "other" window
 - =M-RET= - Show file in other window without focusing (previewing files)
 - =g o= (=dired-view-file=) - Open file but in a "preview" mode, close with =q=
-- =g= / =g r= Refresh the buffer with =revert-buffer= after changing configuration (and after filesystem changes!)
+- =g= / =g r= Refresh the buffer with =revert-buffer= after changing configuration (and after file-system changes!)
 
 **** Marking files
 
@@ -1295,3 +1295,7 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
      ("TAB" . dirvish-subtree-toggle)
      ("M-t" . dirvish-layout-toggle)))
 #+end_src
+
+# Local Variables:
+# jinx-local-words: "Clangd Dired Direnv Dirvish Eglot Ellama Eshell Flycheck Flymake Flyspell Orderless Vertico dape derivers distros eldoc init js lsp macchiato magit md nixd nixfmt ollama pyvenv realisation repl reproducibility tcsh vcs vterm windmove zsh"
+# End:
