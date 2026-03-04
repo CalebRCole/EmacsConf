@@ -542,10 +542,13 @@ The =org-font-setup= function configures various text faces to tweak the sizes o
     (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
     (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
 
+  (with-eval-after-load 'org
+    (add-hook 'org-mode-hook #'org-font-setup))
+
 #+end_src
 ** Basic Config
 This section contains the basic configuration for =org-mode=, setting up proper modes and formatting.
-
+  
 #+begin_src emacs-lisp
 
   (use-package org
