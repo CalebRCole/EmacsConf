@@ -182,7 +182,7 @@ A set of bindings not set for packages.
     ("C-c C-w c i" . #'sp-change-inner)
     ("C-c C-w c e" . #'sp-change-enclosing)
     ("C-c C-w u" . #'sp-unwrap-sexp)
-    ("C-c C-w b u" . #'sp-backwards-unwrap-sexp)
+    ("C-c C-w b u" . #'sp-backward-unwrap-sexp)
     ("C-c C-w x" . #'sp-splice-sexp)
     ("C-c C-w b x" . #'sp-splice-sexp-killing-backward)
     ("C-c C-w f x" . #'sp-splice-sexp-killing-forward)
@@ -1441,7 +1441,7 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
   (use-package crux
     :bind
     ("C-k"     . #'crux-smart-kill-line)
-    ("C-O"     . #'crux-smart-line-above)
+    ("C-O"     . #'crux-smart-open-line-above)
     ("C-c F"   . #'crux-recentf-find-directory)
     ("C-x 4 t" . #'crux-transpose-windows)
     ("C-c d"   . #'crux-duplicate-current-line-or-region)
