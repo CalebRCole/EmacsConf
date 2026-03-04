@@ -53,8 +53,7 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
   ;; reliably, set `user-emacs-directory` before loading no-littering!
   (setq user-emacs-directory "~/.cache/emacs")
 
-  (use-package no-littering
-    
+  (use-package no-littering    
     :config
     ;; Backup files
     (setq backup-directory-alist
@@ -253,14 +252,12 @@ Defaults for GNU Emacs ui, excluding external packages.
 
 #+begin_src emacs-lisp
 
-  (use-package vertico
-    
+  (use-package vertico    
     :init
     (vertico-mode))
 
   ;; Persistant history over different Emacs sessions
   (use-package savehist
-    
     :init
     (savehist-mode))
 
@@ -283,8 +280,7 @@ Defaults for GNU Emacs ui, excluding external packages.
 
 #+begin_src emacs-lisp
 
-  (use-package marginalia
-    
+  (use-package marginalia    
     :bind (:map minibuffer-local-map
   	      ("M-A" . marginalia-cycle))
     :init
@@ -298,7 +294,6 @@ Defaults for GNU Emacs ui, excluding external packages.
 #+begin_src emacs-lisp
 
   (use-package consult
-    
     :bind (;; C-c bindings in `mode-specific-map'
            ("C-c M-x" . consult-mode-command)
            ("C-c h" . consult-history)
@@ -391,20 +386,19 @@ Defaults for GNU Emacs ui, excluding external packages.
     ;; Both < and C-+ work reasonably well.
     (setq consult-narrow-key "<")) ;; "C-+"
 
-    ;; Optionally make narrowing help available in the minibuffer.
-    ;; You may want to use `embark-prefix-help-command' or which-key instead.
-    ;; (keymap-set consult-narrow-map (concat consult-narrow-key " ?") #'consult-narrow-help)
-    
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; (keymap-set consult-narrow-map (concat consult-narrow-key " ?") #'consult-narrow-help)
 
-#+end_src
+
+  #+end_src
 
 ** Embark
 - [[https://github.com/oantolin/embark][Embark]] provides minibuffer actions and a context menu, making it easy to choose a command based on what is near the point with  =embark-act= with =C-.=, like a right-click context menu. Running =embark-dwim= with =C-;= runs the default action instead.
 
   #+begin_src emacs-lisp
 
-    (use-package embark
-      
+    (use-package embark      
       :bind
       (("C-."   . embark-act)
        ("C-;"   . embark-dwim)
@@ -426,7 +420,7 @@ Defaults for GNU Emacs ui, excluding external packages.
       consult
       embark
       )
-      
+
 
   #+end_src
 
@@ -436,15 +430,14 @@ Defaults for GNU Emacs ui, excluding external packages.
 #+begin_src emacs-lisp
 
   (use-package orderless
-  
-  :custom
-  ;; Configure a custom style dispatcher (see the Consult wiki)
-  ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
-  ;; (orderless-component-separator #'orderless-escapable-split-on-space)
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles partial-completion))))
-  (completion-category-defaults nil) ;; Disable defaults, use our settings
-  (completion-pcm-leading-wildcard t)) ;; Emacs 31: partial-completion behaves like substring
+    :custom
+    ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+    ;; (orderless-component-separator #'orderless-escapable-split-on-space)
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles partial-completion))))
+    (completion-category-defaults nil) ;; Disable defaults, use our settings
+    (completion-pcm-leading-wildcard t)) ;; Emacs 31: partial-completion behaves like substring
 
 #+end_src
 
@@ -470,7 +463,6 @@ This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to desig
 
   (use-package hydra
     :defer t)
-
   (defhydra hydra-text-scale (:timeout 4)
     "scale text"
     ("j" text-scale-increase "in")
@@ -534,13 +526,13 @@ This section contains the basic configuration for =org-mode=, setting up proper 
     :straight nil
     :commands (org-capture org-agenda)
     :hook (org-mode . org-indent-mode)
-          (org-mode . variable-pitch-mode)
-  	(org-mode . visual-line-mode)
+    (org-mode . variable-pitch-mode)
+    (org-mode . visual-line-mode)
     :init
     ;; Replace list hyphen with dot
     (font-lock-add-keywords 'org-mode
-  			    '(("^ *\\([-]\\) "
-  			       (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  			  '(("^ *\\([-]\\) "
+  			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
     :config
     (setq org-ellipsis " ▾"))
@@ -553,8 +545,7 @@ This section contains the basic configuration for =org-mode=, setting up proper 
 #+begin_src emacs-lisp
 
   (use-package org-bullets
-    :after org
-    
+    :after org    
     :hook (org-mode . org-bullets-mode)
     :custom
     (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
@@ -633,7 +624,6 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
 
   (use-package org-roam
     :after org
-    
     :init
     (setq org-roam-v2-ack t)
     :custom
@@ -644,10 +634,10 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
         "%?"
         :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
         :unnarrowed t)
-  	 ("n" "note" plain
-  	  (file "~/roam/templates/note.org")
+       ("n" "note" plain
+        (file "~/roam/templates/note.org")
         :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-  	  :unnarrowed t)))
+        :unnarrowed t)))
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n i" . org-roam-node-insert)
@@ -696,7 +686,6 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
 #+begin_src emacs-lisp
 
   (use-package dape
-    
     :preface
     ;; By default dape shares the same keybinding prefix as `gud'
     ;; If you do not want to use any prefix, set it to nil.
@@ -760,7 +749,7 @@ This is a basic configuration for the TypeScript language so that =.ts= files ac
 
 #+begin_src shell :tangle no
 
-npm install -g typescript-language-server typescript
+  npm install -g typescript-language-server typescript
 
 #+end_src
 
@@ -771,7 +760,7 @@ Make sure you have the =pyls= language server installed before trying =eglot=!
 
 #+begin_src sh :tangle no
 
-pip install --user "python-language-server[all]"
+  pip install --user "python-language-server[all]"
 
 #+end_src
 
@@ -780,7 +769,6 @@ There are a number of other language servers for Python if you find that =pyls= 
 #+begin_src emacs-lisp
 
   (use-package python-mode
-    
     :hook (python-mode . eglot-ensure))
 
 #+end_src
@@ -813,8 +801,7 @@ Sets the default behaviour for C and C++ mode styles. Clangd is used as the lsp 
 
 #+begin_src emacs-lisp
 
-  (use-package zig-mode
-    
+  (use-package zig-mode    
     :hook (zig-mode . eglot-ensure))
 
 #+end_src
@@ -833,7 +820,6 @@ Racket is a general-purpose, multi-paradigm programming language in the Lisp fam
 
 #+begin_src emacs-lisp
   (use-package gnuplot
-    
     :config
     (setq read-extended-command-predicate #'command-completion-default-include-p))
 #+end_src
@@ -843,14 +829,14 @@ Racket is a general-purpose, multi-paradigm programming language in the Lisp fam
 **** nix-mode
 [[https://github.com/NixOS/nix-mode][nix-mode]] is the major mode for the nix language. Also includes nix-unpack to unpackack a source of a nix attribute with =M-x attribute= followed by your nix path and attribute path aswell as nix-build to build nix derivations similar to =M-x compile=, building in the current directory if there is a default.nix present.nix.el also provides some basic functions for interfacing with Nix. Some variables are provided to point to the Nix binaries that can be used in Lisp code:
 
-    nix-executable
-    nix-build-executable
-    nix-instantiate-executable
-    nix-store-executable
-    nix-shell-executable
+nix-executable
+nix-build-executable
+nix-instantiate-executable
+nix-store-executable
+nix-shell-executable
 
 Other useful functions for Lisp scripts are provided:
-    nix-system - Get the current system, detected by Nix
+nix-system - Get the current system, detected by Nix
 
 nix-flake.el provides support for flake commands. These commands are experimental as of Nix 2.4. It uses transient.el to provide a magit-like interface. To run a command on the current flake, type:
 M-x nix-flake
@@ -870,7 +856,6 @@ When nix-prettify-mode is enabled, hash-parts of the Nix store file names are pr
 
 #+begin_src emacs-lisp
   (use-package nix-mode
-    
     :hook
     (nix-mode . eglot-ensure)
     :mode "\\.nix\\'")
@@ -882,7 +867,6 @@ When nix-prettify-mode is enabled, hash-parts of the Nix store file names are pr
 #+begin_src emacs-lisp
   (use-package nixfmt
     :after nix-mode
-    
     :bind ("C-c C-f" . nixfmt-buffer))
 
   (add-hook 'nix-mode-hook 'nixfmt-on-save-mode)  
@@ -903,18 +887,17 @@ When nix-prettify-mode is enabled, hash-parts of the Nix store file names are pr
 #+begin_src emacs-lisp
 
   (use-package ellama
-  
-  :bind ("C-c e" . ellama)
-  ;; send last message in chat buffer with C-c C-c
-  :hook (org-ctrl-c-ctrl-c-final . ellama-chat-send-last-message)
-  :init (setopt ellama-auto-scroll t)
-  :config
-  (setq ellama-provider
-        (make-llm-ollama
-         :host "https://localhost"
-         :port 11434
-         :chat-model "gpt-oss:20b"
-         :embedding-model "gpt-oss:20b")))
+    :bind ("C-c e" . ellama)
+    ;; send last message in chat buffer with C-c C-c
+    :hook (org-ctrl-c-ctrl-c-final . ellama-chat-send-last-message)
+    :init (setopt ellama-auto-scroll t)
+    :config
+    (setq ellama-provider
+  	(make-llm-ollama
+  	 :host "https://localhost"
+  	 :port 11434
+  	 :chat-model "gpt-oss:20b"
+  	 :embedding-model "gpt-oss:20b")))
 
 #+end_src
 
@@ -923,7 +906,6 @@ When nix-prettify-mode is enabled, hash-parts of the Nix store file names are pr
 
 #+begin_src emacs-lisp
   (use-package corfu
-    
     ;; Optional customizations
     ;; :custom
     ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
@@ -997,8 +979,8 @@ Project.el is the native project system for Emacs and is required for Eglot to f
 
 #+begin_src emacs-lisp
 
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
 
 #+end_src
 ** Terminals
@@ -1148,7 +1130,7 @@ Emacs often will need the environment variables that are within the shell, but t
     :config
     (exec-path-from-shell-initialize))
 
-  #+end_src
+#+end_src
 
 *** Direnv
 [[https://github.com/wbolster/emacs-direnv][Direnv]] is an external package that has an emacs package as well to pass the current file's environment to Emacs, allowing programs started within emacs, such as inferior shells or linters, to have the correct $PATH and environment variables. Ensure that the external direnv package is installed!!
