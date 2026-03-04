@@ -592,6 +592,9 @@ You can add more =src= block templates below by copying one of the lines and cha
   (with-eval-after-load 'org
     ;; This is needed as of Org 9.2
     (require 'org-tempo)
+    ;; "c" is set to center. We want to delete this and replace it with "cen" to free "c" for C language blocks.
+    (setq org-structure-template-alist (assoc-delete-all "c" org-structure-template-alist))
+    (add-to-list 'org-structure-template-alist '("cen" . "center"))
 
     (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
     (add-to-list 'org-structure-template-alist '("lisp" . "src lisp"))
