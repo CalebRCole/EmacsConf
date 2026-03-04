@@ -127,6 +127,63 @@ A set of bindings not set for packages.
     (:map org-mode-map
   	("M-g h" . #'avy-org-goto-heading-timer)))
 #+end_src
+** Smartparens
+[[https://github.com/Fuco1/smartparens][Smartparens]] configures parentheses to be handles smartly, allowing easier navigation and editing.
+
+#+begin_src emacs-lisp
+  (use-package smartparens
+    :custom
+    (smartparens-global-strict-mode t)
+    :bind
+    ("C-M-f" . #'sp-forward-sexp)
+    ("C-M-b" . #'sp-backward-sexp)
+    ("C-M-S-f" . #'sp-forward-parallel-sexp)
+    ("C-M-S-b" . #'sp-backward-parallel-sexp)
+    ("C-M-n" . #'sp-next-sexp)
+    ("C-M-p" . #'sp-previous-sexp)
+    ("C-M-d" . #'sp-down-sexp)
+    ("C-M-u" . #'sp-backward-up-sexp)
+    ("C-M-S-u" . #'sp-up-sexp)
+    ("C-M-q" . #'sp-beginning-of-sexp)
+    ("C-M-S-q" . #'sp-end-of-sexp)
+    ("C-M-S-n" . #'sp-beginning-of-next-sexp)
+    ("C-M-S-p" . #'sp-beginning-of-previous-sexp)
+    ("C-M-k" . #'sp-kill-sexp)
+    ("C-M-S-k" . #'sp-backwards-kill-sexp)
+    ("C-M-t" . #'sp-transpose-sexp)
+    ("C-M-S-t" . #'sp-transpose-hybrid-sexp)
+    ("C-M-l" . #'sp-forward-slurp-sexp)
+    ("C-M-S-l" . #'sp-backward-slurp-sexp)
+    ("C-M-;" . #'sp-add-to-previous-sexp)
+    ("C-M-'" . #'sp-add-to-next-sexp)
+    ("C-M-:" . #'sp-backward-barf-sexp)
+    ("C-M-\"" . #'sp-forward-barf-sexp)
+    ("C-c C-w r" . #'sp-rewrap-sexp)
+    ("C-c C-w s" . #'sp-swap-enclosing-sexp)
+    ("C-c C-w c i" . #'sp-change-inner)
+    ("C-c C-w c e" . #'sp-change-enclosing)
+    ("C-c C-w u" . #'sp-unwrap-sexp)
+    ("C-c C-w b u" . #'sp-backwards-unwrap-sexp)
+    ("C-c C-w x" . #'sp-splice-sexp)
+    ("C-c C-w b x" . #'sp-splice-sexp-killing-backward)
+    ("C-c C-w f x" . #'sp-splice-sexp-killing-forward)
+    ("C-M-SPC" . #'sp-mark-sexp)
+    ("C-S-d" . #'sp-backward-delete-char)
+    ("M-S-d" . #'sp-backward-kill-word)
+    ("C-w" . #'sp-kill-region)
+    ("RET" . #'sp-newline)
+    ("C-c C-w [" . #'sp-wrap-round)
+    ("C-c C-w ]" . #'sp-wrap-square)
+    ("C-c C-w \\" . #'sp-wrap-curly)
+    ("C-c C-w h p" . #'sp-show-enclosing-pair)
+    ("C-c C-w h s" . #'sp-highligh-current-sexp)
+    ("C-M-," . #'sp-skip-backward-to-symbol)
+    ("C-M-." . #'sp-skip-forward-to-symbol)
+    ("C-M-<" . #'sp-backwards-kill-symbol)
+    ("C-M->" . #'sp-kill-symbol)
+    :config
+    (smartparens-global-mode t))
+#+end_src
 * UI Configuration
 ** Basic UI
 Defaults for GNU Emacs UI, excluding external packages.
@@ -1354,5 +1411,5 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
 #+end_src
 
 # Local Variables:
-# jinx-local-words: "Clangd Dired Direnv Dirvish Eglot Ellama Eshell Flycheck Flymake Flyspell Orderless Vertico dape derivers distros eldoc goto init js lsp macchiato magit md nixd nixfmt ollama pyvenv realisation repl reproducibility tcsh vcs vterm windmove zsh"
+# jinx-local-words: "Clangd Dired Direnv Dirvish Ellama Eshell Flycheck Flymake Flyspell Orderless Vertico dape derivers distros eldoc goto init js lsp macchiato magit md nixd nixfmt ollama pyvenv realisation repl reproducibility tcsh vcs vterm windmove zsh"
 # End:
