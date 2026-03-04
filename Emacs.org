@@ -1132,13 +1132,12 @@ Emacs often will need the environment variables that are within the shell, but t
 
 #+end_src
 
-*** Direnv
-[[https://github.com/wbolster/emacs-direnv][Direnv]] is an external package that has an Emacs package as well to pass the current file's environment to Emacs, allowing programs started within Emacs, such as inferior shells or linters, to have the correct $PATH and environment variables. Ensure that the external Direnv package is installed!!
+*** Envrc
+[[https://github.com/purcell/envrc][Envrc]] is an external package that has an Emacs package as well to pass the current file's environment to Emacs, allowing programs started within Emacs, such as inferior shells or linters, to have the correct $PATH and environment variables. Ensure that the external Direnv package is installed!!
 
 #+begin_src emacs-lisp
-  (use-package direnv
-    :config
-    (direnv-mode))
+  (use-package envrc
+    :hook (after-init . envrc-global-mode)
 #+end_src
 
 *** SSH
