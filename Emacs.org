@@ -1158,6 +1158,19 @@ SSH allows remote access to other computers and is critical in software like git
     :after (flycheck)
     :hook (flycheck-mode . flycheck-inline-mode))
 #+end_src
+** Spellchecking
+Emacs has the native Ispell spellchecking package, which has been superceeded by the more modern Flyspell package. However, [[https://github.com/minad/jinx][Jinx]] is an even more modern and more versatile spell-checker which can use several dictionaries like Hunspell and Aspell through the use of Enchant. Requires external enchant package!!
+
+#+begin_src emacs-lisp
+  (use-package jinx
+    :bind
+    ("M-$" . jinx-correct-nearest)
+    ("C-M-$" . jinx-correct-all)
+    :hook
+    (text-mode . jinx-mode)
+    (prog-mode . jinx-mode)
+    (conf-mode . jinx-mode))
+#+end_src
 * File Management
 ** Dired
 Dired is a built-in file manager for Emacs that does some pretty amazing things!  Here are some key bindings you should try out:
