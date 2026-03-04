@@ -119,6 +119,7 @@ A set of bindings not set for packages.
 
 #+begin_src emacs-lisp
   (use-package avy
+    :after org
     :bind
     ("C-:" .  #'avy-goto-char)
     ("C-\"" . #'avy-goto-char-timer)
@@ -168,7 +169,7 @@ A set of bindings not set for packages.
     ("C-M-S-n" . #'sp-beginning-of-next-sexp)
     ("C-M-S-p" . #'sp-beginning-of-previous-sexp)
     ("C-M-k" . #'sp-kill-sexp)
-    ("C-M-S-k" . #'sp-backwards-kill-sexp)
+    ("C-M-S-k" . #'sp-backward-kill-sexp)
     ("C-M-t" . #'sp-transpose-sexp)
     ("C-M-S-t" . #'sp-transpose-hybrid-sexp)
     ("C-M-l" . #'sp-forward-slurp-sexp)
@@ -794,11 +795,10 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
 
 #+begin_src emacs-lisp
 
-  (use-package eglot)
-
-  ;; (use-package eglot-booster
-  ;;   :after eglot
-  ;;   :config (eglot-booster-mode))
+  (use-package eglot
+    :ensure nil
+    :config
+    (add-to-list 'eglot-stay-out-of 'flymake))
 
   (use-package flycheck-eglot
     :after (flycheck eglot)
@@ -1001,9 +1001,13 @@ When nix-prettify-mode is enabled, hash-parts of the Nix store file names are pr
 [[https://github.com/nix-community/nixd][nixd]] is an lsp for nix using lsp-mode. Requires nixd package!!
 
 #+begin_src emacs-lisp
-  (add-to-list 'eglot-server-programs
-  	     '(nix-mode . ("nixd")))
-  (add-hook 'nix-mode-hook #'eglot-ensure)
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (add-hook 'before-save-hook 'eglot-format nil t)))
+
+  (with-eval-after-load 'eglot
+    (dolist (mode '((nix-mode . ("nixd"))))
+      (add-to-list 'eglot-server-programs mode)))
 #+end_src
 
 *** Bash
@@ -1285,8 +1289,7 @@ SSH allows remote access to other computers and is critical in software like git
 
 #+begin_src emacs-lisp
   (use-package flycheck
-    :hook
-    (add-hook 'after-init-hook #'global-flycheck-mode))
+    :init (global-flycheck-mode))
 
   (use-package flycheck-inline
     :after (flycheck)
