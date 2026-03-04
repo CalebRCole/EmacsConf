@@ -890,6 +890,16 @@ When nix-prettify-mode is enabled, hash-parts of the Nix store file names are pr
 #+begin_src emacs-lisp
   (add-to-list 'eglot-server-programs
   	     '(nix-mode . ("nixd")))
+  (add-hook 'nix-mode-hook #'eglot-ensure)
+#+end_src
+
+*** Bash
+[[https://github.com/bash-lsp/bash-language-server?tab=readme-ov-file][Bash-language-server]] is an lsp that uses [[https://github.com/koalaman/shellcheck][shellcheck]] to analyze and format bash code. Requires both as external packages!!
+
+#+begin_src emacs-lisp
+  (add-to-list 'eglot-server-programs '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
+  (add-hook 'sh-mode #'eglot-ensure)
+  (add-hook 'bash-ts-mode #'eglot-ensure)
 #+end_src
 
 ** LLM Integration
