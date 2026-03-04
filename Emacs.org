@@ -100,6 +100,11 @@ A set of bindings not set for packages.
 #+begin_src emacs-lisp
   (setq sub-word-mode t)
   (setq repeat-mode t)
+
+  (defun auto-display-line-numbers ()
+    "Enables line numbers in the current buffer."
+      (display-line-numbers-mode 1))
+  (add-hook 'prog-mode-hook 'auto-display-line-numbers)
 #+end_src
 
 * UI Configuration
@@ -1137,7 +1142,7 @@ Emacs often will need the environment variables that are within the shell, but t
 
 #+begin_src emacs-lisp
   (use-package envrc
-    :hook (after-init . envrc-global-mode)
+    :hook (after-init . envrc-global-mode))
 #+end_src
 
 *** SSH
