@@ -525,7 +525,7 @@ This section contains the basic configuration for =org-mode=, setting up proper 
 
   (use-package org
     :straight nil
-    :commands (org-capture org-agenda)
+    :commands (org-capture org-agenda org-element-at-property org-element-at-point org-in-src-block-p)
     :hook (org-mode . org-indent-mode)
     (org-mode . variable-pitch-mode)
     (org-mode . visual-line-mode)
@@ -739,6 +739,7 @@ Treesitter has compatibility with Emacs as long as Emacs is compiled with it ena
   ;;
   (use-package combobulate
     :straight (combobulate :type git :host github :repo "mickeynp/combobulate")
+    :commands (combobulate-navigate-sequence-previous combobulate-sequence-next)
     :custom
     ;; You can customize Combobulate's key prefix here.
     ;; Note that you may have to restart Emacs for this to take effect!
@@ -1231,6 +1232,10 @@ SSH allows remote access to other computers and is critical in software like git
 [[https://github.com/flycheck/flycheck][Flycheck]] is a more feature-rich version of the built-in Flymake, providing out-of-the-box syntax highlighting in many languages. [[https://github.com/flycheck/flycheck-inline][Flycheck-inline]] adds a minor mode for displaying errors right below their reporting location using overlays, as well as displaying related errors from Flycheck checkers that support them.
 
 #+begin_src emacs-lisp
+  (use-package flymake
+    :straight nil
+    :commands (previous-error-this-buffer-no-select next-error-this-buffer-no-select plusp member-if))
+
   (use-package flycheck
     :init (global-flycheck-mode))
 
@@ -1263,6 +1268,7 @@ Recentf creates a list of recently visited files that are quickly accessible.
 ** Bookmarks
 #+begin_src emacs-lisp
   (setq bookmarks-save-flag 1)		;; ensures bookmarks are saved on any modification and session end
+  (add-hook 'bookmark-mode #'hl-line-mode)
 #+end_src
 ** Dired
 Dired is a built-in file manager for Emacs that does some pretty amazing things!  Here are some key bindings you should try out:
@@ -1525,15 +1531,13 @@ A set of bindings not set for packages.
 [[https://github.com/kickingvegas/casual][Casual]] is an opinionated approach to keybindings that take inspiration from Magit's use of Transient to turn keybinding recall into recognition, providing a menu for commands, increasing the visibility of less used commands.
 
 #+begin_src emacs-lisp
-  (use-package casual
+  (use-package casual-suite
     :after transient
     :bind
     ((:map bookmark-bmenu-mode-map
   	 ("C-o" . #'casual-bookmarks-tmenu)
   	 ("J" . #'bookmark-jump))
      (:map calc-mode-map
-  	 ("C-o" . #'casual-calc-tmenu))
-     (:map calc-agl-map
   	 ("C-o" . #'casual-calc-tmenu))
      (:map compilation-mode-map
   	 ("C-o" . #'casual-compile-tmenu)
@@ -1615,10 +1619,9 @@ A set of bindings not set for packages.
      ("C-c w" . #'casual-editkit-windows-tmenu)
      ("C-c r" . #'casual-editkit-rectangle-tmenu)
      ("C-c g" . #'casual-editkit-registers-tmenu)
-     ("C-c p" . #'casual-editkit-project-tmenu))
-    :hook
-    (bookmark-bmenu-mode . hl-line-mode))
-  #+end_src
+     ("C-c p" . #'casual-editkit-project-tmenu)
+     ("M-g"   . #'casual-avy-tmenu)))
+    #+end_src
 
 #+RESULTS:
 : casual-editkit-project-tmenu
