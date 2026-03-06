@@ -1260,6 +1260,10 @@ Recentf creates a list of recently visited files that are quickly accessible.
   (setq recentf-max-saved-items 100)
   (setq recentf-exclude '("/tmp/" "/ssh:" "/terpri/" "\\.git/.*" ".*-autoloads\\.el\\'"))
 #+end_src
+** Bookmarks
+#+begin_src emacs-lisp
+  (setq bookmarks-save-flag 1)		;; ensures bookmarks are saved on any modification and session end
+#+end_src
 ** Dired
 Dired is a built-in file manager for Emacs that does some pretty amazing things!  Here are some key bindings you should try out:
 
@@ -1331,6 +1335,10 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
     :hook
     (dired-mode . dired-hide-details-mode)
     (dired-mode . auto-revert-mode)
+    (dired-mode . hl-line-mode)
+    (dired-mode . dired-async-mode)
+    (dired-mode . (lambda ()
+  	      (setq-local mouse-1-clicks-follow-link 'double)))
     :bind (("C-x C-j" . dired-jump))
     :custom ((dired-listing-switches "-alh --group-directories-first"))
     :config
@@ -1406,17 +1414,6 @@ A set of bindings not set for packages.
     (message "Init file reloaded"))
   (keymap-global-set "C-c r i" #'reload-init-el)
 
-#+end_src
-** Misc Modes
-#+begin_src emacs-lisp
-  (setq subword-mode t)
-  (setq repeat-mode t)
-  (setq save-place-mode t)
-
-  (defun auto-display-line-numbers ()
-    "Enables line numbers in the current buffer."
-    (display-line-numbers-mode 1))
-  (add-hook 'prog-mode-hook #'auto-display-line-numbers)
 #+end_src
 ** Navigation
 *** Avy
@@ -1518,12 +1515,127 @@ A set of bindings not set for packages.
   (use-package crux
     :bind
     ("C-k"     . #'crux-smart-kill-line)
-    ("C-O"     . #'crux-smart-open-line-above)
+    ("C-c o"   . #'crux-smart-open-line-above)
     ("C-c F"   . #'crux-recentf-find-directory)
     ("C-x 4 t" . #'crux-transpose-windows)
     ("C-c d"   . #'crux-duplicate-current-line-or-region)
     ("C-c M-d" . #'crux-duplicate-and-comment-current-line-or-region)
     ("M-o"     . #'crux-other-window-or-switch-buffer))
+#+end_src
+** Casual
+[[https://github.com/kickingvegas/casual][Casual]] is an opinionated approach to keybindings that take inspiration from Magit's use of Transient to turn keybinding recall into recognition, providing a menu for commands, increasing the visibility of less used commands.
+
+#+begin_src emacs-lisp
+  (use-package casual
+    :after transient
+    :bind
+    ((:map bookmark-bmenu-mode-map
+  	 ("C-o" . #'casual-bookmarks-tmenu)
+  	 ("J" . #'bookmark-jump))
+     (:map calc-mode-map
+  	 ("C-o" . #'casual-calc-tmenu))
+     (:map calc-agl-map
+  	 ("C-o" . #'casual-calc-tmenu))
+     (:map compilation-mode-map
+  	 ("C-o" . #'casual-compile-tmenu)
+  	 ("k" . #'compilation-previous-error)
+  	 ("j" . #'compilation-next-error)
+  	 ("o" . #'compilation-display-error)
+  	 ("[" . #'compilation-previous-file)
+  	 ("]" . #'compilation-next-file))
+     (:map grep-mode-map
+  	 ("C-o" . #'casual-compile-tmenu)
+  	 ("k" . #'compilation-previous-error)
+  	 ("j" . #'compilation-next-error)
+  	 ("o" . #'compilation-display-error)
+  	 ("[" . #'compilation-previous-file)
+  	 ("]" . #'compilation-next-file))
+     (:map dired-mode-map
+  	 ("C-o" . #'casual-dired-tmenu)
+  	 ("s" . #'casual-dired-sort-by-tmenu)
+  	 ("/" . #'casual-dired-search-replace-tmenu))
+     (:map emacs-lisp-mode-map
+  	 ("M-i" . #'casual-elisp-tmenu))
+     (:map eshell-mode-map
+  	 ("C-o" . #'casual-eshell-tmenu))
+     (:map eww-mode-map
+  	 ("C-o" . #'casual-eww-tmenu)
+  	 ("C-c C-o" . #'eww-browse-with-external-browser)
+  	 ("j" . #'shr-next-link)
+  	 ("k" . #'shr-previous-link)
+  	 ("[" . #'eww-previous-url)
+  	 ("]" . #'eww-next-url)
+  	 ("M-]" . #'eww-forward-url)
+  	 ("M-[" . #'eww-back-url)
+  	 ("n" . #'casual-lib-browse-forward-paragraph)
+  	 ("p" . #'casual-lib-browse-backward-paragraph)
+  	 ("P" . #'casual-eww-backward-paragraph-link)
+  	 ("N" . #'casual-eww-forward-paragraph-link)
+  	 ("M-l" . #'eww))
+     (:map eww-bookmark-mode-map
+  	 ("C-o" . #'casual-eww-bookmarks-tmenu)
+  	 ("p" . #'previous-line)
+  	 ("n" . #'next-line)
+  	 ("<double-mouse-1>" . #'eww-bookmark-browse))
+     (:map help-mode-map
+  	 ("M-[" . #'help-go-back)
+  	 ("M-]" . #'help-go-forward)
+  	 ("p" . #'casual-lib-browse-backward-paragraph)
+  	 ("n" . #'casual-lib-browse-forward-paragraph)
+  	 ("P" . #'help-goto-previous-page)
+  	 ("N" . #'help-goto-next-page)
+  	 ("j" . #'forward-button)
+  	 ("k" . #'backward-button))
+     (:map info-map-mode
+  	 ("M-[" . #'Info-history-back)
+  	 ("M-]" . #'Info-history-forward)
+  	 ("p" . #'casual-info-browse-backward-paragraph)
+  	 ("n" . #'casual-info-browse-forward-paragraph)
+  	 ("h" . #'Info-prev)
+  	 ("j" . #'Info-next-reference)
+  	 ("k" . #'Info-prev-reference)
+  	 ("l" . #'Info-next)
+  	 ("/" . #'Info-search)
+  	 ("B" . #'bookmark-set))
+     (:map isearch-mode-map
+  	 ("C-o" . #'casual-isearch-tmenu))
+     (:map Man-mode-map
+  	 ("n" . #'casual-lib-browse-forward-paragraph)
+  	 ("p" . #'casual-lib-browse-backward-paragraph)
+  	 ("[" . #'Man-previous-section)
+  	 ("]" . #'Man-next-section)
+  	 ("j" . #'next-line)
+  	 ("k" . #'previous-line)
+  	 ("K" . #'Man-kill)
+  	 ("o" . #'casual-man-occur-options))
+     (:map org-mode-map
+  	 ("M-i" . #'casual-org-tmenu))
+     (:map org-table-fedit-map
+  	 ("M-i" . #'casual-org-table-fedit-tmenu))
+     ("C-o"   . #'casual-editkit-main-tmenu)
+     ("C-c w" . #'casual-editkit-windows-tmenu)
+     ("C-c r" . #'casual-editkit-rectangle-tmenu)
+     ("C-c g" . #'casual-editkit-registers-tmenu)
+     ("C-c p" . #'casual-editkit-project-tmenu))
+    :hook
+    (bookmark-bmenu-mode . hl-line-mode))
+  #+end_src
+
+#+RESULTS:
+: casual-editkit-project-tmenu
+
+** Misc Modes
+#+begin_src emacs-lisp
+  (setq subword-mode t)
+  (setq repeat-mode t)
+  (setq save-place-mode t)
+
+  (defun auto-display-line-numbers ()
+    "Enables line numbers in the current buffer."
+    (display-line-numbers-mode 1))
+  (add-hook 'prog-mode-hook #'auto-display-line-numbers)
+  (add-hook 'Info-mode-hook #'hl-line-mode)
+  (add-hook 'Info-mode-hook #'scroll-lock-mode)
 #+end_src
 
 # Local Variables:
