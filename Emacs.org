@@ -12,10 +12,10 @@ This org document serves as the configuration of Emacs, tangling babel code into
 
   (defun display-startup-time ()
     (message "Emacs loaded in %s with %d garbage collections."
-             (format "%.2f seconds"
-                     (float-time
-                       (time-subtract after-init-time before-init-time)))
-             gcs-done))
+  	   (format "%.2f seconds"
+  		   (float-time
+  		    (time-subtract after-init-time before-init-time)))
+  	   gcs-done))
 
   (add-hook 'emacs-startup-hook #'display-startup-time)
 
@@ -110,7 +110,7 @@ A set of bindings not set for packages.
 
   (defun auto-display-line-numbers ()
     "Enables line numbers in the current buffer."
-      (display-line-numbers-mode 1))
+    (display-line-numbers-mode 1))
   (add-hook 'prog-mode-hook #'auto-display-line-numbers)
 #+end_src
 ** Navigation
@@ -291,10 +291,10 @@ Defaults for GNU Emacs UI, excluding external packages.
     (setq doom-modeline-vcs-max-length 15)
     (setq doom-modeline-vcs-display-function #'doom-modeline-vcs-name)
     (setq doom-modeline-vcs-state-faces-alist
-      '((needs-update . (doom-modeline-warning bold))
-        (removed . (doom-modeline-urgent bold))
-        (conflict . (doom-modeline-urgent bold))
-        (unregistered . (doom-modeline-urgent bold))))
+  	'((needs-update . (doom-modeline-warning bold))
+  	  (removed . (doom-modeline-urgent bold))
+  	  (conflict . (doom-modeline-urgent bold))
+  	  (unregistered . (doom-modeline-urgent bold))))
     (with-eval-after-load 'ghub
       (setq doom-modeline-github t) ;; Requires `ghub' package
       (setq doom-modeline-github-interval(* 30 60))) ;; minutes * seconds/minute (Only alter highest unit of time. No 30 second minutes!)
@@ -373,7 +373,7 @@ Defaults for GNU Emacs UI, excluding external packages.
   (setq read-extended-command-predicate #'command-completion-default-include-p)
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
-   '(read-only t cursor-intangible t face minibuffer-prompt)))
+        '(read-only t cursor-intangible t face minibuffer-prompt)))
 
 #+end_src
 
@@ -493,8 +493,8 @@ Defaults for GNU Emacs UI, excluding external packages.
   ;; You may want to use `embark-prefix-help-command' or which-key instead.
   ;; (keymap-set consult-narrow-map (concat consult-narrow-key " ?") #'consult-narrow-help)
 
-
-  #+end_src
+  
+#+end_src
 
 ** Embark
 - [[https://github.com/oantolin/embark][Embark]] provides mini-buffer actions and a context menu, making it easy to choose a command based on what is near the point with  =embark-act= with =C-.=, like a right-click context menu. Running =embark-dwim= with =C-;= runs the default action instead.
@@ -805,6 +805,71 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
     :config
     (global-flycheck-eglot-mode 1))
 #+end_src
+*** Treesit
+Treesitter has compatibility with Emacs as long as Emacs is compiled with it enable!! [[https://github.com/mickeynp/combobulate][Combobulate]] is a package that handles several languages grammar for Treesit.
+
+#+begin_src emacs-lisp
+  (use-package treesit
+    :straight nil
+    :mode (("\\.tsx\\'" . tsx-ts-mode))
+    :preface
+    (defun mp-setup-install-grammars ()
+      "Install Tree-sitter grammars if they are absent."
+      (interactive)
+      (dolist (grammar
+               ;; Note the version numbers. These are the versions that
+               ;; are known to work with Combobulate *and* Emacs.
+               '((css . ("https://github.com/tree-sitter/tree-sitter-css" "v0.20.0"))
+                 (go . ("https://github.com/tree-sitter/tree-sitter-go" "v0.20.0"))
+                 (html . ("https://github.com/tree-sitter/tree-sitter-html" "v0.20.1"))
+                 (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "v0.20.1" "src"))
+                 (json . ("https://github.com/tree-sitter/tree-sitter-json" "v0.20.2"))
+                 (markdown . ("https://github.com/ikatyang/tree-sitter-markdown" "v0.7.1"))
+                 (python . ("https://github.com/tree-sitter/tree-sitter-python" "v0.20.4"))
+                 (rust . ("https://github.com/tree-sitter/tree-sitter-rust" "v0.21.2"))
+                 (toml . ("https://github.com/tree-sitter/tree-sitter-toml" "v0.5.1"))
+                 (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "tsx/src"))
+                 (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "typescript/src"))
+                 (yaml . ("https://github.com/ikatyang/tree-sitter-yaml" "v0.5.0"))))
+        (add-to-list 'treesit-language-source-alist grammar)
+        ;; Only install `grammar' if we don't already have it
+        ;; installed. However, if you want to *update* a grammar then
+        ;; this obviously prevents that from happening.
+        (unless (treesit-language-available-p (car grammar))
+  	(treesit-install-language-grammar (car grammar)))))
+
+    ;; Optional. Combobulate works in both xxxx-ts-modes and
+    ;; non-ts-modes.
+
+    ;; You can remap major modes with `major-mode-remap-alist'. Note
+    ;; that this does *not* extend to hooks! Make sure you migrate them
+    ;; also
+    (dolist (mapping
+             '((python-mode . python-ts-mode)
+               (css-mode . css-ts-mode)
+               (typescript-mode . typescript-ts-mode)
+               (js2-mode . js-ts-mode)
+               (bash-mode . bash-ts-mode)
+               (conf-toml-mode . toml-ts-mode)
+               (go-mode . go-ts-mode)
+               (css-mode . css-ts-mode)
+               (json-mode . json-ts-mode)
+               (js-json-mode . json-ts-mode)))
+      (add-to-list 'major-mode-remap-alist mapping))
+    :config
+    (mp-setup-install-grammars))
+  ;; Do not forget to customize Combobulate to your liking:
+  ;;
+  ;;  M-x customize-group RET combobulate RET
+  ;;
+  (use-package combobulate
+    :straight (combobulate :type git :host github :repo "mickeynp/combobulate")
+    :custom
+    ;; You can customize Combobulate's key prefix here.
+    ;; Note that you may have to restart Emacs for this to take effect!
+    (combobulate-key-prefix "C-c o")
+    :hook ((prog-mode . combobulate-mode)))
+#+end_src
 *** Debugging with dape
 [[https://github.com/svaante/dape][dape]] is the Debug Adapter Protocol for Emacs, functioning like dap-mode does. Invoking the =M-x dape= command begins a debugging session. Enabling repeat-mode and eldoc-mode is highly recommended.
 
@@ -1018,7 +1083,6 @@ When nix-prettify-mode is enabled, hash-parts of the Nix store file names are pr
   (add-hook 'sh-mode #'eglot-ensure)
   (add-hook 'bash-ts-mode #'eglot-ensure)
 #+end_src
-
 ** LLM Integration
 *** Ellama
 [[https://github.com/s-kostyaev/ellama][Ellama]] allows integration between Emacs and [[https://ollama.com/][Ollama]]. The desired ollama model is pulled with the terminal command =ollama pull MODEL=.
@@ -1099,7 +1163,10 @@ Project.el is the native project system for Emacs and is required for Eglot to f
 
 #+begin_src emacs-lisp
 
+  (use-package transient)
+
   (use-package magit
+    :after transient
     :commands magit-status
     :custom
     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
@@ -1108,7 +1175,9 @@ Project.el is the native project system for Emacs and is required for Eglot to f
   ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
   ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
   (use-package forge
-    :after magit)
+    :after magit
+    :config
+    (auth-sources '(~/.authinfo)))
 
 #+end_src
 
