@@ -74,136 +74,6 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
                (recentf-expand-file-name no-littering-etc-directory))
 
 #+end_src
-* Keybinding
-** Custom Binds
-A set of bindings not set for packages.
-
-#+begin_src emacs-lisp
-
-  ;; Make ESC quit prompts
-  (keymap-global-set "<escape>" 'keyboard-escape-quit)
-
-  ;; Ensure F1 works on dual function key keyboards (e.g. laptops)
-  (keymap-set key-translation-map "s-<f1>" '"<f1>")
-
-  ;; Opens this config file
-  (keymap-global-set "C-c f d e" #'(lambda () "Opens org-literate init.el file." (interactive) (find-file (expand-file-name "Emacs.org" (file-name-directory user-init-file)))))
-
-  ;; Bindings
-  (keymap-set prog-mode-map "C-c C-s C-s" #'shell)
-  (keymap-set prog-mode-map "C-c C-s C-e" #'eshell)
-
-  ;; Shortcut to reload init.el
-  (defun reload-init-el ()
-    "Loads init.el the same as M-x load-file, reloading Emacs' configuration. Note that not all changes may occur immediately and may require Emacs to be restarted."
-    (interactive)
-    (load-file user-init-file)
-    (message "Init file reloaded"))
-  (keymap-global-set "C-c r i" #'reload-init-el)
-
-#+end_src
-** Misc Modes
-#+begin_src emacs-lisp
-  (setq subword-mode t)
-  (setq repeat-mode t)
-  (setq save-place-mode t)
-
-  (defun auto-display-line-numbers ()
-    "Enables line numbers in the current buffer."
-    (display-line-numbers-mode 1))
-  (add-hook 'prog-mode-hook #'auto-display-line-numbers)
-#+end_src
-** Navigation
-*** Avy
-[[https://github.com/abo-abo/avy][Avy]] allows you to navigate the on-screen buffer like a tree, using goto commands to navigate fast, sort of like Vimium hypertext search.
-
-#+begin_src emacs-lisp
-  (use-package avy
-    :after org
-    :bind
-    ("C-:" .  #'avy-goto-char)
-    ("C-\"" . #'avy-goto-char-timer)
-    ("M-g g" . #'avy-goto-line)
-    ("M-g w" . #'avy-goto-word-1)
-    ("M-g s" . #'avy-goto-word-0)
-    (:map org-mode-map
-  	("M-g h" . #'avy-org-goto-heading-timer)))
-#+end_src
-** Editing
-*** Undo Tree
-[[https://github.com/casouri/vundo][Vundo]] is a modern undo-tree, allowing non-linear undoing.
-
-#+begin_src emacs-lisp
-  (use-package vundo
-    :bind ("C-/" . #'vundo)
-    :config
-    (vundo-popup-mode 1))
-#+end_src
-*** Multiple Cursors
-[[https://github.com/magnars/multiple-cursors.el][Multiple cursors]] functions like it does in other editors, allowing multiple lines to be edited with a single string of keys, as if editing one single line.
-
-#+begin_src emacs-lisp
-  (use-package multiple-cursors
-    :bind
-    ("C-S-c C-S-c" . #'mc/edit-lines))
-#+end_src
-** Smartparens
-[[https://github.com/Fuco1/smartparens][Smartparens]] configures parentheses to be handles smartly, allowing easier navigation and editing.
-
-#+begin_src emacs-lisp
-  (use-package smartparens
-    :custom
-    (smartparens-global-strict-mode t)
-    :bind
-    ("C-M-f" . #'sp-forward-sexp)
-    ("C-M-b" . #'sp-backward-sexp)
-    ("C-M-S-f" . #'sp-forward-parallel-sexp)
-    ("C-M-S-b" . #'sp-backward-parallel-sexp)
-    ("C-M-n" . #'sp-next-sexp)
-    ("C-M-p" . #'sp-previous-sexp)
-    ("C-M-d" . #'sp-down-sexp)
-    ("C-M-u" . #'sp-backward-up-sexp)
-    ("C-M-S-u" . #'sp-up-sexp)
-    ("C-M-q" . #'sp-beginning-of-sexp)
-    ("C-M-S-q" . #'sp-end-of-sexp)
-    ("C-M-S-n" . #'sp-beginning-of-next-sexp)
-    ("C-M-S-p" . #'sp-beginning-of-previous-sexp)
-    ("C-M-k" . #'sp-kill-sexp)
-    ("C-M-S-k" . #'sp-backward-kill-sexp)
-    ("C-M-t" . #'sp-transpose-sexp)
-    ("C-M-S-t" . #'sp-transpose-hybrid-sexp)
-    ("C-M-l" . #'sp-forward-slurp-sexp)
-    ("C-M-S-l" . #'sp-backward-slurp-sexp)
-    ("C-M-;" . #'sp-add-to-previous-sexp)
-    ("C-M-'" . #'sp-add-to-next-sexp)
-    ("C-M-:" . #'sp-backward-barf-sexp)
-    ("C-M-\"" . #'sp-forward-barf-sexp)
-    ("C-c C-w r" . #'sp-rewrap-sexp)
-    ("C-c C-w s" . #'sp-swap-enclosing-sexp)
-    ("C-c C-w c i" . #'sp-change-inner)
-    ("C-c C-w c e" . #'sp-change-enclosing)
-    ("C-c C-w u" . #'sp-unwrap-sexp)
-    ("C-c C-w b u" . #'sp-backward-unwrap-sexp)
-    ("C-c C-w x" . #'sp-splice-sexp)
-    ("C-c C-w b x" . #'sp-splice-sexp-killing-backward)
-    ("C-c C-w f x" . #'sp-splice-sexp-killing-forward)
-    ("C-M-SPC" . #'sp-mark-sexp)
-    ("C-S-d" . #'sp-backward-delete-char)
-    ("M-S-d" . #'sp-backward-kill-word)
-    ("C-w" . #'sp-kill-region)
-    ("RET" . #'sp-newline)
-    ("C-c C-w [" . #'sp-wrap-round)
-    ("C-c C-w ]" . #'sp-wrap-square)
-    ("C-c C-w \\" . #'sp-wrap-curly)
-    ("C-c C-w h p" . #'sp-show-enclosing-pair)
-    ("C-c C-w h s" . #'sp-highligh-current-sexp)
-    ("C-M-," . #'sp-skip-backward-to-symbol)
-    ("C-M-." . #'sp-skip-forward-to-symbol)
-    ("C-M-<" . #'sp-backward-kill-symbol)
-    ("C-M->" . #'sp-kill-symbol)
-    :config
-    (smartparens-global-mode t))
-#+end_src
 * UI Configuration
 ** Basic UI
 Defaults for GNU Emacs UI, excluding external packages.
@@ -335,7 +205,12 @@ Defaults for GNU Emacs UI, excluding external packages.
     
 
 #+end_src
+** Transient
+Transient is by the creators of Magit, providing a menu-based hierarchical input interface. It is mostly used as a dependency in other packages.
 
+#+begin_src emacs-lisp
+  (use-package transient)
+#+end_src
 ** Which Key
 [[https://github.com/justbur/emacs-which-key][which-key]] is a useful UI panel that appears when you start pressing any key binding in Emacs to offer you all possible completions for the prefix.  For example, if you press =C-c= (hold control and press the letter =c=), a panel will appear at the bottom of the frame displaying all of the bindings under that prefix and which command they run.  This is very useful for learning the possible key bindings in the mode of your current buffer.
 
@@ -1046,6 +921,7 @@ When nix-prettify-mode is enabled, hash-parts of the Nix store file names are pr
 
 #+begin_src emacs-lisp
   (use-package nix-mode
+    :after transient
     :hook
     (nix-mode . eglot-ensure)
     :mode "\\.nix\\'")
@@ -1163,8 +1039,6 @@ Project.el is the native project system for Emacs and is required for Eglot to f
 
 #+begin_src emacs-lisp
 
-  (use-package transient)
-
   (use-package magit
     :after transient
     :commands magit-status
@@ -1177,7 +1051,7 @@ Project.el is the native project system for Emacs and is required for Eglot to f
   (use-package forge
     :after magit
     :config
-    (auth-sources '(~/.authinfo)))
+    (auth-sources '("~/.authinfo")))
 
 #+end_src
 
@@ -1504,6 +1378,137 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
      ("s" . dirvish-quicksort)
      ("TAB" . dirvish-subtree-toggle)
      ("M-t" . dirvish-layout-toggle)))
+#+end_src
+* Keybinding
+** Custom Binds
+A set of bindings not set for packages.
+
+#+begin_src emacs-lisp
+
+  ;; Make ESC quit prompts
+  (keymap-global-set "<escape>" 'keyboard-escape-quit)
+
+  ;; Ensure F1 works on dual function key keyboards (e.g. laptops)
+  (keymap-set key-translation-map "s-<f1>" '"<f1>")
+
+  ;; Opens this config file
+  (keymap-global-set "C-c f d e" #'(lambda () "Opens org-literate init.el file." (interactive) (find-file (expand-file-name "Emacs.org" (file-name-directory user-init-file)))))
+
+  ;; Bindings
+  (keymap-set prog-mode-map "C-c C-s C-s" #'shell)
+  (keymap-set prog-mode-map "C-c C-s C-e" #'eshell)
+
+  ;; Shortcut to reload init.el
+  (defun reload-init-el ()
+    "Loads init.el the same as M-x load-file, reloading Emacs' configuration. Note that not all changes may occur immediately and may require Emacs to be restarted."
+    (interactive)
+    (load-file user-init-file)
+    (message "Init file reloaded"))
+  (keymap-global-set "C-c r i" #'reload-init-el)
+
+#+end_src
+** Misc Modes
+#+begin_src emacs-lisp
+  (setq subword-mode t)
+  (setq repeat-mode t)
+  (setq save-place-mode t)
+
+  (defun auto-display-line-numbers ()
+    "Enables line numbers in the current buffer."
+    (display-line-numbers-mode 1))
+  (add-hook 'prog-mode-hook #'auto-display-line-numbers)
+#+end_src
+** Navigation
+*** Avy
+[[https://github.com/abo-abo/avy][Avy]] allows you to navigate the on-screen buffer like a tree, using goto commands to navigate fast, sort of like Vimium hypertext search.
+
+#+begin_src emacs-lisp
+  (use-package avy
+    :after org
+    :bind
+    ("C-:" .  #'avy-goto-char)
+    ("C-\"" . #'avy-goto-char-timer)
+    ("M-g g" . #'avy-goto-line)
+    ("M-g w" . #'avy-goto-word-1)
+    ("M-g s" . #'avy-goto-word-0)
+    (:map org-mode-map
+  	("M-g h" . #'avy-org-goto-heading-timer)))
+#+end_src
+** Editing
+*** Undo Tree
+[[https://github.com/casouri/vundo][Vundo]] is a modern undo-tree, allowing non-linear undoing.
+
+#+begin_src emacs-lisp
+  (use-package vundo
+    :bind ("C-/" . #'vundo)
+    :config
+    (vundo-popup-mode 1))
+#+end_src
+*** Multiple Cursors
+[[https://github.com/magnars/multiple-cursors.el][Multiple cursors]] functions like it does in other editors, allowing multiple lines to be edited with a single string of keys, as if editing one single line.
+
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :bind
+    ("C-S-c C-S-c" . #'mc/edit-lines))
+#+end_src
+** Smartparens
+[[https://github.com/Fuco1/smartparens][Smartparens]] configures parentheses to be handles smartly, allowing easier navigation and editing.
+
+#+begin_src emacs-lisp
+  (use-package smartparens
+    :custom
+    (smartparens-global-strict-mode t)
+    :bind
+    ("C-M-f" . #'sp-forward-sexp)
+    ("C-M-b" . #'sp-backward-sexp)
+    ("C-M-S-f" . #'sp-forward-parallel-sexp)
+    ("C-M-S-b" . #'sp-backward-parallel-sexp)
+    ("C-M-n" . #'sp-next-sexp)
+    ("C-M-p" . #'sp-previous-sexp)
+    ("C-M-d" . #'sp-down-sexp)
+    ("C-M-u" . #'sp-backward-up-sexp)
+    ("C-M-g" . #'sp-up-sexp)
+    ("C-M-q" . #'sp-beginning-of-sexp)
+    ("C-M-S-q" . #'sp-end-of-sexp)
+    ("C-M-S-n" . #'sp-beginning-of-next-sexp)
+    ("C-M-S-p" . #'sp-beginning-of-previous-sexp)
+    ("C-M-k" . #'sp-kill-sexp)
+    ("C-M-S-k" . #'sp-backward-kill-sexp)
+    ("C-M-t" . #'sp-transpose-sexp)
+    ("C-M-S-t" . #'sp-transpose-hybrid-sexp)
+    ("C-M-l" . #'sp-forward-slurp-sexp)
+    ("C-M-S-l" . #'sp-backward-slurp-sexp)
+    ("C-M-;" . #'sp-add-to-previous-sexp)
+    ("C-M-'" . #'sp-add-to-next-sexp)
+    ("C-M-:" . #'sp-backward-barf-sexp)
+    ("C-M-\"" . #'sp-forward-barf-sexp)
+    ("C-c C-w r" . #'sp-rewrap-sexp)
+    ("C-c C-w s" . #'sp-swap-enclosing-sexp)
+    ("C-c C-w c i" . #'sp-change-inner)
+    ("C-c C-w c e" . #'sp-change-enclosing)
+    ("C-c C-w u" . #'sp-unwrap-sexp)
+    ("C-c C-w b u" . #'sp-backward-unwrap-sexp)
+    ("C-c C-w x" . #'sp-splice-sexp)
+    ("C-c C-w b x" . #'sp-splice-sexp-killing-backward)
+    ("C-c C-w f x" . #'sp-splice-sexp-killing-forward)
+    ("C-M-SPC" . #'sp-mark-sexp)
+    ("C-S-d" . #'sp-backward-delete-char)
+    ("M-S-d" . #'sp-backward-kill-word)
+    ("C-w" . #'sp-kill-region)
+    ("RET" . #'sp-newline)
+    ("C-c C-w [" . #'sp-wrap-round)
+    ("C-c C-w ]" . #'sp-wrap-square)
+    ("C-c C-w \\" . #'sp-wrap-curly)
+    ("C-c C-w h p" . #'sp-show-enclosing-pair)
+    ("C-c C-w h s" . #'sp-highligh-current-sexp)
+    ("C-M-," . #'sp-skip-backward-to-symbol)
+    ("C-M-." . #'sp-skip-forward-to-symbol)
+    ("C-M-<" . #'sp-backward-kill-symbol)
+    ("C-M->" . #'sp-kill-symbol)
+    :config
+    (smartparens-global-mode t)
+    (require 'smartparens-config))
 #+end_src
 * Misc
 ** Crux
