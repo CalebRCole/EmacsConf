@@ -7,6 +7,15 @@ This org document serves as the configuration of Emacs, tangling babel code into
 
 #+begin_src emacs-lisp
 
+  ;;; init.el --- Emacs configuration file  -*- lexical-binding: t; -*-
+
+  ;;; Commentary:
+  ;; This file serves as a configuration file for Emacs.
+  ;; This file is generated from Emacs.org, which should exist in the same directory.
+  ;; The intended path is "~/.config/emacs/init.el" but the directory can be changed in Emacs.org.
+  ;; Note that changing init.el is not recommended, and instead Emacs.org should be instead.
+
+  ;;; Code:
   ;; The default is 800 kilobytes.  Measured in bytes.
   (setq gc-cons-threshold (* 50 1000 1000))
 
