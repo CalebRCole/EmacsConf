@@ -977,6 +977,7 @@ Emacs Lisp is the Lisp dialect used to provide the Emacs environment and is the 
 
 #+begin_src emacs-lisp
   (keymap-set lisp-data-mode-map "C-c C-p" #'check-parens)
+  (keymap-set emacs-lisp-mode-map "C-c d" #'edebug-mode)
 #+end_src
 ** LLM Integration
 *** Ellama
