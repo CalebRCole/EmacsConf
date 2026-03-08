@@ -1607,7 +1607,7 @@ A set of bindings not set for packages.
   	 ("N" . #'help-goto-next-page)
   	 ("j" . #'forward-button)
   	 ("k" . #'backward-button))
-     (:map info-map-mode
+     (:map Info-mode-map
   	 ("M-[" . #'Info-history-back)
   	 ("M-]" . #'Info-history-forward)
   	 ("p" . #'casual-info-browse-backward-paragraph)
