@@ -86,6 +86,12 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
                (recentf-expand-file-name no-littering-etc-directory))
 
 #+end_src
+* General
+[[https://github.com/noctuid/general.el?tab=readme-ov-file#key-features][General]] provides a more convenient way to bind keys, providing wrappers for base behaviors and more.
+
+#+begin_src emacs-lisp
+  (use-package general)
+#+end_src
 * UI Configuration
 ** Basic UI
 Defaults for GNU Emacs UI, excluding external packages.
