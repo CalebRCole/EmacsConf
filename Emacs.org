@@ -1558,98 +1558,130 @@ A set of bindings not set for packages.
 #+begin_src emacs-lisp
   (use-package casual-suite
     :after transient
-    :bind
-    ((:map bookmark-bmenu-mode-map
-  	 ("C-o" . #'casual-bookmarks-tmenu)
-  	 ("J" . #'bookmark-jump))
-     (:map calc-mode-map
-  	 ("C-o" . #'casual-calc-tmenu))
-     (:map compilation-mode-map
-  	 ("C-o" . #'casual-compile-tmenu)
-  	 ("k" . #'compilation-previous-error)
-  	 ("j" . #'compilation-next-error)
-  	 ("o" . #'compilation-display-error)
-  	 ("[" . #'compilation-previous-file)
-  	 ("]" . #'compilation-next-file))
-     (:map grep-mode-map
-  	 ("C-o" . #'casual-compile-tmenu)
-  	 ("k" . #'compilation-previous-error)
-  	 ("j" . #'compilation-next-error)
-  	 ("o" . #'compilation-display-error)
-  	 ("[" . #'compilation-previous-file)
-  	 ("]" . #'compilation-next-file))
-     (:map dired-mode-map
-  	 ("C-o" . #'casual-dired-tmenu)
-  	 ("s" . #'casual-dired-sort-by-tmenu)
-  	 ("/" . #'casual-dired-search-replace-tmenu))
-     (:map emacs-lisp-mode-map
-  	 ("M-i" . #'casual-elisp-tmenu))
-     (:map eshell-mode-map
-  	 ("C-o" . #'casual-eshell-tmenu))
-     (:map eww-mode-map
-  	 ("C-o" . #'casual-eww-tmenu)
-  	 ("C-c C-o" . #'eww-browse-with-external-browser)
-  	 ("j" . #'shr-next-link)
-  	 ("k" . #'shr-previous-link)
-  	 ("[" . #'eww-previous-url)
-  	 ("]" . #'eww-next-url)
-  	 ("M-]" . #'eww-forward-url)
-  	 ("M-[" . #'eww-back-url)
-  	 ("n" . #'casual-lib-browse-forward-paragraph)
-  	 ("p" . #'casual-lib-browse-backward-paragraph)
-  	 ("P" . #'casual-eww-backward-paragraph-link)
-  	 ("N" . #'casual-eww-forward-paragraph-link)
-  	 ("M-l" . #'eww))
-     (:map eww-bookmark-mode-map
-  	 ("C-o" . #'casual-eww-bookmarks-tmenu)
-  	 ("p" . #'previous-line)
-  	 ("n" . #'next-line)
-  	 ("<double-mouse-1>" . #'eww-bookmark-browse))
-     (:map help-mode-map
-  	 ("M-[" . #'help-go-back)
-  	 ("M-]" . #'help-go-forward)
-  	 ("p" . #'casual-lib-browse-backward-paragraph)
-  	 ("n" . #'casual-lib-browse-forward-paragraph)
-  	 ("P" . #'help-goto-previous-page)
-  	 ("N" . #'help-goto-next-page)
-  	 ("j" . #'forward-button)
-  	 ("k" . #'backward-button))
-     (:map Info-mode-map
-  	 ("M-[" . #'Info-history-back)
-  	 ("M-]" . #'Info-history-forward)
-  	 ("p" . #'casual-info-browse-backward-paragraph)
-  	 ("n" . #'casual-info-browse-forward-paragraph)
-  	 ("h" . #'Info-prev)
-  	 ("j" . #'Info-next-reference)
-  	 ("k" . #'Info-prev-reference)
-  	 ("l" . #'Info-next)
-  	 ("/" . #'Info-search)
-  	 ("B" . #'bookmark-set))
-     (:map isearch-mode-map
-  	 ("C-o" . #'casual-isearch-tmenu))
-     (:map Man-mode-map
-  	 ("n" . #'casual-lib-browse-forward-paragraph)
-  	 ("p" . #'casual-lib-browse-backward-paragraph)
-  	 ("[" . #'Man-previous-section)
-  	 ("]" . #'Man-next-section)
-  	 ("j" . #'next-line)
-  	 ("k" . #'previous-line)
-  	 ("K" . #'Man-kill)
-  	 ("o" . #'casual-man-occur-options))
-     (:map org-mode-map
-  	 ("M-i" . #'casual-org-tmenu))
-     (:map org-table-fedit-map
-  	 ("M-i" . #'casual-org-table-fedit-tmenu))
-     ("C-o"   . #'casual-editkit-main-tmenu)
-     ("C-c w" . #'casual-editkit-windows-tmenu)
-     ("C-c r" . #'casual-editkit-rectangle-tmenu)
-     ("C-c g" . #'casual-editkit-registers-tmenu)
-     ("C-c p" . #'casual-editkit-project-tmenu)
-     ("M-g"   . #'casual-avy-tmenu)))
-    #+end_src
+    :init
+    :general-config
+    (general-define-key
+     "C-o" #'casual-editkit-main-tmenu
+     "C-c w" #'casual-editkit-windows-tmenu
+     "C-c r" #'casual-editkit-rectangle-tmenu
+     "C-c g" #'casual-editkit-registers-tmenu
+     "C-c p" #'casual-editkit-project-tmenu
 
-#+RESULTS:
-: casual-editkit-project-tmenu
+     :keymaps 'emacs-lisp-mode-map
+     "M-i" #'casual-elisp-tmenu
+
+     :package 'symbol-overlay
+     :keymaps 'symbol-overlay-map
+     "C-o" #'casual-symbol-overlay-tmenu
+
+     :package 'avy
+     "M-g" #'casual-avy-tmenu
+     
+     :package 'bookmark
+     :keymaps 'bookmark-bmenu-mode-map
+     "C-o" #'casual-bookmarks-tmenu
+     "J" #'bookmark-jump
+     
+     :package 'calc
+     :keymaps 'calc-mode-map
+     "C-o" #'casual-calc-tmenu
+
+     :package 'compilation
+     :keymaps 'compilation-mode-map
+     "C-o" #'casual-compile-tmenu
+     "k" #'compilation-previous-error
+     "j" #'compilation-next-error
+     "o" #'compilation-display-error
+     "[" #'compilation-previous-file
+     "]" #'compilation-next-file
+
+     :keymaps 'grep-mode-map
+     "C-o" #'casual-compile-tmenu
+     "k" #'compilation-previous-error
+     "j" #'compilation-next-error
+     "o" #'compilation-display-error
+     "[" #'compilation-previous-file
+     "]" #'compilation-next-file
+
+     :package 'dired
+     :keymaps 'dired-mode-map
+     "C-o" #'casual-dired-tmenu
+     "s" #'casual-dired-sort-by-tmenu
+     "/" #'casual-dired-search-replace-tmenu
+
+     :package 'eshell
+     :keymaps 'eshell-mode-map
+     "C-o" #'casual-eshell-tmenu
+
+     :package 'eww
+     :keymaps 'eww-mode-map
+     "C-o" #'casual-eww-tmenu
+     "C-c C-o" #'eww-browse-with-external-browser
+     "j" #'shr-next-link
+     "k" #'shr-previous-link
+     "[" #'eww-previous-url
+     "]" #'eww-next-url
+     "M-]" #'eww-forward-url
+     "M-[" #'eww-back-url
+     "n" #'casual-lib-browse-forward-paragraph
+     "p" #'casual-lib-browse-backward-paragraph
+     "P" #'casual-eww-backward-paragraph-link
+     "n" #'casual-eww-forward-paragraph-link
+     "M-l" #'eww
+     
+     :keymaps 'eww-bookmark-mode-map
+     "C-o" #'casual-eww-bookmarks-tmenu
+     "p" #'previous-line
+     "n" #'next-line
+     "<double-mouse-1>" #'eww-bookmark-browse
+     
+     :package 'help
+     :keymaps 'help-mode-map
+     "M-[" #'help-go-back
+     "M-]" #'help-go-forward
+     "p" #'casual-lib-browse-backward-paragraph
+     "n" #'casual-lib-browse-forward-paragraph
+     "P" #'help-goto-previous-page
+     "N" #'help-goto-next-page
+     "j" #'forward-button
+     "k" #'backward-button
+
+     :package 'info
+     :keymaps 'Info-mode-map
+     "M-[" #'Info-history-back
+     "M-]" #'Info-history-forward
+     "p" #'casual-info-browse-backward-paragraph
+     "n" #'casual-info-browse-forward-paragraph
+     "h" #'Info-prev
+     "j" #'Info-next-reference
+     "k" #'Info-prev-reference
+     "l" #'Info-next
+     "/" #'Info-search
+     "B" #'bookmark-set
+
+     :package 'isearch
+     :keymaps 'isearch-mode-map
+     "C-o" #'casual-isearch-tmenu
+
+     :package 'man
+     :keymaps 'Man-mode-map
+     "n" #'casual-lib-browse-forward-paragraph
+     "p" #'casual-lib-browse-backward-paragraph
+     "[" #'Man-previous-section
+     "]" #'Man-next-section
+     "j" #'next-line
+     "k" #'previous-line
+     "K" #'Man-kill
+     "o" #'casual-man-occur-options
+
+     :package 'org
+     :keymaps 'org-mode-map
+     "M-i" #'casual-org-tmenu
+
+     :keymaps 'org-table-fedit-map
+     "M-i" #'casual-org-table-fedit-tmenu
+     "C-o" #'casual-editkit-main-tmenu))
+    #+end_src
 
 ** Misc Modes
 #+begin_src emacs-lisp
