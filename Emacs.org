@@ -63,6 +63,9 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
   (setq user-emacs-directory "~/.cache/emacs")
 
   (use-package no-littering    
+    :custom
+    (no-littering-var-directory "~/.cache/emacs/var")
+    (no-littering-etc-directory "~/.cache/emacs/etc")
     :config
     ;; Backup files
     (setq backup-directory-alist
