@@ -972,6 +972,12 @@ When nix-prettify-mode is enabled, hash-parts of the Nix store file names are pr
   (add-hook 'sh-mode #'eglot-ensure)
   (add-hook 'bash-ts-mode #'eglot-ensure)
 #+end_src
+*** Emacs Lisp
+Emacs Lisp is the Lisp dialect used to provide the Emacs environment and is the main feature of Emacs, with only C being the other language used for Emacs. Built-in tooling exists for Emacs Lisp, along with other Lisp dialects.
+
+#+begin_src emacs-lisp
+  (keymap-set lisp-data-mode-map "C-c C-p" #'check-parens)
+#+end_src
 ** LLM Integration
 *** Ellama
 [[https://github.com/s-kostyaev/ellama][Ellama]] allows integration between Emacs and [[https://ollama.com/][Ollama]]. The desired ollama model is pulled with the terminal command =ollama pull MODEL=.
