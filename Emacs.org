@@ -1668,6 +1668,13 @@ A set of bindings not set for packages.
   (add-hook 'Info-mode-hook #'scroll-lock-mode)
 #+end_src
 
+** Startup Performance Continued
+Resetting the garbage collector.
+
+#+begin_src emacs-lisp
+  ;; Make gc pauses faster by decreasing the threshold.
+  (setq gc-cons-threshold (* 2 1000 1000))
+#+end_src
 # Local Variables:
 # jinx-local-words: "Clangd Dired Direnv Dirvish Ellama Eshell Flycheck Flymake Flyspell Orderless Vertico dape derivers distros eldoc goto init js lsp macchiato magit md nixd nixfmt ollama pyvenv realisation repl reproducibility tcsh vcs vterm windmove zsh"
 # End:
