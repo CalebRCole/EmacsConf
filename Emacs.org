@@ -1426,7 +1426,7 @@ A set of bindings not set for packages.
   (keymap-set key-translation-map "s-<f1>" '"<f1>")
 
   ;; Opens this config file
-  (keymap-global-set "C-c c" #'(lambda () "Opens org-literate init.el file." (interactive) (find-file (expand-file-name "Emacs.org" (file-name-directory user-init-file)))))
+  (keymap-global-set "C-c c c" #'(lambda () "Opens org-literate init.el file." (interactive) (find-file (expand-file-name "Emacs.org" (file-name-directory user-init-file)))))
 
   ;; Bindings
   (keymap-set prog-mode-map "C-c C-s C-s" #'shell)
@@ -1438,7 +1438,7 @@ A set of bindings not set for packages.
     (interactive)
     (load-file user-init-file)
     (message "Init file reloaded"))
-  (keymap-global-set "C-c r i" #'reload-init-el)
+  (keymap-global-set "C-c c r" #'reload-init-el)
 
 #+end_src
 ** Navigation
