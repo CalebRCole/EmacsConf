@@ -312,16 +312,16 @@ Transient is by the creators of Magit, providing a menu-based hierarchical input
            ("M-y" . consult-yank-pop)                ;; orig. yank-pop
   	 ("M-R" . consult-recent-file)		   ;; Alternative to recentf
            ;; M-g bindings in `goto-map'
-           ("M-g e" . consult-compile-error)
-           ("M-g r" . consult-grep-match)
-           ("M-g f" . consult-flycheck)               ;; Alternative: consult-flymake
-           ("M-g g" . consult-goto-line)             ;; orig. goto-line
-           ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-           ("M-g o" . consult-org-heading)               ;; Alternative: consult-outline
-           ("M-g m" . consult-mark)
-           ("M-g k" . consult-global-mark)
-           ("M-g i" . consult-imenu)
-           ("M-g I" . consult-imenu-multi)
+           ;; ("M-g e" . consult-compile-error)
+           ;; ("M-g r" . consult-grep-match)
+           ;; ("M-g f" . consult-flycheck)               ;; Alternative: consult-flymake
+           ;; ("M-g g" . consult-goto-line)             ;; orig. goto-line
+           ;; ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+  	 ;; ("M-g o" . consult-org-heading)               ;; Alternative: consult-outline
+           ;; ("M-g m" . consult-mark)
+           ;; ("M-g k" . consult-global-mark)
+           ;; ("M-g i" . consult-imenu)
+           ;; ("M-g I" . consult-imenu-multi)
            ;; M-s bindings in `search-map'
            ("M-s d" . consult-find)                  ;; Alternative: consult-fd
            ("M-s c" . consult-locate)
@@ -1451,15 +1451,7 @@ A set of bindings not set for packages.
 
 #+begin_src emacs-lisp
   (use-package avy
-    :after org
-    :bind
-    ("C-:" .  #'avy-goto-char)
-    ("C-\"" . #'avy-goto-char-timer)
-    ("M-g g" . #'avy-goto-line)
-    ("M-g w" . #'avy-goto-word-1)
-    ("M-g s" . #'avy-goto-word-0)
-    (:map org-mode-map
-  	("M-g h" . #'avy-org-goto-heading-timer)))
+    :after org)
 #+end_src
 ** Editing
 *** Undo Tree
