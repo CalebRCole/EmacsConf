@@ -1282,7 +1282,7 @@ Emacs has the native Ispell spellchecking package, which has been superseded by 
 Recentf creates a list of recently visited files that are quickly accessible.
 
 #+begin_src emacs-lisp
-  (setq recentf-mode 1)
+  (recentf-mode 1)
   (setq recentf-max-saved-items 100)
   (setq recentf-exclude '("/tmp/" "/ssh:" "/terpri/" "\\.git/.*" ".*-autoloads\\.el\\'"))
 #+end_src
