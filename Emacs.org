@@ -1257,10 +1257,6 @@ SSH allows remote access to other computers and is critical in software like git
 [[https://github.com/flycheck/flycheck][Flycheck]] is a more feature-rich version of the built-in Flymake, providing out-of-the-box syntax highlighting in many languages. [[https://github.com/flycheck/flycheck-inline][Flycheck-inline]] adds a minor mode for displaying errors right below their reporting location using overlays, as well as displaying related errors from Flycheck checkers that support them.
 
 #+begin_src emacs-lisp
-  (use-package flymake
-    :straight nil
-    :commands (previous-error-this-buffer-no-select next-error-this-buffer-no-select plusp member-if))
-
   (use-package flycheck
     :init (global-flycheck-mode))
 
