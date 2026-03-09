@@ -1557,60 +1557,58 @@ A set of bindings not set for packages.
 
 #+begin_src emacs-lisp
   (use-package casual-suite
-  :after transient
-  :ensure t ; Ensure it's installed
-  :general-config
-  (general-define-key
+  :general
+ 
    ;; --- Global Casual Editkit Bindings ---
-   "C-o"   #'casual-editkit-main-tmenu
+   ("C-o"   #'casual-editkit-main-tmenu
    "C-c w" #'casual-editkit-windows-tmenu
    "C-c r" #'casual-editkit-rectangle-tmenu
    "C-c g" #'casual-editkit-registers-tmenu
-   "C-c p" #'casual-editkit-project-tmenu
+   "C-c p" #'casual-editkit-project-tmenu)
 
    ;; --- Elisp ---
-   :keymaps 'emacs-lisp-mode-map
-   "M-i" #'casual-elisp-tmenu
+   (:keymaps 'emacs-lisp-mode-map
+   "M-i" #'casual-elisp-tmenu)
 
    ;; --- Symbol Overlay ---
-   :package 'symbol-overlay
+   (:package 'symbol-overlay
    :keymaps 'symbol-overlay-map
-   "C-o" #'casual-symbol-overlay-tmenu
+   "C-o" #'casual-symbol-overlay-tmenu)
 
    ;; --- Avy ---
-   :package 'avy
-   "M-g" #'casual-avy-tmenu
+   (:package 'avy
+   "M-g" #'casual-avy-tmenu)
    
    ;; --- Bookmarks ---
-   :package 'bookmark
+   (:package 'bookmark
    :keymaps 'bookmark-bmenu-mode-map
    "C-o" #'casual-bookmarks-tmenu
-   "J"   #'bookmark-jump
+   "J"   #'bookmark-jump)
    
    ;; --- Calc ---
-   :package 'calc
+   (:package 'calc
    :keymaps 'calc-mode-map
-   "C-o" #'casual-calc-tmenu
+   "C-o" #'casual-calc-tmenu)
 
    ;; --- Compilation & Grep ---
-   :package 'compile ; Note: the package is usually 'compile, not 'compilation
+   (:package 'compile ; Note: the package is usually 'compile, not 'compilation
    :keymaps '(compilation-mode-map grep-mode-map)
    "C-o" #'casual-compile-tmenu
    "k"   #'compilation-previous-error
    "j"   #'compilation-next-error
    "o"   #'compilation-display-error
    "["   #'compilation-previous-file
-   "]"   #'compilation-next-file
+   "]"   #'compilation-next-file)
 
    ;; --- Dired ---
-   :package 'dired
+   (:package 'dired
    :keymaps 'dired-mode-map
    "C-o" #'casual-dired-tmenu
    "s"   #'casual-dired-sort-by-tmenu
-   "/"   #'casual-dired-search-replace-tmenu
+   "/"   #'casual-dired-search-replace-tmenu)
 
    ;; --- EWW ---
-   :package 'eww
+   (:package 'eww
    :keymaps 'eww-mode-map
    "C-o" #'casual-eww-tmenu
    "C-c C-o" #'eww-browse-with-external-browser
@@ -1620,31 +1618,31 @@ A set of bindings not set for packages.
    "]"   #'eww-next-url
    "M-]" #'eww-forward-url
    "M-[" #'eww-back-url
-   "M-l" #'eww
+   "M-l" #'eww)
    
-   :keymaps 'eww-bookmark-mode-map
+   (:keymaps 'eww-bookmark-mode-map
    "C-o" #'casual-eww-bookmarks-tmenu
    "p"   #'previous-line
-   "n"   #'next-line
+   "n"   #'next-line)
    
    ;; --- Help ---
-   :package 'help
+   (:package 'help
    :keymaps 'help-mode-map
    "M-[" #'help-go-back
    "M-]" #'help-go-forward
    "j"   #'forward-button
-   "k"   #'backward-button
+   "k"   #'backward-button)
 
    ;; --- Info ---
-   :package 'info
+   (:package 'info
    :keymaps 'Info-mode-map
    "M-[" #'Info-history-back
    "M-]" #'Info-history-forward
    "h"   #'Info-prev
-   "l"   #'Info-next
+   "l"   #'Info-next)
 
    ;; --- Org ---
-   :package 'org
+   (:package 'org
    :keymaps 'org-mode-map
    "M-i" #'casual-org-tmenu
 
