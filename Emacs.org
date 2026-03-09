@@ -219,7 +219,7 @@ Defaults for GNU Emacs UI, excluding external packages.
     (setq doom-modeline-remote-host t)
     (setq doom-modeline-buffer-file-name-function #'identity)
     (setq doom-modeline-buffer-file-truename-function #'identity)
-    (setq doom-modeline-env-version t)
+    (setq doom-modeline-env-version t))
     
 
 #+end_src
@@ -677,7 +677,7 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
   (use-package websocket)
   (use-package org-roam-ui
     :after
-    (Org-Roam))
+    (org-roam))
 
 #+end_src
 
@@ -1292,7 +1292,7 @@ Recentf creates a list of recently visited files that are quickly accessible.
 #+end_src
 ** Bookmarks
 #+begin_src emacs-lisp
-  (setq bookmarks-save-flag 1)		;; ensures bookmarks are saved on any modification and session end
+  (setq bookmark-save-flag 1)		;; ensures bookmarks are saved on any modification and session end
   (add-hook 'bookmark-mode #'hl-line-mode)
 #+end_src
 ** Dired
