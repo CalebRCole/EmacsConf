@@ -954,7 +954,9 @@ When nix-prettify-mode is enabled, hash-parts of the Nix store file names are pr
 
 #+begin_src emacs-lisp
   (use-package nix-ts-mode
-    :mode "\\.nix\\'")
+    :after nix-mode
+    :hook
+    (nix-mode . nix-ts-mode))
 #+end_src
 **** nixfmt
 [[https://github.com/purcell/emacs-nixfmt][nixfmt]] is the endorsed formatter for nix code using the nixfmt command. Requires the separate nixfmt package!!
