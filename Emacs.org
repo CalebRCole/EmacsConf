@@ -1414,22 +1414,26 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
   (use-package dirvish
     :init
     (dirvish-override-dired-mode)
+    :custom
+    (dirvish-side-follow-mode t)
+    (dirvish-peek-mode t)
     :config
     (setq dirvish-mode-line-format
   	'(left (sort symlink) :right (omit printable)))
     (setq dirvish-attributes
   	'(vc-state subgroup-name git-mgs file-size))
     :bind
-    (("C-x C-d" . dirvish)
+    (("C-x C-d" . #'dirvish)
+     ("M-0" . #'dirvish-side)
      :map dirvish-mode-map
-     ("f" . dirvish-file-info-menu)
-     ("y" . dirvish-yank-menu)
-     ("N" . dirvish-narrow)
-     ("h" . dirvish-history-last)
-     ("H" . dirvish-history-jump)
-     ("s" . dirvish-quicksort)
-     ("TAB" . dirvish-subtree-toggle)
-     ("M-t" . dirvish-layout-toggle)))
+     ("f" . #'dirvish-file-info-menu)
+     ("y" . #'dirvish-yank-menu)
+     ("N" . #'dirvish-narrow)
+     ("h" . #'dirvish-history-last)
+     ("H" . #'dirvish-history-jump)
+     ("s" . #'dirvish-quicksort)
+     ("TAB" . #'dirvish-subtree-toggle)
+     ("M-t" . #'dirvish-layout-toggle)))
 #+end_src
 * Keybinding
 ** Custom Binds
