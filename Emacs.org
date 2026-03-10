@@ -146,78 +146,80 @@ Defaults for GNU Emacs UI, excluding external packages.
 
   (use-package doom-modeline
     :init (doom-modeline-mode t)
-    :config
-    (setq doom-modeline-height 15)
-    (setq doom-modeline-window-width-limit fill-column)
-    (setq doom-modeline-project-detection 'auto)
-    (setq doom-modeline-buffer-file-name-style 'auto)
-    (setq doom-modeline-icon t)
-    (setq doom-modeline-major-mode-icon t)
-    (setq doom-modeline-major-mode-color-icon t)
-    (setq doom-modeline-buffer-state-icon t )
-    (setq doom-modeline-buffer-modification-icon t )
-    (setq doom-modeline-lsp-icon t)
-    (setq doom-modeline-time-icon t)
-    (setq doom-modeline-time-live-icon t)
-    (setq doom-modeline-unicode-number t)
-    (setq doom-modeline-unicode-fallback nil)
-    (setq doom-modeline-buffer-name t)
-    (setq doom-modeline-highlight-modified-buffer-name nil)
-    (setq doom-modeline-column-zero-based nil)
-    (setq doom-modeline-minor-modes nil)
-    (setq doom-modeline-selection-info t)
-    (setq doom-modeline-enable-word-count nil)
-    (setq doom-modeline-enable-buffer-position t)
-    (setq doom-modeline-buffer-encoding t)
-    (setq doom-modeline-indent-info t)
-    (setq doom-modeline-total-line-number nil)
+    :custom
+    (doom-modeline-height 15)
+    (doom-modeline-window-width-limit fill-column)
+    (doom-modeline-project-detection 'auto)
+    (doom-modeline-buffer-file-name-style 'auto)
+    (doom-modeline-icon t)
+    (doom-modeline-major-mode-icon t)
+    (doom-modeline-major-mode-color-icon t)
+    (doom-modeline-buffer-state-icon t )
+    (doom-modeline-buffer-modification-icon t )
+    (doom-modeline-lsp-icon t)
+    (doom-modeline-time-icon t)
+    (doom-modeline-time-live-icon t)
+    (doom-modeline-unicode-number t)
+    (doom-modeline-unicode-fallback nil)
+    (doom-modeline-buffer-name t)
+    (doom-modeline-highlight-modified-buffer-name nil)
+    (doom-modeline-column-zero-based nil)
+    (doom-modeline-minor-modes nil)
+    (doom-modeline-selection-info t)
+    (doom-modeline-enable-word-count nil)
+    (doom-modeline-enable-buffer-position t)
+    (doom-modeline-buffer-encoding t)
+    (doom-modeline-indent-info t)
+    (doom-modeline-total-line-number nil)
 
     ;; VCS Display
-    (setq doom-modeline-vcs-icon t)
-    (setq doom-modeline-vcs-max-length 15)
-    (setq doom-modeline-vcs-display-function #'doom-modeline-vcs-name)
-    (setq doom-modeline-vcs-state-faces-alist
+    (doom-modeline-vcs-icon t)
+    (doom-modeline-vcs-max-length 15)
+    (doom-modeline-vcs-display-function #'doom-modeline-vcs-name)
+    (doom-modeline-vcs-state-faces-alist
   	'((needs-update . (doom-modeline-warning bold))
   	  (removed . (doom-modeline-urgent bold))
   	  (conflict . (doom-modeline-urgent bold))
   	  (unregistered . (doom-modeline-urgent bold))))
-    (with-eval-after-load 'ghub
-      (setq doom-modeline-github t) ;; Requires `ghub' package
-      (setq doom-modeline-github-interval(* 30 60))) ;; minutes * seconds/minute (Only alter highest unit of time. No 30 second minutes!)
 
-    (setq doom-modeline-check-icon t)
-    (setq doom-modeline-check 'auto)
-    (setq doom-modeline-number-limit 99)
-    (setq doom-modeline-project-name t)
-    (setq doom-modeline-workspace-name t)
-    (setq doom-modeline-persp-name t)
-    (setq doom-modeline-display-default-persp-name nil)
-    (setq doom-modeline-persp-icon t)
-    (setq doom-modeline-lsp t)
+    (doom-modeline-check-icon t)
+    (doom-modeline-check 'auto)
+    (doom-modeline-number-limit 99)
+    (doom-modeline-project-name t)
+    (doom-modeline-workspace-name t)
+    (doom-modeline-persp-name t)
+    (doom-modeline-display-default-persp-name nil)
+    (doom-modeline-persp-icon t)
+    (doom-modeline-lsp t)
 
     ;; Modal states (i.e. evil, god, overwrite, etc.)
-    (setq doom-modeline-modal t)
-    (setq doom-modeline-modal-icon t)
-    (setq doom-modeline-modal-mordern-icon t)
+    (doom-modeline-modal t)
+    (doom-modeline-modal-icon t)
+    (doom-modeline-modal-mordern-icon t)
     
-    (setq doom-modeline-always-show-macros-register t)
+    (doom-modeline-always-show-macros-register t)
 
     ;; GNUs
-    (setq doom-modeline-gnus t)
-    (setq doom-modeline-gnus-timer 2)
-    (setq doom-modeline-gnus-excluded-groups '("dummy.group"))
+    (doom-modeline-gnus t)
+    (doom-modeline-gnus-timer 2)
+    (doom-modeline-gnus-excluded-groups '("dummy.group"))
 
     ;;IRC
-    (setq doom-modeline-irc t)
-    (setq doom-modeline-irc-stylize 'identity)
+    (doom-modeline-irc t)
+    (doom-modeline-irc-stylize 'identity)
 
-    (setq doom-modeline-battery nil)
-    (setq doom-modeline-time nil)
-    (setq doom-modeline-display-misc-in-all-mode-lines t)
-    (setq doom-modeline-remote-host t)
-    (setq doom-modeline-buffer-file-name-function #'identity)
-    (setq doom-modeline-buffer-file-truename-function #'identity)
-    (setq doom-modeline-env-version t))
+    (doom-modeline-battery nil)
+    (doom-modeline-time nil)
+    (doom-modeline-display-misc-in-all-mode-lines t)
+    (doom-modeline-remote-host t)
+    (doom-modeline-buffer-file-name-function #'identity)
+    (doom-modeline-buffer-file-truename-function #'identity)
+    (doom-modeline-env-version t)
+
+    :config
+    (with-eval-after-load 'ghub
+      (doom-modeline-github t) ;; Requires `ghub' package
+      (doom-modeline-github-interval(* 30 60))) ;; minutes * seconds/minute (Only alter highest unit of time. No 30 second minutes!))
     
 
 #+end_src
@@ -1068,6 +1070,8 @@ Project.el is the native project system for Emacs and is required for Eglot to f
     :commands magit-status
     :custom
     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+  (use-package ghub)
 
   ;; NOTE: Make sure to configure a GitHub token before using this package!
   ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
