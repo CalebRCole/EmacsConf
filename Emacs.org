@@ -83,14 +83,6 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
     (setq lock-file-name-transforms
   	`((".*" ,(no-littering-expand-var-file-name "lock-files/") t))))
 
-
-  ;; excluding no-littering directories from recentf
-  (require 'recentf)
-  (add-to-list 'recentf-exclude
-               (recentf-expand-file-name no-littering-var-directory))
-  (add-to-list 'recentf-exclude
-               (recentf-expand-file-name no-littering-etc-directory))
-
 #+end_src
 * General
 [[https://github.com/noctuid/general.el?tab=readme-ov-file#key-features][General]] provides a more convenient way to bind keys, providing wrappers for base behaviors and more.
@@ -1291,6 +1283,12 @@ Recentf creates a list of recently visited files that are quickly accessible.
   (recentf-mode 1)
   (setq recentf-max-saved-items 100)
   (setq recentf-exclude '("/tmp/" "/ssh:" "/terpri/" "\\.git/.*" ".*-autoloads\\.el\\'"))
+
+  ;; excluding no-littering directories from recentf
+  (add-to-list 'recentf-exclude
+               (recentf-expand-file-name no-littering-var-directory))
+  (add-to-list 'recentf-exclude
+               (recentf-expand-file-name no-littering-etc-directory))
 #+end_src
 ** Bookmarks
 #+begin_src emacs-lisp
