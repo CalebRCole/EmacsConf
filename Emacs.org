@@ -218,8 +218,8 @@ Defaults for GNU Emacs UI, excluding external packages.
 
     :config
     (with-eval-after-load 'ghub
-      (doom-modeline-github t) ;; Requires `ghub' package
-      (doom-modeline-github-interval(* 30 60))) ;; minutes * seconds/minute (Only alter highest unit of time. No 30 second minutes!))
+      (setq doom-modeline-github t) ;; Requires `ghub' package
+      (setq doom-modeline-github-interval(* 30 60)))) ;; minutes * seconds/minute (Only alter highest unit of time. No 30 second minutes!))
     
 
 #+end_src
