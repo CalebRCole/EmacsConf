@@ -1095,6 +1095,15 @@ Project.el is the native project system for Emacs and is required for Eglot to f
 
 #+end_src
 
+*** Conventional Commits
+[[https://github.com/akirak/conventional-commit.el?tab=readme-ov-file][Convential commits]] provides completion types for git [[https://github.com/pvdlg/conventional-commit-types][conventional commit types and scopes]], allowing for uniform commits and automatic tooling like auto change logs.
+
+#+begin_src emacs-lisp
+  (use-package conventional-commit
+    :straight (conventional-commit :type git :host github :repo "akirak/conventional-commit.el")
+    :hook
+    (git-commit-mode . conventional-commit-setup))
+#+end_src
 ** Rainbow Delimiters
 
 [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] is useful in programming modes because it colorizes nested parentheses and brackets according to their nesting depth.  This makes it a lot easier to visually match parentheses in Emacs Lisp code without having to count them yourself.
