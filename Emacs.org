@@ -1652,7 +1652,7 @@ A set of bindings not set for packages.
   (setq subword-mode t)
   (setq repeat-mode t)
   (setq save-place-mode t)
-  (setq global-auto-revert-mode t)
+  (global-auto-revert-mode 1)
 
   (defun auto-display-line-numbers ()
     "Enables line numbers in the current buffer."
