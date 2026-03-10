@@ -28,6 +28,10 @@ This org document serves as the configuration of Emacs, tangling babel code into
 
   (add-hook 'emacs-startup-hook #'display-startup-time)
 
+  ;; Hides warnings about undefined functions that aren't present at compile-time.
+  ;; Said functions should appear at runtime when the relevant package is loaded.
+  (setq native-comp-async-report-warnings-errors nil)
+
 #+end_src
 
 * Package System Setup
