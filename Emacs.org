@@ -1233,7 +1233,7 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 
 #+end_src
 ** Environment
-Emacs often will need the environment variables that are within the shell, but they are not always passed to it. [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] resolves this and is compatible with [bash, zsh, tcsh, fish, nu] shells. I personally run bash as my Emacs shell for portability when not using Eshell or vterm.
+Emacs often will need the environment variables that are within the shell, but they are not always passed to it. [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] resolves this and is compatible with [bash, zsh, tcsh, fish, nu] shells. I personally run bash as my Emacs shell for portability when not using Eshell.
 
 #+begin_src emacs-lisp
   (use-package exec-path-from-shell
