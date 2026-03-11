@@ -1102,7 +1102,11 @@ Project.el is the native project system for Emacs and is required for Eglot to f
   (use-package conventional-commit
     :straight (conventional-commit :type git :host github :repo "akirak/conventional-commit.el")
     :hook
-    (git-commit-mode . conventional-commit-setup))
+    (git-commit-mode . conventional-commit-setup)
+    (git-commit-mode . (lambda ()		; Auto completions in commit buffers only.
+  		       setq-local corfu-auto t
+  		       corfu-auto-delay 0.0
+  		       corfu-auto-prefix 1)))
 #+end_src
 ** Rainbow Delimiters
 
