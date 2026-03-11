@@ -1672,6 +1672,11 @@ A set of bindings not set for packages.
    "j"   #'forward-button
    "k"   #'backward-button)
 
+   ;; --- HTML ---
+   (:keymaps html-ts-mode-map
+   "M-i" #'casual-html-tmenu
+   "C-c a" #'casual-html-tags-tmenu)
+
    ;; --- Info ---
    (:package 'info
    :keymaps 'Info-mode-map
