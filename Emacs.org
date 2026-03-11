@@ -1561,6 +1561,10 @@ A set of bindings not set for packages.
     :config
     (smartparens-global-mode t)
     (require 'smartparens-config))
+
+  (with-eval-after-load 'smartparens
+    (sp-with-modes '(c-mode c++-mode objc-mode)
+      (sp-local-pair "{" nil :post-handlers '(:rem ("| " "RET")))))
 #+end_src
 * Misc
 ** Crux
