@@ -876,12 +876,12 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.
 Sets the default behavior for C and C++ mode styles. Clangd is used as the lsp for C and C++. Make sure it is installed on your host!!
 
 #+begin_src emacs-lisp
-
-  (setq c-toggle-electric-state 1)
-  (setq c-toggle-auto-hungry-state 1)
   (add-hook 'c-mode-hook 'eglot-ensure)
+  (add-hook 'c-mode-hook (lambda ()
+  			 setq-local electric-indent-mode nil))
   (add-hook 'c++-mode-hook 'eglot-ensure)
-
+  (add-hook 'c++-mode-hook (lambda ()
+  			 setq-local electric-indent-mode nil))
 #+end_src
 
 *** Zig
