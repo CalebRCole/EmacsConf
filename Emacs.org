@@ -877,11 +877,11 @@ Sets the default behavior for C and C++ mode styles. Clangd is used as the lsp f
 
 #+begin_src emacs-lisp
   (add-hook 'c-mode-hook 'eglot-ensure)
-  (add-hook 'c-mode-hook (lambda ()
-  			 setq-local electric-indent-mode nil))
   (add-hook 'c++-mode-hook 'eglot-ensure)
+  (add-hook 'c-mode-hook (lambda ()
+  			 electric-indent-local-mode -1))
   (add-hook 'c++-mode-hook (lambda ()
-  			 setq-local electric-indent-mode nil))
+  			   electric-indent-local-mode -1))
 #+end_src
 
 *** Zig
