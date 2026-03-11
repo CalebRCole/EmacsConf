@@ -887,6 +887,11 @@ Sets the default behavior for C and C++ mode styles. Clangd is used as the lsp f
   (add-hook 'c++-ts-mode-hook (lambda ()
   			      (setq-local electric-indent-mode nil)))
 
+  (setq c-ts-mode-indent-style 'k&r)
+  (add-hook 'c-ts-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook #'eglot-format-buffer nil t)))
+
 #+end_src
 
 *** Zig
