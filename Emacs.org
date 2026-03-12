@@ -908,9 +908,7 @@ Sets the default behavior for C and C++ mode styles. Clangd is used as the lsp f
 Racket is a general-purpose, multi-paradigm programming language in the Lisp family.
 
 #+begin_src emacs-lisp
-
   (use-package racket-mode)
-
 #+end_src
 
 *** Gnuplot
@@ -1558,7 +1556,6 @@ A set of bindings not set for packages.
     ("C-S-d" . #'sp-backward-delete-char)
     ("M-S-d" . #'sp-backward-kill-word)
     ("C-w" . #'sp-kill-region)
-    ("RET" . #'sp-newline)
     ("C-c C-w [" . #'sp-wrap-round)
     ("C-c C-w ]" . #'sp-wrap-square)
     ("C-c C-w \\" . #'sp-wrap-curly)
