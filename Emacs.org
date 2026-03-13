@@ -1532,8 +1532,6 @@ A set of bindings not set for packages.
 
 #+begin_src emacs-lisp
   (use-package smartparens
-    :custom
-    (smartparens-global-strict-mode t)
     :bind
     ("C-M-f" . #'sp-forward-sexp)
     ("C-M-b" . #'sp-backward-sexp)
