@@ -727,7 +727,8 @@ Treesitter has compatibility with Emacs as long as Emacs is compiled with it ena
   	       ;; Not included in Combobulate
   	       (nix . ("https://github.com/nix-community/tree-sitter-nix"))
   	       (c . ("https://github.com/tree-sitter/tree-sitter-c"))
-  	       (cpp . ("https://github.com/tree-sitter/tree-sitter-cpp"))))
+  	       (cpp . ("https://github.com/tree-sitter/tree-sitter-cpp"))
+  	       (zig . ("https://github.com/tree-sitter-grammars/tree-sitter-zig"))))
         (add-to-list 'treesit-language-source-alist grammar)
         ;; Only install `grammar' if we don't already have it
         ;; installed. However, if you want to *update* a grammar then
@@ -752,7 +753,8 @@ Treesitter has compatibility with Emacs as long as Emacs is compiled with it ena
                (json-mode . json-ts-mode)
                (js-json-mode . json-ts-mode)
   	     (c-mode . c-ts-mode)
-  	     (c++-mode . c++-ts-mode)))
+  	     (c++-mode . c++-ts-mode)
+  	     (zig-mode . zig-ts-mode)))
       (add-to-list 'major-mode-remap-alist mapping))
     :custom
     (treesit-font-lock-level 4)
@@ -898,8 +900,10 @@ Sets the default behavior for C and C++ mode styles. Clangd is used as the lsp f
 
 #+begin_src emacs-lisp
 
-  (use-package zig-mode    
-    :hook (zig-mode . eglot-ensure))
+  (use-package zig-mode)
+  (use-package zig-ts-mode
+    :straight '(:type git :host codeberg :repo "meow_king/zig-ts-mode")
+    :hook (zig-ts-mode . eglot-ensure))
 
 #+end_src
 
@@ -992,28 +996,24 @@ When nix-prettify-mode is enabled, hash-parts of the Nix store file names are pr
 [[https://github.com/nix-community/nixd][nixd]] is an lsp for nix using lsp-mode. Requires nixd package!!
 
 #+begin_src emacs-lisp
-  (add-hook 'prog-mode-hook
-            (lambda ()
-              (add-hook 'before-save-hook 'eglot-format nil t)))
-
-  (with-eval-after-load 'eglot
-    (dolist (mode '((nix-mode . ("nixd"))))
-      (add-to-list 'eglot-server-programs mode)))
+  (dolist (mode '((nix-mode . ("nixd"))))
+    (add-to-list 'eglot-server-programs mode))
 #+end_src
 
 *** Bash
 [[https://github.com/bash-lsp/bash-language-server?tab=readme-ov-file][Bash-language-server]] is an lsp that uses [[https://github.com/koalaman/shellcheck][shellcheck]] to analyze and format bash code. Requires both as external packages!!
 
 #+begin_src emacs-lisp
-  (add-to-list 'eglot-server-programs '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
-  (add-hook 'sh-mode #'eglot-ensure)
-  (add-hook 'bash-ts-mode #'eglot-ensure)
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
+    (add-hook 'sh-mode #'eglot-ensure)
+    (add-hook 'bash-ts-mode #'eglot-ensure))
 #+end_src
 *** Emacs Lisp
 Emacs Lisp is the Lisp dialect used to provide the Emacs environment and is the main feature of Emacs, with only C being the other language used for Emacs. Built-in tooling exists for Emacs Lisp, along with other Lisp dialects.
 
 #+begin_src emacs-lisp
-  (keymap-set lisp-data-mode-map "C-c C-p" #'check-parens)
+  (keymap-set lisp-mode-shared-map "C-c C-p" #'check-parens)
   (keymap-set emacs-lisp-mode-map "C-c d" #'edebug-mode)
 #+end_src
 ** LLM Integration
@@ -1088,7 +1088,7 @@ Emacs Lisp is the Lisp dialect used to provide the Emacs environment and is the 
 #+end_src
 
 ** Snippets
-Snippets allow inserting larger blocks of code with code expansion. There are two snippet packages we use here, yassnippet, and tempel.
+Snippets allow inserting larger blocks of code with code expansion. There are two snippet packages we use here, yasnippet, and tempel.
 
 *** Yasnippet
 
@@ -1784,7 +1784,7 @@ Resetting the garbage collector.
 
 #+begin_src emacs-lisp
   ;; Make gc pauses faster by decreasing the threshold.
-  (setq gc-cons-threshold (* 2 1000 1000))
+  (setq gc-cons-threshold (* 800 1000))
 #+end_src
 # Local Variables:
 # jinx-local-words: "Clangd Dired Direnv Dirvish Ellama Eshell Flycheck Flymake Flyspell Orderless Vertico dape derivers distros eldoc goto init js lsp macchiato magit md nixd nixfmt ollama pyvenv realisation repl reproducibility tcsh ts vcs vterm windmove zsh"
