@@ -1589,6 +1589,12 @@ A set of bindings not set for packages.
       (sp-local-pair "{" nil :post-handlers nil)))
 #+end_src
 * Misc
+** SICP
+SICP, or the Structure and Interpretation of Computer Programs, is a legendary programming book written in MIT Scheme. Luckily, there is even a MELPA package for an TeXinfo file for native Emacs viewing and use in Info! Racket offers the SICP Collection, a Racket #lang that makes it fully compatible with SICP code. Requires external raco package!!
+
+#+begin_src emacs-lisp
+  (use-package sicp)
+#+end_src
 ** Crux
 [[https://github.com/bbatsov/crux][Crux]] contains a variety of useful commands.
 
