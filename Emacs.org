@@ -248,7 +248,9 @@ Transient is by the creators of Magit, providing a menu-based hierarchical input
   ;; Persistant history over different Emacs sessions
   (use-package savehist
     :init
-    (savehist-mode))
+    (savehist-mode)
+    :custom
+    (savehist-additional-variables '(search-ring regexp-search-ring kill-ring register-alist)))
 
   ;; Enables context menu. `vertico-multiform-mode' adds a menu in the minibuffer to switch display modes
   (setq context-menu-mode t)
