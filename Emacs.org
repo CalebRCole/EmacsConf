@@ -1091,6 +1091,66 @@ Emacs Lisp is the Lisp dialect used to provide the Emacs environment and is the 
     (read-extended-command-predicate #'command-completion-default-include-p))
 #+end_src
 
+** Snippets
+Snippets allow inserting larger blocks of code with code expansion. There are two snippet packages we use here, yassnippet, and tempel.
+
+*** Yasnippet
+
+[[https://github.com/joaotavora/yasnippet][Yasnippet]] is a feature-rich snippet package created by the author of Eglot. However, I prefer to write my snippets with tempel. Yasnippet is required for lsp driven snippets through Eglot though.
+
+#+begin_src emacs-lisp
+  (defun yas-reload-minor-mode ()
+      "Reloads snippet tables and calls yas minor mode."
+    ((#'yas-reload-all) (#'yas-minor-mode)))
+  
+  (use-package yasnippet
+    :hook (eglot--managed-mode . yas-reload-minor-mode))
+#+end_src
+
+*** Tempel
+[[https://github.com/minad/tempel][Tempel]] is a lean templating package utilizing the built in Tempo.el to create snippets and expansions. Templates are written in Emacs Lisp.
+
+#+begin_src emacs-lisp
+  ;; Configure Tempel
+  (use-package tempel
+    :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
+           ("M-*" . tempel-insert))
+
+    :init
+
+    ;; Setup completion at point
+    (defun tempel-setup-capf ()
+      ;; Add the Tempel Capf to `completion-at-point-functions'.  `tempel-expand'
+      ;; only triggers on exact matches. We add `tempel-expand' *before* the main
+      ;; programming mode Capf, such that it will be tried first.
+      (setq-local completion-at-point-functions
+                  (cons #'tempel-expand completion-at-point-functions))
+
+      ;; Alternatively use `tempel-complete' if you want to see all matches.  Use
+      ;; a trigger prefix character in order to prevent Tempel from triggering
+      ;; unexpectly.
+      ;; (setq-local corfu-auto-trigger "/"
+      ;;             completion-at-point-functions
+      ;;             (cons (cape-capf-trigger #'tempel-complete ?/)
+      ;;                   completion-at-point-functions))
+    )
+
+    (add-hook 'conf-mode-hook 'tempel-setup-capf)
+    (add-hook 'prog-mode-hook 'tempel-setup-capf)
+    (add-hook 'text-mode-hook 'tempel-setup-capf)
+
+    ;; Optionally make the Tempel templates available to Abbrev,
+    ;; either locally or globally. `expand-abbrev' is bound to C-x '.
+    ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
+    ;; (global-tempel-abbrev-mode)
+  )
+
+  ;; Optional: Add tempel-collection if you want ready-made templates.
+  (use-package tempel-collection
+    :after tempel)
+
+#+end_src
+
 ** Project.el
 Project.el is the native project system for Emacs and is required for Eglot to function. Relies on vcs to determine projects.
 
