@@ -1,5 +1,5 @@
 #+TITLE: Emacs Configuration File
-#+PROPERTY: header-args:emacs-lisp :tangle "~/.config/emacs/init.el"
+#+PROPERTY: header-args:emacs-lisp :tangle "~/.config/emacs/init.el" :lexical t
 
 This org document serves as the configuration of Emacs, tangling babel code into init.el with =C-c C-v t= (Tangle) and =C-c r i= (Reload init.el).
 
@@ -7,7 +7,7 @@ This org document serves as the configuration of Emacs, tangling babel code into
 
 #+begin_src emacs-lisp
 
-  ;;; init.el --- Emacs configuration file  -*- lexical-binding: t; -*-
+  ;;; init.el --- Emacs configuration file
 
   ;;; Commentary:
   ;; This file serves as a configuration file for Emacs.
@@ -32,66 +32,13 @@ This org document serves as the configuration of Emacs, tangling babel code into
   ;; Said functions should appear at runtime when the relevant package is loaded.
   (setq native-comp-async-report-warnings-errors nil)
 
-#+end_src
-
-* Package System Setup
-Emacs has a built in package manager but it doesn't make it easy to automatically install packages on a new system the first time you pull down your configuration.  [[https://github.com/jwiegley/use-package][use-package]] is a really helpful package used in this configuration to make it a lot easier to automate the installation and configuration of everything else we use. [[https://github.com/radian-software/straight.el][Straight.el]] is a purely functional package manager that can be used alongside use-package for things like GitHub packages. Straight.el can also be used for creating 'distros' of Emacs like with nix, but with greater flexibility.
-
-#+begin_src emacs-lisp
-  (defvar bootstrap-version)
-  (let ((bootstrap-file
-         (expand-file-name
-          "straight/repos/straight.el/bootstrap.el"
-          (or (bound-and-true-p straight-base-dir)
-              user-emacs-directory)))
-        (bootstrap-version 7))
-    (unless (file-exists-p bootstrap-file)
-      (with-current-buffer
-          (url-retrieve-synchronously
-           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-           'silent 'inhibit-cookies)
-        (goto-char (point-max))
-        (eval-print-last-sexp)))
-    (load bootstrap-file nil 'nomessage))
-
-  (straight-use-package 'use-package)
-  (setq straight-use-package-by-default t)
-
-  (use-package project)
-#+end_src
-* Keep Folders Clean
-We use the [[https://github.com/emacscollective/no-littering/blob/master/no-littering.el][no-littering]] package to keep folders where we edit files and the Emacs configuration folder clean!  It knows about a wide variety of variables for built in Emacs features as well as those from community packages so it can be much easier than finding and setting these variables yourself.
-
-#+begin_src emacs-lisp
-
   ;; NOTE: If you want to move everything out of the ~/.emacs.d folder
   ;; reliably, set `user-emacs-directory` before loading no-littering!
   (setq user-emacs-directory "~/.cache/emacs")
 
-  (use-package no-littering    
-    :custom
-    (no-littering-var-directory "~/.cache/emacs/var")
-    (no-littering-etc-directory "~/.cache/emacs/etc")
-    :config
-    ;; Backup files
-    (setq backup-directory-alist
-  	`((".*" . ,(no-littering-expand-var-file-name "backup/"))))
-    ;; Autosave files
-    (setq auto-save-file-name-transforms
-  	`((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-    ;; Lock files
-    (setq lock-file-name-transforms
-  	`((".*" ,(no-littering-expand-var-file-name "lock-files/") t))))
-
 #+end_src
-* General
-[[https://github.com/noctuid/general.el?tab=readme-ov-file#key-features][General]] provides a more convenient way to bind keys, providing wrappers for base behaviors and more.
 
-#+begin_src emacs-lisp
-  (use-package general)
-#+end_src
-* UI Configuration
-** Basic UI
+* Basic UI
 Defaults for GNU Emacs UI, excluding external packages.
 
 #+begin_src emacs-lisp
@@ -124,6 +71,59 @@ Defaults for GNU Emacs UI, excluding external packages.
     (add-hook mode (lambda () (setq display-line-numbers nil))))
 
 #+end_src
+* Package System Setup
+Emacs has a built in package manager but it doesn't make it easy to automatically install packages on a new system the first time you pull down your configuration.  [[https://github.com/jwiegley/use-package][use-package]] is a really helpful package used in this configuration to make it a lot easier to automate the installation and configuration of everything else we use. [[https://github.com/radian-software/straight.el][Straight.el]] is a purely functional package manager that can be used alongside use-package for things like GitHub packages. Straight.el can also be used for creating 'distros' of Emacs like with nix, but with greater flexibility.
+
+#+begin_src emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name
+          "straight/repos/straight.el/bootstrap.el"
+          (or (bound-and-true-p straight-base-dir)
+              user-emacs-directory)))
+        (bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+  (straight-use-package 'use-package)
+  (setq straight-use-package-by-default t)
+
+  (use-package project)
+#+end_src
+* Keep Folders Clean
+We use the [[https://github.com/emacscollective/no-littering/blob/master/no-littering.el][no-littering]] package to keep folders where we edit files and the Emacs configuration folder clean!  It knows about a wide variety of variables for built in Emacs features as well as those from community packages so it can be much easier than finding and setting these variables yourself.
+
+#+begin_src emacs-lisp
+
+  (use-package no-littering    
+    :custom
+    (no-littering-var-directory "~/.cache/emacs/var")
+    (no-littering-etc-directory "~/.cache/emacs/etc")
+    :config
+    ;; Backup files
+    (setq backup-directory-alist
+  	`((".*" . ,(no-littering-expand-var-file-name "backup/"))))
+    ;; Autosave files
+    (setq auto-save-file-name-transforms
+  	`((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+    ;; Lock files
+    (setq lock-file-name-transforms
+  	`((".*" ,(no-littering-expand-var-file-name "lock-files/") t))))
+
+#+end_src
+* General
+[[https://github.com/noctuid/general.el?tab=readme-ov-file#key-features][General]] provides a more convenient way to bind keys, providing wrappers for base behaviors and more.
+
+#+begin_src emacs-lisp
+  (use-package general)
+#+end_src
+* UI Configuration
 ** Theme
 [[https://github.com/catppuccin/emacs][catppuchin]] is the chosen theme of Emacs. Options for flavor are: 'latte (light), 'frappe, 'macchiato, 'mocha (darkest)
 
@@ -230,16 +230,12 @@ Transient is by the creators of Magit, providing a menu-based hierarchical input
   (use-package transient)
 #+end_src
 ** Which Key
-[[https://github.com/justbur/emacs-which-key][which-key]] is a useful UI panel that appears when you start pressing any key binding in Emacs to offer you all possible completions for the prefix.  For example, if you press =C-c= (hold control and press the letter =c=), a panel will appear at the bottom of the frame displaying all of the bindings under that prefix and which command they run.  This is very useful for learning the possible key bindings in the mode of your current buffer.
+[[https://github.com/justbur/emacs-which-key][which-key]] is a useful built-in UI panel that appears when you start pressing any key binding in Emacs to offer you all possible completions for the prefix.  For example, if you press =C-c= (hold control and press the letter =c=), a panel will appear at the bottom of the frame displaying all of the bindings under that prefix and which command they run.  This is very useful for learning the possible key bindings in the mode of your current buffer.
 
 #+begin_src emacs-lisp
 
-  (use-package which-key
-    :defer 0
-    :diminish which-key-mode
-    :config
     (which-key-mode)
-    (setq which-key-idle-delay 1))
+    (setq which-key-idle-delay 1)
 
 #+end_src
 ** Vertico
@@ -413,8 +409,8 @@ Transient is by the creators of Magit, providing a menu-based hierarchical input
 
     (use-package embark-consult
       :after
-      consult
-      embark
+      (consult
+      embark)
       )
 
 
@@ -532,9 +528,6 @@ The =org-font-setup= function configures various text faces to tweak the sizes o
     (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
     (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
 
-  (with-eval-after-load 'org
-    (add-hook 'org-mode-hook #'org-font-setup))
-
 #+end_src
 ** Basic Config
 This section contains the basic configuration for =org-mode=, setting up proper modes and formatting.
@@ -544,9 +537,9 @@ This section contains the basic configuration for =org-mode=, setting up proper 
   (use-package org
     :straight nil
     :commands (org-capture org-agenda org-element-at-property org-element-at-point org-in-src-block-p)
-    :hook (org-mode . org-indent-mode)
+    :hook ((org-mode . org-indent-mode)
     (org-mode . variable-pitch-mode)
-    (org-mode . visual-line-mode)
+    (org-mode . visual-line-mode))
     :init
     ;; Replace list hyphen with dot
     (font-lock-add-keywords 'org-mode
@@ -554,7 +547,8 @@ This section contains the basic configuration for =org-mode=, setting up proper 
   			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
     :config
-    (setq org-ellipsis " ▾"))
+    (setq org-ellipsis " ▾")
+    (org-font-setup))
 
 #+end_src
 
@@ -634,7 +628,7 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
       (let ((org-confirm-babel-evaluate nil))
         (org-babel-tangle))))
 
-  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'org-babel-tangle-config)))
+  (add-hook 'after-save-hook #'org-babel-tangle-config)
 
 #+end_src
 
@@ -695,11 +689,15 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
     :config
     (add-to-list 'eglot-stay-out-of 'flymake))
 
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              (add-hook 'before-save-hook #'eglot-format-buffer nil t)))
+
   (use-package flycheck-eglot
     :after (flycheck eglot)
     :config
     (global-flycheck-eglot-mode 1))
-#+end_src
+    #+end_src
 *** Treesit
 Treesitter has compatibility with Emacs as long as Emacs is compiled with it enable!! [[https://github.com/mickeynp/combobulate][Combobulate]] is a package that handles several languages grammar for Treesit.
 
@@ -745,7 +743,6 @@ Treesitter has compatibility with Emacs as long as Emacs is compiled with it ena
     ;; also
     (dolist (mapping
              '((python-mode . python-ts-mode)
-               (css-mode . css-ts-mode)
                (typescript-mode . typescript-ts-mode)
                (js2-mode . js-ts-mode)
                (bash-mode . bash-ts-mode)
@@ -827,13 +824,13 @@ Treesitter has compatibility with Emacs as long as Emacs is compiled with it ena
 #+end_src
 
 *** TypeScript
-This is a basic configuration for the TypeScript language so that =.ts= files activate =typescript-mode= when opened.  We're also adding a hook to =typescript-mode-hook= to call =eglot-ensure= so that we activate =eglot= to get LSP features every time we edit TypeScript code.
+This is a basic configuration for the TypeScript language so that =.ts= files activate =typescript-mode= when opened.  We're also adding a hook to =typescript-ts-mode-hook= to call =eglot-ensure= so that we activate =eglot= to get LSP features every time we edit TypeScript code.
 
 #+begin_src emacs-lisp
 
   (use-package typescript-mode
     :mode "\\.ts\\'"
-    :hook (typescript-mode . eglot-ensure)
+    :hook (typescript-ts-mode . eglot-ensure)
     :config
     (setq typescript-indent-level 2))
 
@@ -863,7 +860,7 @@ There are a number of other language servers for Python if you find that =pyls= 
 #+begin_src emacs-lisp
 
   (use-package python-mode
-    :hook (python-mode . eglot-ensure))
+    :hook (python-ts-mode . eglot-ensure))
 
 #+end_src
 
@@ -891,8 +888,8 @@ Sets the default behavior for C and C++ mode styles. Clangd is used as the lsp f
 
   (setq c-ts-mode-indent-style 'k&r)
   (add-hook 'c-ts-mode-hook
-          (lambda ()
-            (add-hook 'before-save-hook #'eglot-format-buffer nil t)))
+            (lambda ()
+              (add-hook 'before-save-hook #'eglot-format-buffer nil t)))
 
 #+end_src
 
@@ -967,7 +964,7 @@ When nix-prettify-mode is enabled, hash-parts of the Nix store file names are pr
 
 #+begin_src emacs-lisp
   (use-package nix-mode
-    :after transient
+    :after (transient eglot)
     :hook
     (nix-mode . eglot-ensure)
     :mode "\\.nix\\'")
@@ -978,8 +975,7 @@ When nix-prettify-mode is enabled, hash-parts of the Nix store file names are pr
 #+begin_src emacs-lisp
   (use-package nix-ts-mode
     :after nix-mode
-    :hook
-    (nix-mode . nix-ts-mode))
+    :hook (nix-ts-mode . eglot-ensure))
 #+end_src
 **** nixfmt
 [[https://github.com/purcell/emacs-nixfmt][nixfmt]] is the endorsed formatter for nix code using the nixfmt command. Requires the separate nixfmt package!!
@@ -1101,7 +1097,7 @@ Snippets allow inserting larger blocks of code with code expansion. There are tw
 #+begin_src emacs-lisp
   (defun yas-reload-minor-mode ()
       "Reloads snippet tables and calls yas minor mode."
-    ((#'yas-reload-all) (#'yas-minor-mode)))
+    (yas-reload-all) (yas-minor-mode 1))
   
   (use-package yasnippet
     :hook (eglot--managed-mode . yas-reload-minor-mode))
@@ -1187,9 +1183,9 @@ Project.el is the native project system for Emacs and is required for Eglot to f
     :hook
     (git-commit-mode . conventional-commit-setup)
     (git-commit-mode . (lambda ()		; Auto completions in commit buffers only.
-  		       setq-local corfu-auto t
+  		       (setq-local corfu-auto t
   		       corfu-auto-delay 0.0
-  		       corfu-auto-prefix 1)))
+  		       corfu-auto-prefix 1))))
 #+end_src
 ** Rainbow Delimiters
 
@@ -1397,15 +1393,16 @@ Recentf creates a list of recently visited files that are quickly accessible.
   (setq recentf-exclude '("/tmp/" "/ssh:" "/terpri/" "\\.git/.*" ".*-autoloads\\.el\\'"))
 
   ;; excluding no-littering directories from recentf
-  (add-to-list 'recentf-exclude
-               (recentf-expand-file-name no-littering-var-directory))
-  (add-to-list 'recentf-exclude
-               (recentf-expand-file-name no-littering-etc-directory))
+  (with-eval-after-load 'no-littering
+    (add-to-list 'recentf-exclude
+                 (recentf-expand-file-name no-littering-var-directory))
+    (add-to-list 'recentf-exclude
+                 (recentf-expand-file-name no-littering-etc-directory)))
 #+end_src
 ** Bookmarks
 #+begin_src emacs-lisp
   (setq bookmark-save-flag 1)		;; ensures bookmarks are saved on any modification and session end
-  (add-hook 'bookmark-mode #'hl-line-mode)
+  (add-hook 'bookmark-bmenu-mode-hook #'hl-line-mode)
 #+end_src
 ** Dired
 Dired is a built-in file manager for Emacs that does some pretty amazing things!  Here are some key bindings you should try out:
@@ -1639,7 +1636,7 @@ A set of bindings not set for packages.
     ("C-M-<" . #'sp-backward-kill-symbol)
     ("C-M->" . #'sp-kill-symbol)
     :config
-    (smartparens-global-mode t)
+    (smartparens-global-mode 1)
     (require 'smartparens-config))
 
   (with-eval-after-load 'smartparens
@@ -1773,15 +1770,11 @@ SICP, or the Structure and Interpretation of Computer Programs, is a legendary p
 
 ** Misc Modes
 #+begin_src emacs-lisp
-  (setq subword-mode t)
-  (setq repeat-mode t)
-  (setq save-place-mode t)
+  (global-subword-mode 1)
+  (repeat-mode 1)
+  (save-place-mode 1)
   (global-auto-revert-mode 1)
 
-  (defun auto-display-line-numbers ()
-    "Enables line numbers in the current buffer."
-    (display-line-numbers-mode 1))
-  (add-hook 'prog-mode-hook #'auto-display-line-numbers)
   (add-hook 'Info-mode-hook #'hl-line-mode)
   (add-hook 'Info-mode-hook #'scroll-lock-mode)
 #+end_src
