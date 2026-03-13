@@ -142,8 +142,6 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
 
 #+begin_src emacs-lisp
 
-  (use-package all-the-icons)
-
   (use-package doom-modeline
     :init (doom-modeline-mode t)
     :custom
