@@ -586,7 +586,8 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
        (shell . t)
        (eshell . t)
        (gnuplot . t)
-       (python . t)))
+       (python . t)
+       (racket . t)))
 
     (push '("conf-unix" . conf-unix) org-src-lang-modes))
 
@@ -614,7 +615,8 @@ You can add more =src= block templates below by copying one of the lines and cha
     (add-to-list 'org-structure-template-alist '("cp" . "src C++"))
     (add-to-list 'org-structure-template-alist '("cs" . "src css"))
     (add-to-list 'org-structure-template-alist '("py" . "src python"))
-    (add-to-list 'org-structure-template-alist '("gp" . "src gnuplot")))
+    (add-to-list 'org-structure-template-alist '("gp" . "src gnuplot"))
+    (add-to-list 'org-structure-template-alist '("ra" . "src racket")))
 
 #+end_src
 
@@ -911,6 +913,19 @@ Racket is a general-purpose, multi-paradigm programming language in the Lisp fam
   (use-package racket-mode)
 #+end_src
 
+**** ob-racket
+[[https://github.com/hasu/emacs-ob-racket][Org Babel support for Racket]].
+
+#+begin_src emacs-lisp
+  (use-package ob-racket
+    :after org
+    :config
+    (add-hook 'ob-racket-pre-runtime-library-load-hook
+  	    #'ob-racket-raco-make-runtime-library)
+    :straight (ob-racket
+  	     :type git :host github :repo "hasu/emacs-ob-racket"
+  	     :files ("*.el" "*.rkt")))
+#+end_src
 *** Gnuplot
 [[http://www.gnuplot.info/][Gnuplot]] is a command-line and GUI program that can generate two- and three-dimensional plots of functions, data, and data fits. 
 
