@@ -1709,7 +1709,7 @@ SICP, or the Structure and Interpretation of Computer Programs, is a legendary p
    "M-i" #'casual-org-tmenu
 
    :keymaps 'org-table-fedit-map
-   "M-i" #'casual-org-table-fedit-tmenu
+   "M-[" #'casual-org-table-fedit-tmenu
    "C-o" #'casual-editkit-main-tmenu))
     #+end_src
 
