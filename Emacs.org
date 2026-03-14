@@ -1188,6 +1188,16 @@ Project.el is the native project system for Emacs and is required for Eglot to f
   		       corfu-auto-delay 0.0
   		       corfu-auto-prefix 1))))
 #+end_src
+
+*** Ediff
+Ediff is a built-in package for checking the difference between two files. Works well with version controlled files for things like merge conflicts
+
+#+begin_src emacs-lisp
+  (setq ediff-keep-variants nil)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  (setq ediff-split-window-function 'split-window-horizontally)
+#+end_src
+
 ** Rainbow Delimiters
 
 [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] is useful in programming modes because it colorizes nested parentheses and brackets according to their nesting depth.  This makes it a lot easier to visually match parentheses in Emacs Lisp code without having to count them yourself.
@@ -1670,103 +1680,198 @@ SICP, or the Structure and Interpretation of Computer Programs, is a legendary p
 
 #+begin_src emacs-lisp
   (use-package casual-suite
-  :general
- 
-   ;; --- Global Casual Editkit Bindings ---
-   ("C-o"   #'casual-editkit-main-tmenu
-   "C-c w" #'casual-editkit-windows-tmenu
-   "C-c r" #'casual-editkit-rectangle-tmenu
-   "C-c g" #'casual-editkit-registers-tmenu
-   "C-c p" #'casual-editkit-project-tmenu)
+    :general
 
-   ;; --- Elisp ---
-   (:keymaps 'emacs-lisp-mode-map
-   "M-i" #'casual-elisp-tmenu)
+    ;; --- Global Casual Editkit Bindings ---
+    ("C-o"   #'casual-editkit-main-tmenu
+     "C-c w" #'casual-editkit-windows-tmenu
+     "C-c r" #'casual-editkit-rectangle-tmenu
+     "C-c g" #'casual-editkit-registers-tmenu
+     "C-c p" #'casual-editkit-project-tmenu)
 
-   ;; --- Symbol Overlay ---
-   (:package 'symbol-overlay
-   :keymaps 'symbol-overlay-map
-   "C-o" #'casual-symbol-overlay-tmenu)
+    ;; --- Elisp ---
+    (:package 'elisp-mode
+      	    :keymaps 'emacs-lisp-mode-map
+      	    "M-i" #'casual-elisp-tmenu)
 
-   ;; --- Avy ---
-   (:package 'avy
-   "M-g" #'casual-avy-tmenu)
-   
-   ;; --- Bookmarks ---
-   (:package 'bookmark
-   :keymaps 'bookmark-bmenu-mode-map
-   "C-o" #'casual-bookmarks-tmenu
-   "J"   #'bookmark-jump)
-   
-   ;; --- Calc ---
-   (:package 'calc
-   :keymaps 'calc-mode-map
-   "C-o" #'casual-calc-tmenu)
+    ;; --- BibTeX ---
+    (:package 'bibtex
+      	    :keymaps 'bibtex-mode-map
+      	    "<TAB>" #'bibtex-next-field
+      	    "<backtab>" #'previous-line
+      	    "C-n" #'bibtex-next-field
+      	    "M-n" #'bibtex-next-entry
+      	    "M-p" #'bibtex-previous-entry
+      	    "<prior>" #'bibtex-previous-entry
+      	    "<next>" #'bibtex-next-entry
+      	    "C-c C-o" #'bibtex-url
+      	    "C-c C-c" #'casual-bibtex-fill-and-clean
+      	    "<clear>" #'bibtex-empty-field
+      	    "M-<clear>" #'bibtex-kill-field
+      	    "M-DEL" #'bibtex-kill-field)
+    
+    ;; --- Symbol Overlay ---
+    (:package 'symbol-overlay
+        	    :keymaps 'symbol-overlay-map
+        	    "C-o" #'casual-symbol-overlay-tmenu)
 
-   ;; --- Compilation & Grep ---
-   (:package 'compile ; Note: the package is usually 'compile, not 'compilation
-   :keymaps '(compilation-mode-map grep-mode-map)
-   "C-o" #'casual-compile-tmenu
-   "k"   #'compilation-previous-error
-   "j"   #'compilation-next-error
-   "o"   #'compilation-display-error
-   "["   #'compilation-previous-file
-   "]"   #'compilation-next-file)
+    ;; --- Avy ---
+    (:package 'avy
+        	    "M-g" #'casual-avy-tmenu)
+    
+    ;; --- Bookmarks ---
+    (:package 'bookmark
+        	    :keymaps 'bookmark-bmenu-mode-map
+        	    "C-o" #'casual-bookmarks-tmenu
+        	    "J"   #'bookmark-jump)
+    
+    ;; --- Calc ---
+    (:package 'calc
+        	    :keymaps 'calc-mode-map
+        	    "C-o" #'casual-calc-tmenu)
 
-   ;; --- Dired ---
-   (:package 'dired
-   :keymaps 'dired-mode-map
-   "C-o" #'casual-dired-tmenu
-   "s"   #'casual-dired-sort-by-tmenu
-   "/"   #'casual-dired-search-replace-tmenu)
+    ;; --- Calendar ---
+    (:package 'calendar
+      	    :keymaps 'calendar-mode-map
+      	    "C-o" #'casual-calendar)
 
-   ;; --- EWW ---
-   (:package 'eww
-   :keymaps 'eww-mode-map
-   "C-o" #'casual-eww-tmenu
-   "C-c C-o" #'eww-browse-with-external-browser
-   "j"   #'shr-next-link
-   "k"   #'shr-previous-link
-   "["   #'eww-previous-url
-   "]"   #'eww-next-url
-   "M-]" #'eww-forward-url
-   "M-[" #'eww-back-url
-   "M-l" #'eww)
-   
-   (:keymaps 'eww-bookmark-mode-map
-   "C-o" #'casual-eww-bookmarks-tmenu
-   "p"   #'previous-line
-   "n"   #'next-line)
-   
-   ;; --- Help ---
-   (:package 'help
-   :keymaps 'help-mode-map
-   "M-[" #'help-go-back
-   "M-]" #'help-go-forward
-   "j"   #'forward-button
-   "k"   #'backward-button)
+    ;; --- Compilation & Grep ---
+    (:package 'compile ; Note: the package is usually 'compile, not 'compilation
+        	    :keymaps '(compilation-mode-map grep-mode-map)
+        	    "C-o" #'casual-compile-tmenu
+        	    "k"   #'compilation-previous-error
+        	    "j"   #'compilation-next-error
+        	    "o"   #'compilation-display-error
+        	    "["   #'compilation-previous-file
+        	    "]"   #'compilation-next-file)
 
-   ;; --- HTML ---
-   ;; (:keymaps html-ts-mode-map
-   ;; "M-i" #'casual-html-tmenu
-   ;; "C-c a" #'casual-html-tags-tmenu)
+    ;; --- CSS ---
+    (:package 'css-mode
+      	    :keymaps 'css-mode-map
+      	    "M-[" #'casual-css-tmenu)
 
-   ;; --- Info ---
-   (:package 'info
-   :keymaps 'Info-mode-map
-   "M-[" #'Info-history-back
-   "M-]" #'Info-history-forward
-   "h"   #'Info-prev
-   "l"   #'Info-next)
+    ;; --- CSV ---
+    (:package 'csv-mode
+      	    :keymaps 'csv-mode-map
+      	    "M-[" #'casual-csv-tmenu)
 
-   ;; --- Org ---
-   (:package 'org
-   :keymaps 'org-mode-map
-   "M-i" #'casual-org-tmenu
+    ;; --- Dired ---
+    (:package 'dired
+        	    :keymaps 'dired-mode-map
+        	    "C-o" #'casual-dired-tmenu
+        	    "s"   #'casual-dired-sort-by-tmenu
+        	    "/"   #'casual-dired-search-replace-tmenu)
 
-   :keymaps 'org-table-fedit-map
-   "M-[" #'casual-org-table-fedit-tmenu
-   "C-o" #'casual-editkit-main-tmenu))
+    ;; --- EWW ---
+    (:package 'eww
+        	    :keymaps 'eww-mode-map
+        	    "C-o" #'casual-eww-tmenu
+        	    "C-c C-o" #'eww-browse-with-external-browser
+        	    "j"   #'shr-next-link
+        	    "k"   #'shr-previous-link
+        	    "["   #'eww-previous-url
+        	    "]"   #'eww-next-url
+        	    "M-]" #'eww-forward-url
+        	    "M-[" #'eww-back-url
+        	    "M-l" #'eww)
+    
+    (:keymaps 'eww-bookmark-mode-map
+        	    "C-o" #'casual-eww-bookmarks-tmenu
+        	    "p"   #'previous-line
+        	    "n"   #'next-line)
+    
+    ;; --- Help ---
+    (:package 'help
+    	    :keymaps 'help-mode-map
+    	    "M-[" #'help-go-back
+    	    "M-]" #'help-go-forward
+    	    "j"   #'forward-button
+    	    "k"   #'backward-button)
+    
+    ;; --- HTML ---
+    (:package 'sgml-mode
+    	    :keymaps 'html-mode-map
+    	    "M-i" #'casual-html-tmenu
+    	    "C-c a" #'casual-html-tags-tmenu)
+    
+    ;; --- IBuffer ---
+    (:package 'ibuffer
+    	    :keymaps 'ibuffer-mode-map
+    	    "C-o" #'casual-ibuffer-tmenu
+    	    "F" #'casual-ibuffer-filter-tmenu
+    	    "s" #'casual-ibuffer-sortby-tmenu
+    	    "{" #'ibuffer-backwards-next-marked
+    	    "}" #'ibuffer-forward-next-marked
+    	    "[" #'ibuffer-backward-filter-group
+    	    "]" #'ibuffer-forward-filter-group
+    	    "$" #'ibuffer-toggle-filter-group)
+
+    ;; --- Image ---
+    (:package 'image
+    	    :keymaps 'image-mode-map
+    	    "C-o" #'casual-image-tmenu)
+
+    ;; --- Info ---
+    (:package 'info
+        	    :keymaps 'Info-mode-map
+        	    "M-[" #'Info-history-back
+        	    "M-]" #'Info-history-forward
+        	    "h"   #'Info-prev
+        	    "l"   #'Info-next)
+
+    ;; --- Man ---
+    (:package 'man
+  	    :keymaps 'Man-mode-map
+  	    "C-o" #'casual-man-tmenu
+  	    "n" #'casual-lib-browse-forward-paragraph
+  	    "p" #'casual-lib-browse-backward-paragraph
+  	    "[" #'Man-previous-section
+  	    "]" #'Man-next-section
+  	    "j" #'next-line
+  	    "k" #'previous-line
+  	    "K" #'Man-kill
+  	    "o" #'casual-man-occur-options)
+
+    ;; --- Make ---
+    (:package 'make-mode
+    	    :keymaps 'makefile-mode-map
+    	    "M-[" #'casual-make-tmenu)
+
+    ;; --- Org ---
+    (:package 'org
+        	    :keymaps 'org-mode-map
+        	    "M-i" #'casual-org-tmenu
+
+        	    :keymaps 'org-table-fedit-map
+        	    "M-[" #'casual-org-table-fedit-tmenu
+        	    "C-o" #'casual-editkit-main-tmenu
+
+        	    :keymaps 'org-agenda-mode-map
+        	    "C-o" #'casual-agenda-tmenu
+        	    "M-j" #'org-agenda-clock-goto
+        	    "J" #'bookmark-jump)
+
+    ;; --- RE-Builder ---
+    (:package 're-builder
+  	    :keymaps '(reb-mode-map reb-lisp-mode-map)
+  	    "C-o" #'casual-re-builder-tmenu)
+
+    ;; --- ISearch ---
+    (:package 'isearch
+  	    :keymaps 'isearch-mode-map
+  	    "C-o" #'casual-isearch-tmenu)
+    :hook
+    ;; --- Ediff ---
+    ((ediff-keymap-setup . (lambda ()
+      			   (keymap-set ediff-mode-map "C-o" #'casual-ediff-tmenu)))
+     ;; The following are recommended by Casual
+     (bibtex-mode . hl-line-mode)
+     (ibuffer-mode . hl-line-mode)
+     (ibuffer-mode . ibuffer-auto-mode))
+    :config
+    (if (eq casual-ediff--installed-p t)
+        ()
+      (casual-ediff-install)))
     #+end_src
 
 ** Misc Modes
