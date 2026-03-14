@@ -1097,9 +1097,10 @@ Snippets allow inserting larger blocks of code with code expansion. There are tw
 #+begin_src emacs-lisp
   (defun yas-reload-minor-mode ()
       "Reloads snippet tables and calls yas minor mode."
-    (yas-reload-all) (yas-minor-mode 1))
+    (yas-minor-mode 1) (yas-reload-all))
   
   (use-package yasnippet
+    :init
     :hook (eglot--managed-mode . yas-reload-minor-mode))
 #+end_src
 
