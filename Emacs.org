@@ -766,12 +766,11 @@ Treesitter has compatibility with Emacs as long as Emacs is compiled with it ena
   ;;
   (use-package combobulate
     :straight (combobulate :type git :host github :repo "mickeynp/combobulate")
-    :commands (combobulate-navigate-sequence-previous combobulate-sequence-next)
     :custom
     ;; You can customize Combobulate's key prefix here.
     ;; Note that you may have to restart Emacs for this to take effect!
     (combobulate-key-prefix "C-c o")
-    :hook ((prog-mode . combobulate-mode)))
+    :hook (prog-mode . combobulate-mode))
 #+end_src
 *** Debugging with dape
 [[https://github.com/svaante/dape][dape]] is the Debug Adapter Protocol for Emacs, functioning like dap-mode does. Invoking the =M-x dape= command begins a debugging session. Enabling repeat-mode and eldoc-mode is highly recommended.
