@@ -555,15 +555,20 @@ This section contains the basic configuration for =org-mode=, setting up proper 
 #+end_src
 
 *** Nicer Heading Bullets
-[[https://github.com/sabof/org-bullets][org-bullets]] replaces the heading stars in =org-mode= buffers with nicer looking characters that you can control.
+[[https://github.com/integral-dw/org-superstar-mode][org-superstar-mode]] replaces the heading stars in =org-mode= buffers with nicer looking characters that you can control.
 
 #+begin_src emacs-lisp
 
-  (use-package org-bullets
-    :after org    
-    :hook (org-mode . org-bullets-mode)
-    :custom
-    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+
+  (use-package org-superstar
+  :ensure t
+  :after org
+  :hook (org-mode . org-superstar-mode)
+  :custom
+  (org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●"))
+  ;; Optional: This makes the "leading" stars invisible for a cleaner look
+  (org-superstar-remove-leading-stars t))
 
 #+end_src
 
