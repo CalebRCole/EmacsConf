@@ -53,7 +53,8 @@ Defaults for GNU Emacs UI, excluding external packages.
   (setq visible-bell t)       ; Set up the visible bell
 
   (column-number-mode)
-  (setq display-line-numbers t)
+  
+  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
   (setq display-line-numbers-width-start t)
 
   ;; Set frame transparency
