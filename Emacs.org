@@ -1689,6 +1689,15 @@ A set of bindings not set for packages.
       (sp-local-pair "{" nil :post-handlers nil)))
 #+end_src
 * Misc
+** Info Colors
+[[https://github.com/ubolonton/info-colors][Info Colors]] provides coloring of info buffers, which is helpful for things like syntax highlighting.
+
+#+begin_src emacs-lisp
+  (use-package info-colors
+    :after info
+    :hook
+    (Info-selection-hook . info-colors-fontify-node))
+#+end_src
 ** SICP
 SICP, or the Structure and Interpretation of Computer Programs, is a legendary programming book written in MIT Scheme. Luckily, there is even a MELPA package for an TeXinfo file for native Emacs viewing and use in Info! Racket offers the SICP Collection, a Racket #lang that makes it fully compatible with SICP code. Requires external raco package!!
 
