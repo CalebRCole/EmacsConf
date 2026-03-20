@@ -319,12 +319,13 @@ Transient is by the creators of Magit, providing a menu-based hierarchical input
            ;; ("M-g i" . consult-imenu)
            ;; ("M-g I" . consult-imenu-multi)
            ;; M-s bindings in `search-map'
-           ("M-s d" . consult-find)                  ;; Alternative: consult-fd
+  	 ("M-s d" . consult-fd)                  ;; Alternative: consult-find
            ("M-s c" . consult-locate)
            ("M-s g" . consult-grep)
            ("M-s G" . consult-git-grep)
            ("M-s r" . consult-ripgrep)
-           ("M-s l" . consult-line)
+           ("C-s" . consult-line)		;; Swapping with isearch
+  	 ("M-s l" . isearch-forward)
            ("M-s L" . consult-line-multi)
            ("M-s k" . consult-keep-lines)
            ("M-s u" . consult-focus-lines)
@@ -1558,6 +1559,8 @@ A set of bindings not set for packages.
   ;; Bindings
   (keymap-set prog-mode-map "C-c C-s C-s" #'shell)
   (keymap-set prog-mode-map "C-c C-s C-e" #'eshell)
+  (keymap-global-set "C-z" #'repeat)
+  (keymap-global-set "C-x z" #'suspend-frame) ; Swapping with repeat command.
 
   ;; Shortcut to reload init.el
   (defun reload-init-el ()
