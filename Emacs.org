@@ -126,15 +126,38 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
 #+end_src
 * UI Configuration
 ** Theme
-[[https://github.com/catppuccin/emacs][catppuchin]] is the chosen theme of Emacs. Options for flavor are: 'latte (light), 'frappe, 'macchiato, 'mocha (darkest)
+[[https://github.com/rexim/gruber-darker-theme][Gruber Darker]] is my chosen theme.
 
 #+begin_src emacs-lisp
+  ;; Some face attributes are not set with the theme and require manual setting.
+  (use-package gruber-darker-theme
+    :custom
+    (custom-set-faces
+     ;; Line Numbers (The Gutter)
+     '(line-number ((t (:foreground "#52494e" :background "#181818"))))
+     '(line-number-current-line ((t (:foreground "#ffdd33" :background "#282828" :bold t)))))
+    :config
+    (load-theme 'gruber-darker t))
 
-  (straight-use-package 'catppuccin-theme)
-  (load-theme 'catppuccin :no-confirm)
-  (setq catppuccin-flavor 'mocha)
-  (catppuccin-reload)
+  ;; Org modifications
+  (with-eval-after-load 'org
+    (custom-set-faces
+     ;; Org Headings
+     '(org-level-1 ((t (:foreground "#ffdd33" :weight bold :height 1.2))))
+     '(org-level-2 ((t (:foreground "#96a6c8" :weight bold :height 1.1))))
+     '(org-level-3 ((t (:foreground "#95a99f" :weight bold))))
+     '(org-level-4 ((t (:foreground "#cc8c3c"))))
+     '(org-hide ((t (:foreground "#181818"))))
+     '(org-indent ((t (:foreground "#181818" :background "#181818"))))
 
+     ;; Org Blocks (Babel/Source Code)
+     '(org-block ((t (:background "#202020"))))
+     ;; This colors the #+begin_src and #+end_src tags so they disappear into the background
+     '(org-block-begin-line ((t (:foreground "#52494e" :background "#1a1a1a"))))
+     '(org-block-end-line ((t (:foreground "#52494e" :background "#1a1a1a"))))
+
+     ;; Org Document Title
+     '(org-document-title ((t (:foreground "#ffdd33" :weight bold :height 1.5))))))
 #+end_src
 ** Better Modeline
 [[https://github.com/seagle0128/doom-modeline][doom-modeline]] is a very attractive and rich (yet still minimal) mode line configuration for Emacs.  The default configuration is quite good but you can check out the [[https://github.com/seagle0128/doom-modeline#customize][configuration options]] for more things you can enable or disable.
@@ -539,6 +562,8 @@ This section contains the basic configuration for =org-mode=, setting up proper 
   (use-package org
     :straight nil
     :commands (org-capture org-agenda org-element-at-property org-element-at-point org-in-src-block-p)
+    :custom
+    (org-fontify-whole-heading-line t)
     :hook ((org-mode . org-indent-mode)
     (org-mode . variable-pitch-mode)
     (org-mode . visual-line-mode))
