@@ -689,7 +689,8 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
   (use-package eglot
     :ensure nil
     :config
-    (add-to-list 'eglot-stay-out-of 'flymake))
+    (add-to-list 'eglot-stay-out-of 'flymake)
+    (add-to-list 'eglot-ignored-server-capabilities :semanticTokensProvider)) ;; Highlighting disabled in favor of Tree-sitter highlighting
 
   (add-hook 'eglot-managed-mode-hook
             (lambda ()
@@ -701,7 +702,7 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
     (global-flycheck-eglot-mode 1))
     #+end_src
 *** Treesit
-Treesitter has compatibility with Emacs as long as Emacs is compiled with it enable!! [[https://github.com/mickeynp/combobulate][Combobulate]] is a package that handles several languages grammar for Treesit.
+Treesitter has compatibility with Emacs as long as Emacs is compiled with it enabled!! [[https://github.com/mickeynp/combobulate][Combobulate]] is a package that handles several languages grammar for Treesit.
 
 #+begin_src emacs-lisp
   (use-package treesit
