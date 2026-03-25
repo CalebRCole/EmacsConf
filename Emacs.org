@@ -1604,8 +1604,6 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
 
 #+begin_src emacs-lisp
   (use-package dirvish
-    :init
-    (dirvish-override-dired-mode)
     :custom
     (dirvish-side-follow-mode t)
     (dirvish-peek-mode t)
@@ -1615,7 +1613,8 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
     (setq dirvish-attributes
   	'(vc-state subgroup-name git-mgs file-size))
     :bind
-    (("C-x C-d" . #'dirvish)
+    (("C-x d" . #'dirvish)
+     ("C-x C-d" . #'dired)
      ("M-0" . #'dirvish-side)
      :map dirvish-mode-map
      ("f" . #'dirvish-file-info-menu)
@@ -1627,15 +1626,26 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
      ("TAB" . #'dirvish-subtree-toggle)
      ("M-t" . #'dirvish-layout-toggle)))
 #+end_src
+* System Management
+
+Emacs has a long history of people extending its capabilities beyond simple text file editing. Many features can full on replace other software and terminal commands, create a more Emacs way of doing things, as well as a more intuitive and powerful system in of itself!
+
+** Proced
+
+Proced is Emacs' process editor, replacing the biggest use cases of ps and top, as well as being able to supplant kill.
+
+#+begin_src emacs-lisp
+(defun proced-settings ()
+  (proced-toggle-auto-update 1))
+
+(add-hook 'proced-mode-hook 'proced-settings)
+#+end_src
+
 * Keybinding
 ** Custom Binds
 A set of bindings not set for packages.
 
 #+begin_src emacs-lisp
-
-  ;; Make ESC quit prompts
-  (keymap-global-set "<escape>" 'keyboard-escape-quit)
-
   ;; Ensure F1 works on dual function key keyboards (e.g. laptops)
   (keymap-set key-translation-map "s-<f1>" '"<f1>")
 
@@ -1643,8 +1653,9 @@ A set of bindings not set for packages.
   (keymap-global-set "C-c c c" #'(lambda () "Opens org-literate init.el file." (interactive) (find-file (expand-file-name "Emacs.org" (file-name-directory user-init-file)))))
 
   ;; Bindings
-  (keymap-set prog-mode-map "C-c C-s C-s" #'shell)
-  (keymap-set prog-mode-map "C-c C-s C-e" #'eshell)
+  (keymap-set prog-mode-map "C-c M-s M-s" #'shell)
+  (keymap-set prog-mode-map "C-c M-s M-e" #'eshell)
+  (keymap-set prog-mode-map "C-c M-s M-v" #'vterm)
   (keymap-global-set "C-z" #'repeat)
   (keymap-global-set "C-x z" #'suspend-frame) ; Swapping with repeat command.
 
@@ -1859,6 +1870,11 @@ SICP, or the Structure and Interpretation of Computer Programs, is a legendary p
         	    "s"   #'casual-dired-sort-by-tmenu
         	    "/"   #'casual-dired-search-replace-tmenu)
 
+    ;; --- EShell ---
+    (:package 'eshell
+  	    :keymaps 'eshell-mode-map
+  	    "C-o" #'casual-eshell-tmenu)
+    
     ;; --- EWW ---
     (:package 'eww
         	    :keymaps 'eww-mode-map
