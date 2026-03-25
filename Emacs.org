@@ -1409,6 +1409,18 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 
 
 #+end_src
+** Compilation
+
+Emacs comes with a built-in compilation feature, allowing a command that will compile to be run. It defaults to "make -k" but can be changed to any relevant command for compiling, like "zig build" for example. The previous compile command can be re-run with the recompile command as well, or refreshing the compilation buffer also recompiles as well if that is preferred. There is also a command to compile a project as well, allowing you to compile anywhere. There also exists a minor mode for shell mode that allows compilation mode inside it.
+
+#+begin_src emacs-lisp
+  (defadvice compile (before ad-compile-smart activate)
+    "Advises `compile' so it sets the argument COMINT to t."
+    (ad-set-arg 1 t))
+
+  (add-hook 'shell-mode-hook 'compilation-shell-minor-mode)
+#+end_src
+
 ** Environment
 Emacs often will need the environment variables that are within the shell, but they are not always passed to it. [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] resolves this and is compatible with [bash, zsh, tcsh, fish, nu] shells. I personally run bash as my Emacs shell for portability when not using Eshell.
 
