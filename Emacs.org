@@ -719,8 +719,7 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
   (use-package eglot
     :ensure nil
     :config
-    (add-to-list 'eglot-stay-out-of 'flymake)
-    (add-to-list 'eglot-ignored-server-capabilities :semanticTokensProvider)) ;; Highlighting disabled in favor of Tree-sitter highlighting
+    (add-to-list 'eglot-stay-out-of 'flymake))
 
   (add-hook 'eglot-managed-mode-hook
             (lambda ()
@@ -785,8 +784,6 @@ Treesitter has compatibility with Emacs as long as Emacs is compiled with it ena
                (css-mode . css-ts-mode)
                (json-mode . json-ts-mode)
                (js-json-mode . json-ts-mode)
-  	     (c-mode . c-ts-mode)
-  	     (c++-mode . c++-ts-mode)
   	     (zig-mode . zig-ts-mode)))
       (add-to-list 'major-mode-remap-alist mapping))
     :custom
@@ -802,7 +799,7 @@ Treesitter has compatibility with Emacs as long as Emacs is compiled with it ena
     :custom
     ;; You can customize Combobulate's key prefix here.
     ;; Note that you may have to restart Emacs for this to take effect!
-    (combobulate-key-prefix "C-c o")
+    (combobulate-key-prefix "C-c M-o")
     :hook (prog-mode . combobulate-mode))
 #+end_src
 *** Debugging with dape
@@ -913,20 +910,22 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.
 Sets the default behavior for C and C++ mode styles. Clangd is used as the lsp for C and C++. Make sure it is installed on your host!!
 
 #+begin_src emacs-lisp
-  (add-hook 'c-ts-mode-hook 'eglot-ensure)
-  (add-hook 'c++-ts-mode-hook 'eglot-ensure)
-  (add-hook 'c-ts-mode-hook (lambda ()
-  			    (setq-local electric-indent-mode nil)))
-  (add-hook 'c++-ts-mode-hook (lambda ()
-  			      (setq-local electric-indent-mode nil)))
-
-  (setq c-ts-mode-indent-style 'k&r)
-  (add-hook 'c-ts-mode-hook
-            (lambda ()
-              (add-hook 'before-save-hook #'eglot-format-buffer nil t)))
-
+  (use-package cc-mode
+    :custom
+    ((c-toggle-syntactic-indentation 1)
+     (c-toggle-hungry-state 1))
+    :hook
+    ((c-mode . eglot-ensure)
+     (c++-mode . eglot-ensure)
+     (c-mode . electric-indent-local-mode)))
 #+end_src
 
+*** Go
+Go is a simple language made by Google to be an alternative to C/C++
+
+#+begin_src emacs-lisp
+  (add-hook 'go-ts-mode-hook #'eglot-ensure)
+#+end_src
 *** Zig
 [[https://github.com/ziglang/zig-mode][Zig-mode]] provides syntax highlighting and automatic indentation for Zig in Emacs. 
 
