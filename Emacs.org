@@ -1694,6 +1694,55 @@ A set of bindings not set for packages.
     :bind
     ("C-S-c C-S-c" . #'mc/edit-lines))
 #+end_src
+*** Macros
+
+Emacs macros essentially let you do anything and have it be repeatable. Text editing, window configuration, opening a shell and inserting specific commands then closing it, etc.
+
+#+begin_src emacs-lisp
+  (require 'kmacro)
+  (defalias 'kmacro-insert-macro 'insert-kbd-macro)
+  (keymap-set kmacro-keymap "I" #'kmacro-insert-macro)
+#+end_src
+
+Because macros are impermanent, they need to be remade each session. However, if a macro is named with =C-x C-k n=,  we can insert an elisp function that mimics the macro. This can be saved and re-used between sessions.
+
+#+begin_src emacs-lisp
+  (defun my/insert-macro-into-file (file-path search-word macro-name)
+    "Finds SEARCH-WORD in FILE-PATH and inserts the definition of MACRO-NAME after it."
+    (if (file-exists-p file-path)
+        (with-temp-file file-path
+          (insert-file-contents file-path)
+          (goto-char (point-min))
+          (if (search-forward search-word nil t)
+              (progn
+                (insert "\n")
+                ;; insert-kbd-macro prints into the current (temp) buffer
+                (insert-kbd-macro macro-name))
+            (message "Search word '%s' not found in %s" search-word file-path)))
+      (error "File not found: %s" file-path)))
+
+  (defun save-macro (macro-name)
+    "Saves a selected macro into the init file after the marker."
+    (interactive
+     (list (completing-read "Save macro: " obarray
+                            (lambda (s) (and (commandp s) (get s 'kmacro)))
+                            t)))
+    (let ((macro-symbol (intern macro-name)))
+      (my/insert-macro-into-file "~/.config/emacs/Emacs.org" "AUTOMACROINSERT\n" macro-symbol)
+      (message "Macro '%s' saved to %s" macro-name "~/.config/emacs/Emacs.org")))
+
+  (keymap-global-set "C-x C-k C-i" #'save-macro)
+#+end_src
+
+**** Custom Macros
+
+Here is a section of my saved macros.
+
+#+begin_src emacs-lisp
+  ;; AUTOMACROINSERT
+
+#+end_src
+
 ** Smartparens
 [[https://github.com/Fuco1/smartparens][Smartparens]] configures parentheses to be handles smartly, allowing easier navigation and editing.
 
