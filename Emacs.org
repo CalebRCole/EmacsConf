@@ -1414,10 +1414,6 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 Emacs comes with a built-in compilation feature, allowing a command that will compile to be run. It defaults to "make -k" but can be changed to any relevant command for compiling, like "zig build" for example. The previous compile command can be re-run with the recompile command as well, or refreshing the compilation buffer also recompiles as well if that is preferred. There is also a command to compile a project as well, allowing you to compile anywhere. There also exists a minor mode for shell mode that allows compilation mode inside it.
 
 #+begin_src emacs-lisp
-  (defadvice compile (before ad-compile-smart activate)
-    "Advises `compile' so it sets the argument COMINT to t."
-    (ad-set-arg 1 t))
-
   (add-hook 'shell-mode-hook 'compilation-shell-minor-mode)
 #+end_src
 
