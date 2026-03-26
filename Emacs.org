@@ -36,6 +36,13 @@ This org document serves as the configuration of Emacs, tangling babel code into
   ;; reliably, set `user-emacs-directory` before loading no-littering!
   (setq user-emacs-directory "~/.cache/emacs")
 
+  (setq package-enable-at-startup nil)
+
+  ;; Right Alt is bound to Alt (separate from Meta) and right Control to Hyper.
+  ;; Use keyd to change keys to f13 and f14 respectively.
+  (define-key local-function-key-map [Tools] 'event-apply-alt-modifier)
+  (define-key local-function-key-map [Launch5] 'event-apply-hyper-modifier)
+
 #+end_src
 
 * Basic UI
