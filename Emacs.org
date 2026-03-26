@@ -1047,6 +1047,15 @@ Emacs Lisp is the Lisp dialect used to provide the Emacs environment and is the 
   (keymap-set lisp-mode-shared-map "C-c C-p" #'check-parens)
   (keymap-set emacs-lisp-mode-map "C-c d" #'edebug-mode)
 #+end_src
+
+**** SLIME
+[[https://github.com/slime/slime][SLIME]] is The Superior Lisp Interaction Mode for Emacs, a replacement for the built-in inferior list interaction mode and features support for many CLisp variations.
+
+#+begin_src emacs-lisp
+  (use-package slime
+    :custom
+    (inferior-lisp-program "sbcl"))
+#+end_src
 *** GLSL
 
 GLSL is the shader language for OpenGL. [[https://github.com/jimhourihan/glsl-mode][GLSL mode]] is self explanatory.
