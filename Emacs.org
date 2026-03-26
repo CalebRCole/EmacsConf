@@ -325,12 +325,12 @@ Transient is by the creators of Magit, providing a menu-based hierarchical input
            ([remap Info-search] . consult-info)
            ;; C-x bindings in `ctl-x-map'
            ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-           ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-           ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-           ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-           ("C-x t b" . consult-buffer-other-tab)    ;; orig. switch-to-buffer-other-tab
-           ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-           ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+           ("s-b" . consult-buffer)                ;; orig. switch-to-buffer
+           ("s-4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+           ("s-5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+           ("s-t b" . consult-buffer-other-tab)    ;; orig. switch-to-buffer-other-tab
+           ("s-r b" . consult-bookmark)            ;; orig. bookmark-jump
+           ("s-p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
            ;; Custom M-# bindings for fast register access
            ("M-#" . consult-register-load)
            ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
@@ -522,10 +522,14 @@ Emacs's default window selection can be tough to intuit at times. Using windmove
 
 #+begin_src emacs-lisp
 
-  (keymap-global-set "M-s <left>" #'windmove-left)
-  (keymap-global-set "M-s <right>" #'windmove-right)
-  (keymap-global-set "M-s <up>" #'windmove-up)
-  (keymap-global-set "M-s <down>" #'windmove-down)
+  (keymap-global-set "s-<left>" #'windmove-left)
+  (keymap-global-set "s<right>" #'windmove-right)
+  (keymap-global-set "s-<up>" #'windmove-up)
+  (keymap-global-set "s-<down>" #'windmove-down)
+  (keymap-global-set "s-j" #'windmove-left)
+  (keymap-global-set "s-k" #'windmove-right)
+  (keymap-global-set "s-l" #'windmove-up)
+  (keymap-global-set "s-;" #'windmove-down)
 
 #+end_src
 * Org Mode
@@ -1670,7 +1674,7 @@ A set of bindings not set for packages.
   (keymap-set key-translation-map "s-<f1>" '"<f1>")
 
   ;; Opens this config file
-  (keymap-global-set "C-c c c" #'(lambda () "Opens org-literate init.el file." (interactive) (find-file (expand-file-name "Emacs.org" (file-name-directory user-init-file)))))
+  (keymap-global-set "H-c" #'(lambda () "Opens org-literate init.el file." (interactive) (find-file (expand-file-name "Emacs.org" (file-name-directory user-init-file)))))
 
   ;; Bindings
   (keymap-set prog-mode-map "C-c M-s M-s" #'shell)
@@ -1685,7 +1689,7 @@ A set of bindings not set for packages.
     (interactive)
     (load-file user-init-file)
     (message "Init file reloaded"))
-  (keymap-global-set "C-c c r" #'reload-init-el)
+  (keymap-global-set "H-r" #'reload-init-el)
 
 #+end_src
 ** Navigation
@@ -1786,34 +1790,25 @@ Here is a section of my saved macros.
     ("C-M-S-k" . #'sp-backward-kill-sexp)
     ("C-M-t" . #'sp-transpose-sexp)
     ("C-M-S-t" . #'sp-transpose-hybrid-sexp)
-    ("C-M-l" . #'sp-forward-slurp-sexp)
-    ("C-M-S-l" . #'sp-backward-slurp-sexp)
-    ("C-M-;" . #'sp-add-to-previous-sexp)
-    ("C-M-'" . #'sp-add-to-next-sexp)
-    ("C-M-:" . #'sp-backward-barf-sexp)
-    ("C-M-\"" . #'sp-forward-barf-sexp)
-    ("C-c C-w r" . #'sp-rewrap-sexp)
-    ("C-c C-w s" . #'sp-swap-enclosing-sexp)
-    ("C-c C-w c i" . #'sp-change-inner)
-    ("C-c C-w c e" . #'sp-change-enclosing)
-    ("C-c C-w u" . #'sp-unwrap-sexp)
-    ("C-c C-w b u" . #'sp-backward-unwrap-sexp)
-    ("C-c C-w x" . #'sp-splice-sexp)
-    ("C-c C-w b x" . #'sp-splice-sexp-killing-backward)
-    ("C-c C-w f x" . #'sp-splice-sexp-killing-forward)
+    ("A-s b" . #'sp-backward-slurp-sexp)
+    ("A-s f" . #'sp-forward-slurp-sexp)
+    ("A-a b" . #'sp-add-to-previous-sexp)
+    ("A-a f" . #'sp-add-to-next-sexp)
+    ("A-b b" . #'sp-backward-barf-sexp)
+    ("A-b f" . #'sp-forward-barf-sexp)
+    ("A-c r" . #'sp-rewrap-sexp)
+    ("A-c s" . #'sp-swap-enclosing-sexp)
+    ("A-c i" . #'sp-change-inner)
+    ("A-c e" . #'sp-change-enclosing)
+    ("A-u u" . #'sp-unwrap-sexp)
+    ("A-u b" . #'sp-backward-unwrap-sexp)
+    ("A-u i" . #'sp-splice-sexp)
+    ("A-u k b" . #'sp-splice-sexp-killing-backward)
+    ("A-u k f" . #'sp-splice-sexp-killing-forward)
     ("C-M-SPC" . #'sp-mark-sexp)
-    ("C-S-d" . #'sp-backward-delete-char)
-    ("M-S-d" . #'sp-backward-kill-word)
-    ("C-w" . #'sp-kill-region)
-    ("C-c C-w [" . #'sp-wrap-round)
-    ("C-c C-w ]" . #'sp-wrap-square)
-    ("C-c C-w \\" . #'sp-wrap-curly)
-    ("C-c C-w h p" . #'sp-show-enclosing-pair)
-    ("C-c C-w h s" . #'sp-highligh-current-sexp)
-    ("C-M-," . #'sp-skip-backward-to-symbol)
-    ("C-M-." . #'sp-skip-forward-to-symbol)
-    ("C-M-<" . #'sp-backward-kill-symbol)
-    ("C-M->" . #'sp-kill-symbol)
+    ("A-w r" . #'sp-wrap-round)
+    ("A-w s" . #'sp-wrap-square)
+    ("A-w c" . #'sp-wrap-curly)
     :config
     (smartparens-global-mode 1)
     (require 'smartparens-config))
@@ -1847,10 +1842,10 @@ SICP, or the Structure and Interpretation of Computer Programs, is a legendary p
     ("C-k"     . #'crux-smart-kill-line)
     ("C-c o"   . #'crux-smart-open-line-above)
     ("C-c F"   . #'crux-recentf-find-directory)
-    ("C-x 4 t" . #'crux-transpose-windows)
+    ("s-4 t" . #'crux-transpose-windows)
     ("C-c d"   . #'crux-duplicate-current-line-or-region)
     ("C-c M-d" . #'crux-duplicate-and-comment-current-line-or-region)
-    ("M-o"     . #'crux-other-window-or-switch-buffer))
+    ("s-o"     . #'crux-other-window-or-switch-buffer))
 #+end_src
 ** Casual
 [[https://github.com/kickingvegas/casual][Casual]] is an opinionated approach to keybindings that take inspiration from Magit's use of Transient to turn keybinding recall into recognition, providing a menu for commands, increasing the visibility of less used commands.
