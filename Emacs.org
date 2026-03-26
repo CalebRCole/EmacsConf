@@ -1047,6 +1047,14 @@ Emacs Lisp is the Lisp dialect used to provide the Emacs environment and is the 
   (keymap-set lisp-mode-shared-map "C-c C-p" #'check-parens)
   (keymap-set emacs-lisp-mode-map "C-c d" #'edebug-mode)
 #+end_src
+*** GLSL
+
+GLSL is the shader language for OpenGL. [[https://github.com/jimhourihan/glsl-mode][GLSL mode]] is self explanatory.
+
+#+begin_src emacs-lisp
+  (use-package glsl-mode)
+#+end_src
+
 ** LLM Integration
 *** Ellama
 [[https://github.com/s-kostyaev/ellama][Ellama]] allows integration between Emacs and [[https://ollama.com/][Ollama]]. The desired ollama model is pulled with the terminal command =ollama pull MODEL=.
