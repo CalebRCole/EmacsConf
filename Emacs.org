@@ -132,6 +132,40 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
   (use-package general)
 #+end_src
 * UI Configuration
+** Windowing
+Emacs's default window selection can be tough to intuit at times. Using windmove, keybindings for using =s-<direction>= allows focus to shift to the frame in =<direction>=. Typically super is used to call windowing commands.
+
+#+begin_src emacs-lisp
+
+  (keymap-global-set "s-<left>" #'windmove-left)
+  (keymap-global-set "s-<right>" #'windmove-right)
+  (keymap-global-set "s-<up>" #'windmove-up)
+  (keymap-global-set "s-<down>" #'windmove-down)
+  (keymap-global-set "s-j" #'windmove-left)
+  (keymap-global-set "s-k" #'windmove-down)
+  (keymap-global-set "s-l" #'windmove-up)
+  (keymap-global-set "s-;" #'windmove-right)
+
+  (keymap-global-set "s-f" #'find-file)
+
+  (keymap-global-set "s-t 0" #'tab-close)
+  (keymap-global-set "s-t 1" #'tab-close-other)
+  (keymap-global-set "s-t t" #'other-tab-prefix)
+  (keymap-global-set "s-t f" #'find-file-other-tab)
+  (keymap-global-set "s-t d" #'dired-other-tab)
+
+  (keymap-global-set "s-0" #'delete-window)
+  (keymap-global-set "s-1" #'delete-other-windows)
+  (keymap-global-set "s-2" #'split-window-below)
+  (keymap-global-set "s-3" #'split-window-right)
+  (keymap-global-set "s-4 4" #'other-window-prefix)
+  (keymap-global-set "s-4 f" #'find-file-other-window)
+  (keymap-global-set "s-4 c" #'clone-indirect-buffer-other-window)
+
+  (with-eval-after-load 'project
+    (define-key global-map (kbd "s-p") project-prefix-map))
+
+#+end_src
 ** Theme
 [[https://github.com/rexim/gruber-darker-theme][Gruber Darker]] is my chosen theme.
 
@@ -330,7 +364,7 @@ Transient is by the creators of Magit, providing a menu-based hierarchical input
            ("s-5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
            ("s-t b" . consult-buffer-other-tab)    ;; orig. switch-to-buffer-other-tab
            ("s-r b" . consult-bookmark)            ;; orig. bookmark-jump
-           ("s-p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+           ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
            ;; Custom M-# bindings for fast register access
            ("M-#" . consult-register-load)
            ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
@@ -517,21 +551,6 @@ This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to desig
 
 #+end_src
 
-** Windowing
-Emacs's default window selection can be tough to intuit at times. Using windmove, keybindings for using =M-<direction>= allows focus to shift to the frame in =<direction>=.
-
-#+begin_src emacs-lisp
-
-  (keymap-global-set "s-<left>" #'windmove-left)
-  (keymap-global-set "s<right>" #'windmove-right)
-  (keymap-global-set "s-<up>" #'windmove-up)
-  (keymap-global-set "s-<down>" #'windmove-down)
-  (keymap-global-set "s-j" #'windmove-left)
-  (keymap-global-set "s-k" #'windmove-right)
-  (keymap-global-set "s-l" #'windmove-up)
-  (keymap-global-set "s-;" #'windmove-down)
-
-#+end_src
 * Org Mode
 [[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
 ** Better Font Faces
