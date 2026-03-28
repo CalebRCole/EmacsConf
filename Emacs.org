@@ -1229,8 +1229,8 @@ Snippets allow inserting larger blocks of code with code expansion. There are tw
 ** Project.el
 Project.el is the native project system for Emacs and is required for Eglot to function. Relies on vcs to determine projects.
 
-** Magit
-
+** Version Control
+*** Magit
 [[https://magit.vc/][Magit]] is a git porcelain, displaying git in a tui state within an org-mode buffer.
 
 #+begin_src emacs-lisp
@@ -1265,15 +1265,6 @@ Project.el is the native project system for Emacs and is required for Eglot to f
   		       (setq-local corfu-auto t
   		       corfu-auto-delay 0.0
   		       corfu-auto-prefix 1))))
-#+end_src
-
-*** Ediff
-Ediff is a built-in package for checking the difference between two files. Works well with version controlled files for things like merge conflicts
-
-#+begin_src emacs-lisp
-  (setq ediff-keep-variants nil)
-  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-  (setq ediff-split-window-function 'split-window-horizontally)
 #+end_src
 
 *** Consult-gh
@@ -1317,6 +1308,26 @@ Ediff is a built-in package for checking the difference between two files. Works
     :config
     (consult-gh-forge-mode +1)
     (setq consult-gh-forge-timeout-seconds 20))
+#+end_src
+
+*** Auto Commit Mode
+[[https://github.com/ryuslash/git-auto-commit-mode][Auto commit mode]] allows for automatic commits upon file saving, where the saved file is the name of the commit relative to the root of the project. This is especially useful for projects that are more notes oriented, like an org roam zettelkasten. It can also automate pushes to remotes.
+
+Simply create a dir-locals.el function in the desired directory with the code =((nil . ((eval git-auto-commit-mode 1))))=.
+
+#+begin_src emacs-lisp
+  (use-package git-auto-commit-mode
+    :custom
+    ((gac-automatically-push-p t)
+     (gac-automatically-add-new-files-p t)))
+#+end_src
+*** Ediff
+Ediff is a built-in package for checking the difference between two files. Works well with version controlled files for things like merge conflicts
+
+#+begin_src emacs-lisp
+  (setq ediff-keep-variants nil)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  (setq ediff-split-window-function 'split-window-horizontally)
 #+end_src
 
 ** Rainbow Delimiters
