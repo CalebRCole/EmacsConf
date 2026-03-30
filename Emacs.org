@@ -1764,12 +1764,12 @@ A set of bindings not set for packages.
   (keymap-global-set "C-x z" #'suspend-frame) ; Swapping with repeat command.
 
   ;; Shortcut to reload init.el
-  (defun reload-init-el ()
+  (defun my/reload-init-el ()
     "Loads init.el the same as M-x load-file, reloading Emacs' configuration. Note that not all changes may occur immediately and may require Emacs to be restarted."
     (interactive)
     (load-file user-init-file)
     (message "Init file reloaded"))
-  (keymap-global-set "H-r" #'reload-init-el)
+  (keymap-global-set "H-r" #'my/reload-init-el)
 
 #+end_src
 ** Navigation
@@ -1825,7 +1825,7 @@ Because macros are impermanent, they need to be remade each session. However, if
             (message "Search word '%s' not found in %s" search-word file-path)))
       (error "File not found: %s" file-path)))
 
-  (defun save-macro (macro-name)
+  (defun my/save-macro (macro-name)
     "Saves a selected macro into the init file after the marker."
     (interactive
      (list (completing-read "Save macro: " obarray
@@ -1835,7 +1835,7 @@ Because macros are impermanent, they need to be remade each session. However, if
       (my/insert-macro-into-file "~/.config/emacs/Emacs.org" "AUTOMACROINSERT\n" macro-symbol)
       (message "Macro '%s' saved to %s" macro-name "~/.config/emacs/Emacs.org")))
 
-  (keymap-global-set "C-x C-k C-i" #'save-macro)
+  (keymap-global-set "C-x C-k C-i" #'my/save-macro)
 #+end_src
 
 **** Custom Macros
