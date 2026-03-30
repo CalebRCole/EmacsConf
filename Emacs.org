@@ -603,19 +603,26 @@ This section contains the basic configuration for =org-mode=, setting up proper 
 
   (use-package org
     :straight nil
-    :commands (org-capture org-agenda org-element-at-property org-element-at-point org-in-src-block-p)
-    :custom
-    (org-fontify-whole-heading-line t)
-    :hook ((org-mode . org-indent-mode)
-    (org-mode . variable-pitch-mode)
-    (org-mode . visual-line-mode))
     :init
     ;; Replace list hyphen with dot
     (font-lock-add-keywords 'org-mode
   			  '(("^ *\\([-]\\) "
   			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
+    :custom
+    (org-fontify-whole-heading-line t)
+    (org-capture-templates
+     '(("p" "Protocol" entry (file+headline "~/org/inbox.org" "Inbox")
+        "* %^{Title}\nSource: %u, %c\n\n%i")
+       ("L" "Protocol Link" entry (file+headline "~/org/inbox.org" "Links")
+        "* %? [[%:link][%:description]] \nCaptured On: %U")))
+    :hook ((org-mode . org-indent-mode)
+  	 (org-mode . variable-pitch-mode)
+  	 (org-mode . visual-line-mode))
+    :bind (:map org-mode-map
+  	      ("C-c s h" . #'org-insert-heading)
+  	      ("C-c s s" . #'org-insert-subheading))
     :config
+    (require 'org-protocol)
     (setq org-ellipsis " ▾")
     (org-font-setup))
 
@@ -706,6 +713,36 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
 
 #+end_src
 
+** Typesetting
+*** LaTeX
+LaTeX is the standard way of writing mathematical documents and an excellent way to create documents generally like PDFs. AUCTeX is the Emacs mode for editing LaTeX.
+
+#+begin_src emacs-lisp
+  (use-package auctex
+    :mode
+    ("\\.tex\\'" . latex-mode)
+    :custom
+    (TeX-auto-save t)
+    (TeX-parse-self t)
+    (TeX-PDF-mode t)
+    (reftex-plug-into-AUCTeX t)
+    :hook
+    ((LaTeX-mode . LaTeX-math)
+     (LaTeX-mode . turn-on-reftex)))
+#+end_src
+*** BibTeX
+BibTeX is a TeX format for bibliographies.
+
+#+begin_src emacs-lisp
+  (use-package bibtex
+    :custom
+    (bibtex-dialect 'biblatex)
+    (bibtex-align-at-equal-sign t)
+    (bibtex-text-indentation 2)
+    :hook
+    (bibtex-mode . (lambda ()
+                         (add-hook 'after-save-hook #'bibtex-reformat nil t))))
+#+end_src
 ** Org-Roam
 [[https://www.orgroam.com/][Org-roam]] uses Org-mode with a SQLite to generate a node based note taking system, like Obsidian.md. [[https://www.youtube.com/watch?v=YxgA5z2R08I][This Video by System Crafters]] explains how to utilize Org-roam. I am using mounted google drive with rclone to have my notes be synced across devices.
 
@@ -719,19 +756,51 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
     (org-roam-directory (file-truename "~/GDrive/zettelkasten/"))
     (org-roam-completion-everywhere t)
     (org-roam-capture-templates
-     '(("d" "default" plain
+     '(
+       ;; F - FLEETING NOTE
+       ;; Fast capture for temporary thoughts. 
+       ;; Includes a TODO for the "Daily Review" mentioned in the video.
+       ("f" "Fleeting" plain
         "%?"
-        :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+        :if-new (file+head "fleeting/%<%Y%m%d%H%M%S>-${slug}.org"
+                           "#+title: ${title}\n#+filetags: :fleeting:unfiled:\n\n* TODO Review this fleeting thought\nCaptured: %U\n\n%i")
+        :immediate-finish t)
+
+       ;; L - LITERATURE NOTE
+       ;; For capturing insights from books, videos, or articles.
+       ("l" "Literature" plain "%?"
+        :if-new (file+head "literature/${citekey}.org"
+  			 ":PROPERTIES:\n:ROAM_REFS: citekey:${citekey}\n:END:\n#+title: ${citar-author} (${citar-date}) - ${citar-title}\n#+filetags: :literature:unfiled:\n\n* Highlights\n%i\n\n")
         :unnarrowed t)
-       ("n" "note" plain
-        (file "~/roam/templates/note.org")
-        :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+
+       ;; A - ATOMIC NOTE
+       ;; The "Golden Unit." One idea, in your own words.
+       ;; Includes the "Up" property for the tree-structure hierarchy.
+       ("a" "Atomic" plain
+        "%?"
+        :if-new (file+head "atomic/%<%Y%m%d%H%M%S>-${slug}.org"
+  			 "#+title: ${title}\n#+filetags: :atomic:\n\n* Context\nUp: [[id:%^{Parent Node ID}][%^{Parent Node Title}]]\n\n* The Concept\n%i\n\n* See Also\n")
+        :unnarrowed t)
+
+       ;; P - PROJECT NOTE
+       ;; For active outcomes (essays, videos, study goals).
+       ("p" "Project" plain
+        "%?"
+        :if-new (file+head "projects/%<%Y%m%d%H%M%S>-${slug}.org"
+  			 "#+title: ${title}\n#+filetags: :project:active:\n\n* Objective\n%^{Goal}\n\n* Tasks [0/0]\n- [ ] \n\n* Relevant Atomic Notes\n%i")
+        :unnarrowed t)
+       ;; R - REFERENCE NOTE
+       ;; For capturing pure facts. Atomic information to be referenced.
+       ("r" "Reference" plain
+        "%?"
+        :if-new (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org"
+                           ":PROPERTIES:\n:ROAM_REFS: ${citekey}\n:END:\n#+title: ${title}\n#+filetags: :reference:\n\n* Information\n- %i")
         :unnarrowed t)))
     :bind (("C-c n l" . org-roam-buffer-toggle)
-           ("C-c n f" . org-roam-node-find)
-           ("C-c n i" . org-roam-node-insert)
-           :map org-mode-map
-           ("C-M-i" . completion-at-point))
+  	 ("C-c n f" . org-roam-node-find)
+  	 ("C-c n i" . org-roam-node-insert)
+  	 :map org-mode-map
+  	 ("C-M-i" . completion-at-point))
     :config
     (org-roam-db-autosync-enable))
 
@@ -749,6 +818,128 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
     :after
     (org-roam))
 
+#+end_src
+*** Org-Noter
+[[https://github.com/weirdNox/org-noter][Org-Noter]] allows org files to synchronize and follow linked PDFs in an attached window.
+
+#+begin_src emacs-lisp
+    (use-package org-noter
+      :after org-roam
+      :config
+      (require 'org-noter-pdftools))
+
+    (use-package org-pdftools
+    :hook (org-mode . org-pdftools-setup-link))
+
+  (use-package org-noter-pdftools
+    :after (org-noter pdf-tools)
+    :config
+    ;; Add a function to ensure precise note is inserted
+    (defun org-noter-pdftools-insert-precise-note (&optional toggle-no-questions)
+      (interactive "P")
+      (org-noter--with-valid-session
+       (let ((org-noter-insert-note-no-questions (if toggle-no-questions
+                                                     (not org-noter-insert-note-no-questions)
+                                                   org-noter-insert-note-no-questions))
+             (org-pdftools-use-isearch-link t)
+             (org-pdftools-use-freepointer-annot t))
+         (org-noter-insert-note (org-noter--get-precise-info)))))
+
+    ;; fix https://github.com/weirdNox/org-noter/pull/93/commits/f8349ae7575e599f375de1be6be2d0d5de4e6cbf
+    (defun org-noter-set-start-location (&optional arg)
+      "When opening a session with this document, go to the current location.
+  With a prefix ARG, remove start location."
+      (interactive "P")
+      (org-noter--with-valid-session
+       (let ((inhibit-read-only t)
+             (ast (org-noter--parse-root))
+             (location (org-noter--doc-approx-location (when (called-interactively-p 'any) 'interactive))))
+         (with-current-buffer (org-noter--session-notes-buffer session)
+           (org-with-wide-buffer
+            (goto-char (org-element-property :begin ast))
+            (if arg
+                (org-entry-delete nil org-noter-property-note-location)
+              (org-entry-put nil org-noter-property-note-location
+                             (org-noter--pretty-print-location location))))))))
+    (with-eval-after-load 'pdf-annot
+      (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
+#+end_src
+** Org-Transclusion
+[[https://github.com/nobiot/org-transclusion][Org-transclusion]] is a package that allows snippets of org files to be included within other org files without needing to copy and paste, allowing live and asynchronous editing of quoted sections.
+
+#+begin_src emacs-lisp
+  (use-package org-transclusion
+    :after org
+    :config
+    (org-transclusion-font-lock-mode 1))
+    #+end_src
+
+** Citar
+[[https://github.com/emacs-citar/citar][Citar]] is a package that allows easy and powerful management of citations. It integrates well with native Emacs packages and completion frameworks like Ivy and Vertico. It also has good integration with Embark and Org-Roam, allowing for instant transitioning to linked references.
+
+#+begin_src emacs-lisp
+  (use-package citar
+    :custom
+    (citar-bibliography (file-truename "~/GDrive/ReferenceMaterials/references.bib"))
+    (citar-notes-paths (file-truename "~/GDrive/zettelkasten/literature"))
+    :hook
+    (LaTeX-mode . citar-capf-setup)
+    (org-mode . citar-capf-setup))
+
+  (use-package citar-embark
+    :after (citar embark)
+    :config
+    (citar-embark-mode))
+
+  (use-package citar-org-roam
+    :after (citar org-roam)
+    :custom
+    (citar-org-roam-note-title-template "${author} - ${title}")
+    (citar-org-roam-capture-template-key "l")
+    :config
+    (citar-org-roam-mode 1))
+#+end_src
+
+** Zotra
+Zotero is a bibliographic tool, allowing a citation to be generated by simply clicking the extension button in a browser or by using the Zotero client. [[https://github.com/mpedramfar/zotra][Zotra]] is a translator package for emacs that can use URLs and search identifiers to fetch bibliographic information directly within Emacs.
+
+#+begin_src emacs-lisp
+  (use-package zotra
+    :custom
+    (zotra-backend 'zotra-server)
+    (zotra-local-server-directory (file-truename "~/Software/zotra-server/"))
+    (zotra-default-bibliography (file-truename "~/GDrive/ReferenceMaterials/references.bib"))
+    (zotra-download-attachment-default-directory (file-truename "~/GDrive/ReferenceMaterials/")))
+#+end_src
+
+** PDF-Tools
+[[https://github.com/vedang/pdf-tools][pdf-tools]] Is a superior PDF viewing mode for Emacs.
+
+#+begin_src emacs-lisp
+  (use-package pdf-tools
+  :mode
+  (("\\.pdf$" . pdf-view-mode))
+
+  :custom
+  (pdf-annot-activate-created-annotations t) 
+  (pdf-view-resize-factor 1.1)
+
+  :bind
+  (:map pdf-view-mode-map
+    ;; normal isearch
+	("C-s" . isearch-forward)
+    ;; custom keys 
+	("h" . pdf-annot-activate-created-annotations)
+	("t" . pdf-annot-add-text-annotation)
+	("D" . pdf-annot-delete))
+
+  :hook
+  ((pdf-view-mode) . (lambda () (cua-mode 0)))
+
+  :config
+  (pdf-tools-install)
+
+  (setq-default pdf-view-display-size 'fit-page))
 #+end_src
 
 * Development
@@ -771,7 +962,7 @@ This snippet adds a hook to =org-mode= buffers so that =org-babel-tangle-config=
     :after (flycheck eglot)
     :config
     (global-flycheck-eglot-mode 1))
-    #+end_src
+#+end_src
 *** Treesit
 Treesitter has compatibility with Emacs as long as Emacs is compiled with it enabled!! [[https://github.com/mickeynp/combobulate][Combobulate]] is a package that handles several languages grammar for Treesit.
 
