@@ -132,8 +132,19 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
   (use-package general)
 #+end_src
 * UI Configuration
+** Emacs Wayland Window Manager
+[[https://codeberg.org/ezemtsov/ewm][EWM]] is the Wayland version of EXWM, the Emacs window manager for Xorg. This is my replacement for window managers/compositors like Sway/i3, Hyprland, and Niri. By having Emacs supersede the window compositor essentially, Emacs' remains the source of configuration for my desktop, allowing for a much increased hack-able system.
+
+#+begin_src emacs-lisp
+(use-package ewm
+  :after consult
+  :custom
+  (ewm-output-config '(("eDP-1" :width 1920 :height 1080)))
+  :bind (:map ewm-mode-map
+         ("s-d" . consult-buffer)))
+#+end_src
 ** Windowing
-Emacs's default window selection can be tough to intuit at times. Using windmove, keybindings for using =s-<direction>= allows focus to shift to the frame in =<direction>=. Typically super is used to call windowing commands.
+Emacs's default window selection can be tough to intuit at times. Using windmove, keybindings for using =s-<direction>= allows focus to shift to the frame in =<direction>=, as well as right hand home row keys. Typically super is used to call windowing commands.
 
 #+begin_src emacs-lisp
 
@@ -150,6 +161,7 @@ Emacs's default window selection can be tough to intuit at times. Using windmove
 
   (keymap-global-set "s-t 0" #'tab-close)
   (keymap-global-set "s-t 1" #'tab-close-other)
+  (keymap-global-set "s-t 2" #'tab-new)
   (keymap-global-set "s-t t" #'other-tab-prefix)
   (keymap-global-set "s-t f" #'find-file-other-tab)
   (keymap-global-set "s-t d" #'dired-other-tab)
@@ -1689,10 +1701,48 @@ Emacs has a long history of people extending its capabilities beyond simple text
 Proced is Emacs' process editor, replacing the biggest use cases of ps and top, as well as being able to supplant kill.
 
 #+begin_src emacs-lisp
-(defun proced-settings ()
-  (proced-toggle-auto-update 1))
+  (keymap-global-set "s-s p" #'proced)
 
-(add-hook 'proced-mode-hook 'proced-settings)
+  (setq display-buffer-alist
+        '(("\\*proced\\*"
+  	 (display-buffer-same-window)
+  	 (inhibit-same-window . nil))))
+
+  (defun proced-settings ()
+    (proced-toggle-auto-update 1))
+
+  (add-hook 'proced-mode-hook 'proced-settings)
+#+end_src
+
+** IBuffer
+IBuffer is Emacs' dedicated buffer for editing and interacting with buffers. If in a Emacs driven desktop (e.g. EXWM, EWM, etc.), this serves as a way to handle processes that take up their own buffer.
+
+#+begin_src emacs-lisp
+  (keymap-global-set "s-s i" #'ibuffer-jump)
+#+end_src
+
+** Edit with Emacs
+Utilizing the org-protocol, we can use Emacs buffers for other applications. Web browsers even have extensions that allow for similar capabilities with Emacs.
+
+#+begin_src emacs-lisp
+  (use-package edit-server
+    :commands edit-server-start
+    :init
+    (if after-init-time
+        (edit-server-start)
+      (add-hook 'after-init-hook
+                #'(lambda() (edit-server-start))))
+    :custom
+    (edit-server-new-frame-alist
+     '((name . "Edit with Emacs FRAME")
+       (top . 200)
+       (left . 200)
+       (width . 80)
+       (height . 25)
+       (minibuffer . t)
+       (menu-bar-lines . t)
+       (window-system . pgtk)))
+    (edit-server-default-major-mode 'org-mode))
 #+end_src
 
 * Keybinding
@@ -2099,6 +2149,4 @@ Resetting the garbage collector.
   ;; Make gc pauses faster by decreasing the threshold.
   (setq gc-cons-threshold (* 800 1000))
 #+end_src
-# Local Variables:
-# jinx-local-words: "Clangd Dired Direnv Dirvish Ellama Eshell Flycheck Flymake Flyspell Orderless Vertico dape derivers distros eldoc goto init js lsp macchiato magit md nixd nixfmt ollama pyvenv realisation repl reproducibility tcsh ts vcs vterm windmove zsh"
-# End:
+
