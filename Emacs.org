@@ -1377,9 +1377,9 @@ Snippets allow inserting larger blocks of code with code expansion. There are tw
 
 #+begin_src emacs-lisp
   (defun yas-reload-minor-mode ()
-      "Reloads snippet tables and calls yas minor mode."
+    "Reloads snippet tables and calls yas minor mode."
     (yas-minor-mode 1) (yas-reload-all))
-  
+
   (use-package yasnippet
     :init
     :hook (eglot--managed-mode . yas-reload-minor-mode))
@@ -1411,7 +1411,7 @@ Snippets allow inserting larger blocks of code with code expansion. There are tw
       ;;             completion-at-point-functions
       ;;             (cons (cape-capf-trigger #'tempel-complete ?/)
       ;;                   completion-at-point-functions))
-    )
+      )
 
     (add-hook 'conf-mode-hook 'tempel-setup-capf)
     (add-hook 'prog-mode-hook 'tempel-setup-capf)
@@ -1421,7 +1421,7 @@ Snippets allow inserting larger blocks of code with code expansion. There are tw
     ;; either locally or globally. `expand-abbrev' is bound to C-x '.
     ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
     ;; (global-tempel-abbrev-mode)
-  )
+    )
 
   ;; Optional: Add tempel-collection if you want ready-made templates.
   (use-package tempel-collection
@@ -1466,8 +1466,8 @@ Project.el is the native project system for Emacs and is required for Eglot to f
     (git-commit-mode . conventional-commit-setup)
     (git-commit-mode . (lambda ()		; Auto completions in commit buffers only.
   		       (setq-local corfu-auto t
-  		       corfu-auto-delay 0.0
-  		       corfu-auto-prefix 1))))
+  				   corfu-auto-delay 0.0
+  				   corfu-auto-prefix 1))))
 #+end_src
 
 *** Consult-gh
@@ -1831,7 +1831,7 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
     (dired-mode . auto-revert-mode)
     (dired-mode . hl-line-mode)
     (dired-mode . (lambda ()
-  	      (setq-local mouse-1-clicks-follow-link 'double)))
+  		  (setq-local mouse-1-clicks-follow-link 'double)))
     :bind (("C-x C-j" . dired-jump))
     :custom ((dired-listing-switches "-alh --group-directories-first"))
     :config
@@ -1853,8 +1853,8 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
 
   (use-package dired-hide-dotfiles
     :bind (:map dired-mode-map
-  	 ("C-c C-h" . dired-hide-dotfiles-mode)))
-    #+end_src
+  	      ("C-c C-h" . dired-hide-dotfiles-mode)))
+#+end_src
 
 ** Dirvish
 [[https://github.com/alexluigit/dirvish#start-of-content][Dirvish]] is a modern and sleek Dired porcelain. Features include peeking, paned previews, images, etc.
