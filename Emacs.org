@@ -662,7 +662,10 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
        (eshell . t)
        (gnuplot . t)
        (python . t)
-       (racket . t)))
+       (racket . t)
+       (latex . t)))
+    (setq org-confirm-babel-evaluate nil)
+    (setq org-startup-with-inline-images t)
 
     (push '("conf-unix" . conf-unix) org-src-lang-modes))
 
