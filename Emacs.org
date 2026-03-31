@@ -750,13 +750,18 @@ BibTeX is a TeX format for bibliographies.
 [[https://www.orgroam.com/][Org-roam]] uses Org-mode with a SQLite to generate a node based note taking system, like Obsidian.md. [[https://www.youtube.com/watch?v=YxgA5z2R08I][This Video by System Crafters]] explains how to utilize Org-roam. I am using mounted google drive with rclone to have my notes be synced across devices.
 
 #+begin_src emacs-lisp
+  (defun my/tomorrow-date ()
+    "Gets the Y/M/D of tomorrow."
+    (let* ((day-in-seconds (* 24 60 60))
+         (tomorrow-time (time-add (current-time) day-in-seconds)))
+    (format-time-string "%Y-%m-%d" tomorrow-time)))
 
   (use-package org-roam
     :after org
     :init
     (setq org-roam-v2-ack t)
     :custom
-    (org-roam-directory (file-truename "~/GDrive/zettelkasten/"))
+    (org-roam-directory (file-truename "~/Documents/zettelkasten/"))
     (org-roam-completion-everywhere t)
     (org-roam-capture-templates
      '(
@@ -766,23 +771,42 @@ BibTeX is a TeX format for bibliographies.
        ("f" "Fleeting" plain
         "%?"
         :if-new (file+head "fleeting/%<%Y%m%d%H%M%S>-${slug}.org"
-                           "#+title: ${title}\n#+filetags: :fleeting:unfiled:\n\n* TODO Review this fleeting thought\nCaptured: %U\n\n%i")
+                           "#+title: ${title}\n#+filetags: :fleeting:unfiled:\n\n* TODO Review this fleeting thought\nDEADLINE: <%(my/tomorrow-date)>\nCaptured: %U\n\n%i")
         :immediate-finish t)
 
-       ;; L - LITERATURE NOTE
-       ;; For capturing insights from books, videos, or articles.
-       ("l" "Literature" plain "%?"
+       ;; L - LITERATURE GROUP
+       ("l" "Literature")
+       
+       ;; LT - LITERATURE NOTE
+       ;; For capturing insights from books and articles.
+       ("lt" "Literature/Text" plain "%?"
         :if-new (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org"
-  			 ":PROPERTIES:\n:ROAM_REFS:\n:END:\n#+title: ${citar-title} (${citar-date})\n#+filetags: :literature:unfiled:\n\n* Authors\n${citar-author}\n\n* Abstract\n{citar-abstract}* Highlights\n%i\n\n")
+     			 ":PROPERTIES:\n:ROAM_REFS:\n:END:\n#+title: ${citar-title} (${citar-date})\n#+filetags: :literature:unfiled:\nLATEX_HEADER: \\usepackage{tikz}\n\n* Authors\n${citar-author}\n\n* Abstract\n${citar-abstract}\n\n* Highlights\n%i\n\n")
         :unnarrowed t)
-
+       
+       ;; LR - REFERENCE NOTE
+       ;; For capturing pure facts. Atomic information to be referenced.
+       ("lr" "Literature/Reference" plain
+        "%?"
+        :if-new (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org"
+                           ":PROPERTIES:\n:ROAM_REFS:\n:END:\n#+title: ${title}\n#+filetags: :reference:\n#+LATEX_HEADER: \\usepackage{tikz}\n\n* Information\n- %i")
+        :unnarrowed t)
+       
+       ;; LV - VIDEO NOTE
+       ;; For capturing insights from videos.
+       ("lr" "Literature/Video" plain
+        "%?"
+        :if-new (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org"
+     			 "PROPERTIES:\n:ROAM_REFS:\n:END:\n#+title: ${citar-title}\n#+filetags: :literature:unfiled:\n#+LATEX_HEADER: \\usepackage{tikz}\n\n* Authors\n${citar-author}\n\n* Source\n${citar-url}* Abstract\n${citar-abstract}\n\n* Highlights\n- [ ] ")
+        :unnarrowed t)
+       
        ;; A - ATOMIC NOTE
        ;; The "Golden Unit." One idea, in your own words.
        ;; Includes the "Up" property for the tree-structure hierarchy.
        ("a" "Atomic" plain
         "%?"
         :if-new (file+head "atomic/%<%Y%m%d%H%M%S>-${slug}.org"
-  			 "#+title: ${title}\n#+filetags: :atomic:\n\n* Context\nUp: [[id:%^{Parent Node ID}][%^{Parent Node Title}]]\n\n* The Concept\n%i\n\n* See Also\n")
+     			 ":PROPERTIES:\n:UP: \n:END:\n#+LATEX_HEADER: \\usepackage{tikz}\n#+title: ${title}\n#+filetags: :atomic:\n\n* Context\nUp: [[id:%^{Parent Node ID}][%^{Parent Node Title}]]\n\n* The Concept\n%i\n\n* See Also\n")
         :unnarrowed t)
 
        ;; P - PROJECT NOTE
@@ -790,21 +814,17 @@ BibTeX is a TeX format for bibliographies.
        ("p" "Project" plain
         "%?"
         :if-new (file+head "projects/%<%Y%m%d%H%M%S>-${slug}.org"
-  			 "#+title: ${title}\n#+filetags: :project:active:\n\n* Objective\n%^{Goal}\n\n* Tasks [0/0]\n- [ ] \n\n* Relevant Atomic Notes\n%i")
+     			 "#+title: ${title}\n#+filetags: :project:active:\n\n* Objective\n%^{Goal}\n\n* Tasks [0/0]\n- [ ] \n\n* Relevant Atomic Notes\n%i")
         :unnarrowed t)
-       ;; R - REFERENCE NOTE
-       ;; For capturing pure facts. Atomic information to be referenced.
-       ("r" "Reference" plain
-        "%?"
-        :if-new (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org"
-                           ":PROPERTIES:\n:ROAM_REFS:\n:END:\n#+title: ${title}\n#+filetags: :reference:\n\n* Information\n- %i")
-        :unnarrowed t)))
+       ))
     :bind (("C-c n l" . org-roam-buffer-toggle)
   	 ("C-c n f" . org-roam-node-find)
+  	 ("H-n" . org-roam-node-find)
   	 ("C-c n i" . org-roam-node-insert)
   	 :map org-mode-map
   	 ("C-M-i" . completion-at-point))
     :config
+    (org-link-set-parameters "roam" :face '(:foreground "red" :weight bold))
     (org-roam-db-autosync-enable))
 
 #+end_src
@@ -883,11 +903,14 @@ BibTeX is a TeX format for bibliographies.
 #+begin_src emacs-lisp
   (use-package citar
     :custom
-    (citar-bibliography (file-truename "~/GDrive/ReferenceMaterials/references.bib"))
-    (citar-notes-paths (file-truename "~/GDrive/zettelkasten/literature"))
+    (citar-bibliography (file-truename "~/Documents/zettelkasten/ReferenceMaterials/references.bib"))
+    (citar-notes-paths '("~/Documents/zettelkasten/literature/"))
     :hook
     (LaTeX-mode . citar-capf-setup)
-    (org-mode . citar-capf-setup))
+    (org-mode . citar-capf-setup)
+    :config
+    (add-to-list 'citar-org-roam-template-fields '((:citar-abstract . ("abstract"))
+  						 (:citar-url . ("url")))))
 
   (use-package citar-embark
     :after (citar embark)
@@ -899,20 +922,25 @@ BibTeX is a TeX format for bibliographies.
     :custom
     (citar-org-roam-note-title-template "${author} - ${title}")
     (citar-org-roam-capture-template-key "l")
+    :bind
+    ("C-c n c" . citar-create-note)
     :config
     (citar-org-roam-mode 1))
 #+end_src
+
+#+RESULTS:
 
 ** Zotra
 Zotero is a bibliographic tool, allowing a citation to be generated by simply clicking the extension button in a browser or by using the Zotero client. [[https://github.com/mpedramfar/zotra][Zotra]] is a translator package for emacs that can use URLs and search identifiers to fetch bibliographic information directly within Emacs.
 
 #+begin_src emacs-lisp
   (use-package zotra
+    :init
     :custom
     (zotra-backend 'zotra-server)
     (zotra-local-server-directory (file-truename "~/Software/zotra-server/"))
-    (zotra-default-bibliography (file-truename "~/GDrive/ReferenceMaterials/references.bib"))
-    (zotra-download-attachment-default-directory (file-truename "~/GDrive/ReferenceMaterials/")))
+    (zotra-default-bibliography (file-truename "~/Documents/zettelkasten/ReferenceMaterials/references.bib"))
+    (zotra-download-attachment-default-directory (file-truename "~/Documents/zettelkasten/ReferenceMaterials/")))
 #+end_src
 
 ** PDF-Tools
