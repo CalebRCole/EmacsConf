@@ -1989,6 +1989,9 @@ Emacs macros essentially let you do anything and have it be repeatable. Text edi
   (require 'kmacro)
   (defalias 'kmacro-insert-macro 'insert-kbd-macro)
   (keymap-set kmacro-keymap "I" #'kmacro-insert-macro)
+
+  (keymap-global-set "A-r s" #'kmacro-start-macro-or-insert-counter)
+  (keymap-global-set "A-r e" #'kmacro-end-or-call-macro)
 #+end_src
 
 Because macros are impermanent, they need to be remade each session. However, if a macro is named with =C-x C-k n=,  we can insert an elisp function that mimics the macro. This can be saved and re-used between sessions.
