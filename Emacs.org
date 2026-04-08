@@ -618,9 +618,11 @@ This section contains the basic configuration for =org-mode=, setting up proper 
     :hook ((org-mode . org-indent-mode)
   	 (org-mode . variable-pitch-mode)
   	 (org-mode . visual-line-mode))
-    :bind (:map org-mode-map
-  	      ("C-c s h" . #'org-insert-heading)
-  	      ("C-c s s" . #'org-insert-subheading))
+    :bind
+    (("C-c a" . #'org-agenda)
+     (:map org-mode-map
+  	 ("C-c s h" . #'org-insert-heading)
+  	 ("C-c s s" . #'org-insert-subheading)))
     :config
     (require 'org-protocol)
     (setq org-ellipsis " ▾")
@@ -750,82 +752,87 @@ BibTeX is a TeX format for bibliographies.
 [[https://www.orgroam.com/][Org-roam]] uses Org-mode with a SQLite to generate a node based note taking system, like Obsidian.md. [[https://www.youtube.com/watch?v=YxgA5z2R08I][This Video by System Crafters]] explains how to utilize Org-roam. I am using mounted google drive with rclone to have my notes be synced across devices.
 
 #+begin_src emacs-lisp
-  (defun my/tomorrow-date ()
-    "Gets the Y/M/D of tomorrow."
-    (let* ((day-in-seconds (* 24 60 60))
-         (tomorrow-time (time-add (current-time) day-in-seconds)))
-    (format-time-string "%Y-%m-%d" tomorrow-time)))
+    (defun my/tomorrow-date ()
+      "Gets the Y/M/D of tomorrow."
+      (let* ((day-in-seconds (* 24 60 60))
+           (tomorrow-time (time-add (current-time) day-in-seconds)))
+      (format-time-string "%Y-%m-%d" tomorrow-time)))
 
-  (use-package org-roam
-    :after org
-    :init
-    (setq org-roam-v2-ack t)
-    :custom
-    (org-roam-directory (file-truename "~/Documents/zettelkasten/"))
-    (org-roam-completion-everywhere t)
-    (org-roam-capture-templates
-     '(
-       ;; F - FLEETING NOTE
-       ;; Fast capture for temporary thoughts. 
-       ;; Includes a TODO for the "Daily Review" mentioned in the video.
-       ("f" "Fleeting" plain
-        "%?"
-        :if-new (file+head "fleeting/%<%Y%m%d%H%M%S>-${slug}.org"
-                           "#+title: ${title}\n#+filetags: :fleeting:unfiled:\n\n* TODO Review this fleeting thought\nDEADLINE: <%(my/tomorrow-date)>\nCaptured: %U\n\n%i")
-        :immediate-finish t)
+    (use-package org-roam
+      :after org
+      :init
+      (setq org-roam-v2-ack t)
+      :custom
+      (org-roam-directory (file-truename "~/Documents/zettelkasten/"))
+      (org-roam-completion-everywhere t)
+      (org-roam-capture-templates
+       '(
+         ;; F - FLEETING NOTE
+         ;; Fast capture for temporary thoughts. 
+         ;; Includes a TODO for the "Daily Review" mentioned in the video.
+         ("f" "Fleeting" plain
+          "%?"
+          :if-new (file+head "fleeting/${slug}.org"
+                             "#+title: ${title}\n#+filetags: :fleeting:unfiled:\n\n* TODO Review this fleeting thought\nSCHEDULED: <%(my/tomorrow-date)>\nCaptured: %U\n\n%i")
+          :immediate-finish t)
 
-       ;; L - LITERATURE GROUP
-       ("l" "Literature")
-       
-       ;; LT - LITERATURE NOTE
-       ;; For capturing insights from books and articles.
-       ("lt" "Literature/Text" plain "%?"
-        :if-new (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org"
-     			 ":PROPERTIES:\n:ROAM_REFS:\n:END:\n#+title: ${citar-title} (${citar-date})\n#+filetags: :literature:unfiled:\nLATEX_HEADER: \\usepackage{tikz}\n\n* Authors\n${citar-author}\n\n* Abstract\n${citar-abstract}\n\n* Highlights\n%i\n\n")
-        :unnarrowed t)
-       
-       ;; LR - REFERENCE NOTE
-       ;; For capturing pure facts. Atomic information to be referenced.
-       ("lr" "Literature/Reference" plain
-        "%?"
-        :if-new (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org"
-                           ":PROPERTIES:\n:ROAM_REFS:\n:END:\n#+title: ${title}\n#+filetags: :reference:\n#+LATEX_HEADER: \\usepackage{tikz}\n\n* Information\n- %i")
-        :unnarrowed t)
-       
-       ;; LV - VIDEO NOTE
-       ;; For capturing insights from videos.
-       ("lr" "Literature/Video" plain
-        "%?"
-        :if-new (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org"
-     			 "PROPERTIES:\n:ROAM_REFS:\n:END:\n#+title: ${citar-title}\n#+filetags: :literature:unfiled:\n#+LATEX_HEADER: \\usepackage{tikz}\n\n* Authors\n${citar-author}\n\n* Source\n${citar-url}* Abstract\n${citar-abstract}\n\n* Highlights\n- [ ] ")
-        :unnarrowed t)
-       
-       ;; A - ATOMIC NOTE
-       ;; The "Golden Unit." One idea, in your own words.
-       ;; Includes the "Up" property for the tree-structure hierarchy.
-       ("a" "Atomic" plain
-        "%?"
-        :if-new (file+head "atomic/%<%Y%m%d%H%M%S>-${slug}.org"
-     			 ":PROPERTIES:\n:UP: \n:END:\n#+LATEX_HEADER: \\usepackage{tikz}\n#+title: ${title}\n#+filetags: :atomic:\n\n* Context\nUp: [[id:%^{Parent Node ID}][%^{Parent Node Title}]]\n\n* The Concept\n%i\n\n* See Also\n")
-        :unnarrowed t)
+         ;; L - LITERATURE GROUP
+         ("l" "Literature")
+         
+         ;; LT - LITERATURE NOTE
+         ;; For capturing insights from books and articles.
+         ("lt" "Literature/Text" plain "%?"
+          :if-new (file+head "literature/${slug}.org"
+       			 ":PROPERTIES:\n:ROAM_REFS:\n:END:\n#+title: ${citar-title} (${citar-date})\n#+filetags: :literature:unfiled:\nLATEX_HEADER: \\usepackage{tikz}\n\n* Authors\n${citar-author}\n\n* Abstract\n${citar-abstract}\n\n* Highlights\n%i\n\n")
+          :unnarrowed t)
+         
+         ;; LR - REFERENCE NOTE
+         ;; For capturing pure facts. Atomic information to be referenced.
+         ("lr" "Literature/Reference" plain
+          "%?"
+          :if-new (file+head "literature/${slug}.org"
+                             ":PROPERTIES:\n:ROAM_REFS:\n:END:\n#+title: ${title}\n#+filetags: :reference:\n#+LATEX_HEADER: \\usepackage{tikz}\n\n* Information\n- %i")
+          :unnarrowed t)
+         
+         ;; LV - VIDEO NOTE
+         ;; For capturing insights from videos.
+         ("lr" "Literature/Video" plain
+          "%?"
+          :if-new (file+head "literature/${slug}.org"
+       			 "PROPERTIES:\n:ROAM_REFS:\n:END:\n#+title: ${citar-title}\n#+filetags: :literature:unfiled:\n#+LATEX_HEADER: \\usepackage{tikz}\n\n* Authors\n${citar-author}\n\n* Source\n${citar-url}* Abstract\n${citar-abstract}\n\n* Highlights\n- [ ] ")
+          :unnarrowed t)
+         
+         ;; A - ATOMIC NOTE
+         ;; The "Golden Unit." One idea, in your own words.
+         ;; Includes the "Up" property for the tree-structure hierarchy.
+         ("a" "Atomic" plain
+          "%?"
+          :if-new (file+head "atomic/${slug}.org"
+       			 ":PROPERTIES:\n:UP: \n:END:\n#+LATEX_HEADER: \\usepackage{tikz}\n#+title: ${title}\n#+filetags: :atomic:\n\n\n\n* See Also\n\n\n* Original Capture\n\"\"")
+          :unnarrowed t)
 
-       ;; P - PROJECT NOTE
-       ;; For active outcomes (essays, videos, study goals).
-       ("p" "Project" plain
-        "%?"
-        :if-new (file+head "projects/%<%Y%m%d%H%M%S>-${slug}.org"
-     			 "#+title: ${title}\n#+filetags: :project:active:\n\n* Objective\n%^{Goal}\n\n* Tasks [0/0]\n- [ ] \n\n* Relevant Atomic Notes\n%i")
-        :unnarrowed t)
-       ))
-    :bind (("C-c n l" . org-roam-buffer-toggle)
-  	 ("C-c n f" . org-roam-node-find)
-  	 ("H-n" . org-roam-node-find)
-  	 ("C-c n i" . org-roam-node-insert)
-  	 :map org-mode-map
-  	 ("C-M-i" . completion-at-point))
-    :config
-    (org-link-set-parameters "roam" :face '(:foreground "red" :weight bold))
-    (org-roam-db-autosync-enable))
+         ;; P - PROJECT NOTE
+         ;; For active outcomes (essays, videos, study goals).
+         ("p" "Project" plain
+          "%?"
+          :if-new (file+head "projects/${slug}.org"
+       			 "#+title: ${title}\n#+filetags: :project:active:\n\n* Objective\n%^{Goal}\n\n* Tasks [0/0]\n- [ ] \n\n* Relevant Atomic Notes\n%i")
+          :unnarrowed t)
+         ))
+      :bind (("C-c n l" . org-roam-buffer-toggle)
+    	 ("C-c n f" . org-roam-node-find)
+    	 ("H-n" . org-roam-node-find)
+    	 ("C-c n i" . org-roam-node-insert)
+    	 :map org-mode-map
+    	 ("C-M-i" . completion-at-point))
+      :config
+      (org-link-set-parameters "roam" :face '(:foreground "red" :weight bold))
+      (my/org-roam-refresh-agenda-list)
+      (org-roam-db-autosync-enable))
+
+    (defun my/org-roam-refresh-agenda-list ()
+    (interactive)
+    (setq org-agenda-files (directory-files-recursively org-roam-directory "\\.org$")))
 
 #+end_src
 
@@ -971,6 +978,8 @@ Zotero is a bibliographic tool, allowing a citation to be generated by simply cl
 
   (use-package eglot
     :ensure nil
+    :custom
+    (eglot-autoshutdown t)
     :config
     (add-to-list 'eglot-stay-out-of 'flymake))
 
@@ -1316,7 +1325,14 @@ GLSL is the shader language for OpenGL. [[https://github.com/jimhourihan/glsl-mo
 #+begin_src emacs-lisp
   (use-package glsl-mode)
 #+end_src
+*** Haskell
+[[https://github.com/haskell/haskell-mode][Haskell mode]] is a major mode for editing, developing, and debugging Haskell programs.
 
+#+begin_src emacs-lisp
+  (use-package haskell-mode
+    :hook
+    (haskell-mode . eglot-ensure))
+#+end_src
 ** LLM Integration
 *** Ellama
 [[https://github.com/s-kostyaev/ellama][Ellama]] allows integration between Emacs and [[https://ollama.com/][Ollama]]. The desired ollama model is pulled with the terminal command =ollama pull MODEL=.
@@ -1734,15 +1750,16 @@ SSH allows remote access to other computers and is critical in software like git
   (use-package ssh-agency)
 #+end_src
 ** Syntax
-[[https://github.com/flycheck/flycheck][Flycheck]] is a more feature-rich version of the built-in Flymake, providing out-of-the-box syntax highlighting in many languages. [[https://github.com/flycheck/flycheck-inline][Flycheck-inline]] adds a minor mode for displaying errors right below their reporting location using overlays, as well as displaying related errors from Flycheck checkers that support them.
+[[https://github.com/flycheck/flycheck][Flycheck]] is a more feature-rich version of the built-in Flymake, providing out-of-the-box syntax highlighting in many languages. [[https://github.com/flycheck/flycheck-pos-tip][Flycheck-pos-tip]] displays errors in a pop-up display when hovering over an error.
 
 #+begin_src emacs-lisp
   (use-package flycheck
-    :init (global-flycheck-mode))
+    :init (global-flycheck-mode +1))
 
-  (use-package flycheck-inline
-    :after (flycheck)
-    :hook (flycheck-mode . flycheck-inline-mode))
+  (use-package flycheck-pos-tip
+    :after flycheck
+    :config
+    (flycheck-pos-tip-mode +1))
 #+end_src
 ** Spellchecking
 Emacs has the native Ispell spellchecking package, which has been superseded by the more modern Flyspell package. However, [[https://github.com/minad/jinx][Jinx]] is an even more modern and more versatile spell-checker which can use several dictionaries like Hunspell and Aspell through the use of Enchant. Requires external enchant package!!
@@ -1992,15 +2009,6 @@ A set of bindings not set for packages.
     :after org)
 #+end_src
 ** Editing
-*** Undo Tree
-[[https://github.com/casouri/vundo][Vundo]] is a modern undo-tree, allowing non-linear undoing.
-
-#+begin_src emacs-lisp
-  (use-package vundo
-    :bind ("C-/" . #'vundo)
-    :config
-    (vundo-popup-mode 1))
-#+end_src
 *** Multiple Cursors
 [[https://github.com/magnars/multiple-cursors.el][Multiple cursors]] functions like it does in other editors, allowing multiple lines to be edited with a single string of keys, as if editing one single line.
 
