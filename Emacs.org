@@ -1613,7 +1613,7 @@ Treesitter has compatibility with Emacs as long as Emacs is compiled with it ena
 
 #+begin_src emacs-lisp
   (use-package treesit
-    :straight nil
+    :demand
     :mode (("\\.tsx\\'" . tsx-ts-mode))
     :preface
     (defun mp-setup-install-grammars ()
@@ -1673,13 +1673,14 @@ Treesitter has compatibility with Emacs as long as Emacs is compiled with it ena
   ;;  M-x customize-group RET combobulate RET
   ;;
   (use-package combobulate
-    :straight (combobulate :type git :host github :repo "mickeynp/combobulate")
     :custom
     ;; You can customize Combobulate's key prefix here.
     ;; Note that you may have to restart Emacs for this to take effect!
     (combobulate-key-prefix "C-c M-o")
     :hook (prog-mode . combobulate-mode))
 #+end_src
+
+**** 
 
 **** Debugging with dape
 
@@ -1958,7 +1959,6 @@ GLSL is the shader language for OpenGL. [[https://github.com/jimhourihan/glsl-mo
 
 #+begin_src emacs-lisp
   (use-package consult-gh
-    :straight (consult-gh :type git :host github :repo "armindarvish/consult-gh")
     :after consult
     :custom
     (consult-gh-default-clone-directory "~/projects")
@@ -2144,6 +2144,7 @@ For the cases where I am unable to run Emacs on my Guix systems, I am providing 
 #+begin_src emacs-lisp
 
 #+end_src
+
 * End Initialization
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle ./init.el
