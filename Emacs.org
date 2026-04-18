@@ -408,8 +408,39 @@ Emacs has built-in tiling window management, allowing for very efficient and key
 #+begin_src emacs-lisp
   (use-package ace-window
     :demand
+    :init
+    (defvar-keymap my/window-prefix-map
+      :doc "Keymap for various window-prefix maps"
+      :suppress 'nodigits
+      "o" #'ace-window-prefix
+      "0" #'ace-window-prefix
+      "1" #'same-window-prefix
+      "2" #'split-window-vertically
+      "3" #'split-window-horizontally
+      "4" #'other-window-prefix
+      "5" #'other-frame-prefix
+      "6" #'other-tab-prefix
+      "t" #'other-tab-prefix)
     :bind
     ("s-o" . ace-window))
+
+  (defun ace-window-prefix ()
+    "Use `ace-window' to display the buffer of the next command.
+      The next buffer is the buffer displayed by the next command invoked
+      immediately after this command (ignoring reading from the minibuffer).
+      Creates a new window before displaying the buffer.
+      When `switch-to-buffer-obey-display-actions' is non-nil,
+      `switch-to-buffer' commands are also supported."
+    (interactive)
+    (display-buffer-override-next-command
+     (lambda (buffer _)
+       (let (window type)
+         (setq
+          window (aw-select (propertize " ACE" 'face 'mode-line-highlight))
+          type 'reuse)
+         (cons window type)))
+     nil "[ace-window]")
+    (message "Use `ace-window' to display next command buffer..."))
 #+end_src
 
 **** Consult
@@ -516,7 +547,7 @@ Emacs has built-in tiling window management, allowing for very efficient and key
   ;; Optionally make narrowing help available in the minibuffer.
   ;; You may want to use `embark-prefix-help-command' or which-key instead.
   ;; (keymap-set consult-narrow-map (concat consult-narrow-key " ?") #'consult-narrow-help)
-    #+end_src
+#+end_src
 
 ***** Consult-dir
 
@@ -593,6 +624,33 @@ Consult-notes also provides annotations on note candidates in the minibuffer (de
 
   (use-package embark-consult
     :after (consult embark))
+
+
+  ;; Look up the key in `my/window-prefix-map' and call that function first.
+  ;; Then run the default embark action.
+  (cl-defun my/embark--call-prefix-action (&rest rest &key run type &allow-other-keys)
+    (when-let ((cmd (keymap-lookup
+                     my/window-prefix-map
+                     (key-description (this-command-keys-vector)))))
+      (funcall cmd))
+    (funcall run :action (embark--default-action type) :type type rest))
+
+  ;; Dummy function, will be overridden by running `embark-around-action-hooks'
+  (defun my/embark-set-window () (interactive))
+
+  ;; When running the dummy function, call the prefix action from above
+  (setf (alist-get 'my/embark-set-window embark-around-action-hooks)
+        '(my/embark--call-prefix-action))
+
+  (setf (alist-get 'buffer embark-default-action-overrides) #'pop-to-buffer-same-window
+        (alist-get 'file embark-default-action-overrides) #'find-file
+        (alist-get 'bookmark embark-default-action-overrides) #'bookmark-jump
+        (alist-get 'library embark-default-action-overrides) #'find-library)
+
+  (map-keymap (lambda (key cmd)
+                (keymap-set embark-general-map (key-description (make-vector 1 key))
+                            #'my/embark-set-window))
+              my/window-prefix-map)
 #+end_src
 
 *** Which Key
