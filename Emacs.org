@@ -712,9 +712,8 @@ Proced is Emacs' process editor, replacing the biggest use cases of ps and top, 
      '(("\\*proced\\*"
         (display-buffer-same-window)
         (inhibit-same-window . nil))))
-    :hook
-    (proced-mode . (lambda ()
-  		   (proced-toggle-auto-update 1))))
+    :config
+    (add-hook proced-mode-hook #'proced-toggle-auto-update)))
 #+end_src
 
 *** IBuffer
