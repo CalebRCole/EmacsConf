@@ -5,10 +5,13 @@ code into init.el with =C-c C-v t= (Tangle) and =H-r= (Reload
 init.el).
 
 * Early Initialization
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./early-init.el
+:END:
 
 This section handles any configurations that should occur before the loading of the primary init.el. Mostly for loading things before packages, such as garbage collection.
 
-#+begin_src emacs-lisp :tangle "./early-init.el"
+#+begin_src emacs-lisp :tangle "./early-init.el" :lexical t
   ;;; early-init.el --- Emacs early configuration file
 
   ;;; Commentary: This file serves as a configuration file for Emacs
@@ -49,10 +52,12 @@ This section handles any configurations that should occur before the loading of 
 
 
   (setq package-enable-at-startup nil)
-  #+end_src
+#+end_src
 
 * Main Initialization
-#+PROPERTY: header-args:emacs-lisp :tangle "~/.config/emacs/early-init.el" :lexical t
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./init.el
+:END:
 
 This section contains the majority of configuration and defines what
 will go in the init.el.
@@ -62,6 +67,7 @@ will go in the init.el.
 Since I am using GNU Guix, we will seek to install packages outside of Emacs and in the system configuration itself. Thus we will not be installing packages from any package manager and instead from Guix channels. I am also explicit about the loading of packages, using =:demand= for explicit loading of packages where possible, as =:defer t= is the default for all packages. Other auto-loading key-words are also useable (e.g. :after, :commands, :binds).
 
 #+begin_src emacs-lisp
+  ;;; init.el --- Emacs configuration file --- lexical-binding: t
   (setq use-package-always-insure nil)
   (setq use-package-always-defer t)
 #+end_src
@@ -116,7 +122,8 @@ Binds to open/reload this configuraion.
 
   ;; Shortcut to reload init.el
   (defun my/reload-init-el ()
-    "Loads init.el the same as M-x load-file, reloading Emacs' configuration. Note that not all changes may occur immediately and may require Emacs to be restarted."
+    "Loads init.el the same as M-x load-file, reloading Emacs' configuration.
+  Note that not all changes may occur immediately and may require Emacs to be restarted."
     (interactive)
     (load-file user-init-file)
     (message "Init file reloaded"))
