@@ -559,12 +559,26 @@ Consult-notes also provides annotations on note candidates in the minibuffer (de
 [[https://github.com/oantolin/embark][Embark]] provides mini-buffer actions and a context menu, making it easy to choose a command based on what is near the point with  =embark-act= with =C-.=, like a right-click context menu. Running =embark-dwim= with =C-;= runs the default action instead.
 
 #+begin_src emacs-lisp
+  (defun sudo-find-file (file)
+    "Open FILE as root."
+    (interactive "FOpen file as root: ")
+    (when (file-writable-p file)
+      (user-error "File is user writeable, aborting sudo"))
+    (find-file (if (file-remote-p file)
+  		 (concat "/" (file-remote-p file 'method) ":"
+  			 (file-remote-p file 'user) "@" (file-remote-p file 'host)
+  			 "|sudo:root@"
+  			 (file-remote-p file 'host) ":" (file-remote-p file 'localname))
+                 (concat "/sudo:root@localhost:" file))))
+
   (use-package embark      
     :demand
     :bind
     (("C-."   . embark-act)
      ("C-;"   . embark-dwim)
-     ("C-h B" . embark-bindings))
+     ("C-h B" . embark-bindings)
+     :map embark-file-map
+     ("S" . sudo-find-file))
     :init
     (setq prefix-help-command #'embark-prefix-help-command)
     (add-hook 'context-menu-functions #'embark-context-menu 100)
