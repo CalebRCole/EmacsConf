@@ -2063,11 +2063,24 @@ Here is a general configuration for built-in Emacs settings and modes not in a p
   (keymap-global-set "s-1" #'toggle-delete-other-windows)
 #+end_src
 
+* Minimal Configuration
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./minimal-init.el
+:END:
+
+For the cases where I am unable to run Emacs on my Guix systems, I am providing a minimal configuration that will focus on portability above else. It will be able to work in both the terminal and as a GUI if available, although it will not feature GUI reliance.
+
+#+begin_src emacs-lisp
+
+#+end_src
 * End Initialization
-#+PROPERTY: header-args:emacs-lisp :tangle "~/.config/emacs/early-init.el" :lexical t
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./init.el
+:END:
 
 Properly resetting the GC.
 
 #+begin_src emacs-lisp
   (setq gc-cons-threshold (* 800 1000)) ; 800KB default
 #+end_src
+
