@@ -725,6 +725,15 @@ Transient is by the creators of Magit, providing a menu-based hierarchical input
     :demand)
 #+end_src
 
+*** Olivetti
+
+[[https://github.com/rnkn/olivetti][Olivetti]] allows for margin resizing in windows, which suits info and markdown pages well as it allows them to center themselves in a window. Especially useful for wide monitors.
+
+#+begin_src emacs-lisp
+  (use-package olivetti
+    :demand)
+#+end_src
+
 *** Helpful Help Commands
 
 [[https://github.com/Wilfred/helpful][Helpful]] adds a lot of very helpful (get it?) information to Emacs' =describe-= command buffers.  For example, if you use =describe-function=, you will not only get the documentation about the function, you will also see the source code of the function and where it gets used in other places in the Emacs configuration.  It is very useful for figuring out how things work in Emacs.
