@@ -1963,11 +1963,11 @@ GLSL is the shader language for OpenGL. [[https://github.com/jimhourihan/glsl-mo
 Simply create a dir-locals.el function in the desired directory with the code =((nil . ((eval git-auto-commit-mode 1))))=.
 
 #+begin_src emacs-lisp
-  (use-package git-auto-commit-mode
-    :after magit
-    :custom
-    ((gac-automatically-push-p t)
-     (gac-automatically-add-new-files-p t)))
+  ;; (use-package git-auto-commit-mode
+  ;;   :demand
+  ;;   :custom
+  ;;   ((gac-automatically-push-p t)
+  ;;    (gac-automatically-add-new-files-p t)))
 #+end_src
 
 **** Ediff
