@@ -2069,6 +2069,7 @@ Here is a general configuration for built-in Emacs settings and modes not in a p
     (window-combination-resize t)
     (set-mark-command-repeat-pop t)
     (help-window-select t)
+    (epg-pinentry-mode 'loopback)
     :config
     (setq-default bidi-display-reordering t
     		bidi-paragraph-direction 'left-to-right)
