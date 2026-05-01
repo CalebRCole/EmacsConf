@@ -1481,7 +1481,7 @@ Despite Emacs having great native text navigation and traversal, several package
     "Dispatches Embark upon an Avy selection."
     (save-excursion
       (goto-char pt)
-      (embark-dwim))
+      (embark-act))
     (select-window
      (cdr (ring-ref avy-ring 0)))
     t)
@@ -1501,8 +1501,7 @@ Despite Emacs having great native text navigation and traversal, several package
     :bind
     (("M-g M-g" . avy-goto-line)
      ("M-g g"   . avy-goto-line)
-     ("M-g f"   . avy-goto-char-timer)
-     ("M-g M-f" . avy-goto-char-timer)
+     ("C-:"     . avy-goto-char-timer)
      :map isearch-mode-map
      ("M-j"     . avy-isearch))
     :config
