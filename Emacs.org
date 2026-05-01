@@ -1863,6 +1863,17 @@ Emacs Lisp is the Lisp dialect used to provide the Emacs environment and is the 
     (inferior-lisp-program "sbcl"))
 #+end_src
 
+**** Guile
+
+GNU Guile is GNU's implementation of Scheme. Geiser is a collection of Emacs major and minor modes that conspire with one or more Scheme interpreters to keep the Lisp Machine Spirit alive. It draws inspiration (and a bit more) from environments such as Common Lisp’s Slime, Factor’s FUEL, Squeak or Emacs itself, and does its best to make Scheme hacking inside Emacs (even more) fun.
+
+#+begin_src emacs-lisp
+  (use-package geiser-guile
+    :demand
+    :custom
+    (geiser-guile-binary "guile")
+    (geiser-guile-load-path '(".")))
+#+end_src
 **** GLSL
 
 GLSL is the shader language for OpenGL. [[https://github.com/jimhourihan/glsl-mode][GLSL mode]] is self explanatory.
