@@ -367,22 +367,66 @@ Binds to open/reload this configuration.
 
 Emacs has built-in tiling window management, allowing for very efficient and keyboard driven navigation.
 
-[[https://codeberg.org/ezemtsov/ewm][EWM]] is the Wayland version of EXWM, the Emacs window manager for Xorg. This is my replacement for window managers/compositors like Sway/i3, Hyprland, and Niri. By having Emacs supersede the window compositor essentially, Emacs' remains the source of configuration for my desktop, allowing for a much increased hack-able system.
+[[https://github.com/emacs-exwm/exwm][EXWM]] is the Emacs window manager for Xorg. This is my replacement for tiling window managers/compositors like Sway/i3, Hyprland, and Niri. By having Emacs supersede the window compositor essentially, Emacs remains the source of configuration for my desktop, allowing for a much more hack-able system.
 
 #+begin_src emacs-lisp
-  (use-package ewm
-    :after consult
+  (use-package exwm-edit
+    :demand
+    :config
+    ;; Edit text in an *exwm-edit* buffer
+    (add-to-list 'exwm-input-global-keys '([?\C-c ?\'] . exwm-edit--compose))
+    (add-to-list 'exwm-input-global-keys '([?\C-c ?\'] . exwm-edit--compose)))
+
+  (use-package exwm
+    :demand
     :custom
-    (ewm-output-config '(("eDP-1" :width 1920 :height 1080)))
-    :bind (:map ewm-mode-map
-                ("s-d" . consult-buffer)))
+    (exwm-replace t)
+    :config
+    (exwm-systemtray-mode 1)
+    (add-hook 'exwm-update-class-hook
+    	    (lambda () (exwm-workspace-rename-buffer (concat "X:" exwm-class-name))))
+    (exwm-enable))
+
+  (use-package desktop-environment
+    :demand
+    :config
+    (desktop-environment-mode))
+
+  ;; (use-package exwm-firefox-core
+  ;;   :after exwm
+  ;;   :demand)
+
+  ;; (use-package exwm-firefox
+  ;;   :after exwm
+  ;;   :demand
+  ;;   :config
+  ;; (exwm-firefox-mode))
+
+  (use-package exwm-mff
+    :after exwm
+    :demand
+    :bind
+    ("s-c" . exwm-mff-warp-to-selected)
+    :config
+    (exwm-mff-mode 1))
+
+  (use-package exwm-modeline
+    :after exwm
+    :config
+    (exwm-modeline-mode 1))
+
+  (use-package exwm-ss
+    :after exwm
+    :init
+    (exwm-ss-mode 1))
 #+end_src
 
 ******* Buffer/Window/Tab/Frame Control
 
 #+begin_src emacs-lisp
   (general-define-key
-   "s-<left>" #'windmove-left"s-<right>" #'windmove-right
+   "s-<left>" #'windmove-left
+   "s-<right>" #'windmove-right
    "s-<up>" #'windmove-up
    "s-<down>" #'windmove-down
    "s-j" #'windmove-left
