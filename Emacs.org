@@ -39,17 +39,21 @@ This section handles any configurations that should occur before the loading of 
   ;; Hides warnings about undefined functions that aren't present at
   ;; compile-time.  Said functions should appear at runtime when the
   ;; relevant package is loaded.
+  ;; Also suppresses warnings about files that use dynamic-binding
+  ;; instead of lexical-binding. Mostly for old packages.
   (setq native-comp-async-report-warnings-errors nil)
   (setq warning-suppress-types '((files) (lexical-binding)))
 
+  (setq inhibit-splash-screen nil)
   (setq frame-inhibit-implied-resize t)
-  (setq inhibit-startup-message t)
   (setq visible-bell t) ; Set up the visible bell
   (scroll-bar-mode -1) ; Disable visible scrollbar
   (tool-bar-mode -1) ; Disable the toolbar
   (tooltip-mode -1) ; Disable tooltips
   (set-fringe-mode 10) ; Give some breathing room
   (menu-bar-mode -1) ; Disable the menu bar
+  (display-time-mode 1) ; Displays time in the mode-line
+  (display-battery-mode 1) ; Displays battery percentage in the mode-line
 
 
   (setq package-enable-at-startup nil)
