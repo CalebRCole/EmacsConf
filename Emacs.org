@@ -965,6 +965,25 @@ Info and Man pages are the main ways of reading documentation of the system and 
     :demand)
 #+end_src
 
+*** Web Browsing
+
+Emacs has a capable HTML browser in the form of EWW (Emacs Web Wowser) that is capable of displaying rendered markdown, images, and gifs, but not css or JavaScript. For this, we do have to rely on external browsers, such as my choice of LibreWolf.
+
+#+begin_src emacs-lisp
+  (use-package eww
+    :demand
+    :bind
+    ("s-w" . eww)
+    (:map eww-mode-map
+  	("e" . beginning-of-buffer)
+  	("c" . end-of-buffer))
+    :custom
+    (eww-browse-url-new-window-is-tab nil)
+    (add-hook 'eww-after-render-hook #'eww-readable)
+    :hook
+    (eww-after-render . olivetti-mode))
+#+end_src
+
 *** PDF-Tools
 
 [[https://github.com/vedang/pdf-tools][pdf-tools]] Is a superior PDF viewing mode for Emacs.
