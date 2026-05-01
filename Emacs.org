@@ -1126,7 +1126,8 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
     (setq org-confirm-babel-evaluate nil)
     (setq org-startup-with-inline-images t)
 
-    (push '("conf-unix" . conf-unix) org-src-lang-modes))
+    (add-to-list 'org-src-lang-modes '("conf-unix" . conf-unix))
+    (add-to-list 'org-src-lang-modes '("kbd" . kanata-kbd)))
 #+end_src
 
 ***** Structure Templates
@@ -1141,19 +1142,20 @@ You can add more =src= block templates below by copying one of the lines and cha
     (require 'org-tempo)
     ;; "c" is set to center. We want to delete this and replace it with "cen" to free "c" for C language blocks.
     (setq org-structure-template-alist (assoc-delete-all "c" org-structure-template-alist))
-    (add-to-list 'org-structure-template-alist '("cen" . "center"))
+    (add-to-list 'org-structure-template-alist '("cen"  . "center"))
 
-    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+    (add-to-list 'org-structure-template-alist '("sh"   . "src shell"))
     (add-to-list 'org-structure-template-alist '("lisp" . "src lisp"))
-    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-    (add-to-list 'org-structure-template-alist '("esh" . "src eshell"))
-    (add-to-list 'org-structure-template-alist '("c" . "src C"))
-    (add-to-list 'org-structure-template-alist '("cp" . "src C++"))
-    (add-to-list 'org-structure-template-alist '("cs" . "src css"))
-    (add-to-list 'org-structure-template-alist '("py" . "src python"))
-    (add-to-list 'org-structure-template-alist '("gp" . "src gnuplot"))
-    (add-to-list 'org-structure-template-alist '("ra" . "src racket"))
-    (add-to-list 'org-structure-template-alist '("sc" . "src scheme")))
+    (add-to-list 'org-structure-template-alist '("el"   . "src emacs-lisp"))
+    (add-to-list 'org-structure-template-alist '("esh"  . "src eshell"))
+    (add-to-list 'org-structure-template-alist '("c"    . "src C"))
+    (add-to-list 'org-structure-template-alist '("cp"   . "src C++"))
+    (add-to-list 'org-structure-template-alist '("cs"   . "src css"))
+    (add-to-list 'org-structure-template-alist '("py"   . "src python"))
+    (add-to-list 'org-structure-template-alist '("gp"   . "src gnuplot"))
+    (add-to-list 'org-structure-template-alist '("ra"   . "src racket"))
+    (add-to-list 'org-structure-template-alist '("sc"   . "src scheme"))
+    (add-to-list 'org-structure-template-alist '("kbd"  . "src kbd")))
 #+end_src
 **** Org-Roam
 
