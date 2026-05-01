@@ -396,6 +396,8 @@ Emacs has built-in tiling window management, allowing for very efficient and key
    "s-t t" #'other-tab-prefix
    "s-t f" #'find-file-other-tab
    "s-t d" #'dired-other-tab
+   "s-t s-o" #'tab-next
+   "s-t u" #'tab-undo
 
    "s-0" #'delete-window
    "s-1" #'delete-other-windows
@@ -717,8 +719,7 @@ Proced is Emacs' process editor, replacing the biggest use cases of ps and top, 
     :custom
     (display-buffer-alist
      '(("\\*proced\\*"
-        (display-buffer-same-window)
-        (inhibit-same-window . nil))))
+        (display-buffer-same-window))))
     :config
     (add-hook proced-mode-hook #'proced-toggle-auto-update))
 #+end_src
@@ -782,11 +783,8 @@ Dired is a built-in file manager for Emacs that works like an interactive =ls -l
     (dired-recursive-copies 'always)
     :config
     (put 'dired-find-alternate-file 'disabled nil)
-    (add-hook 'dired-mode-hook (lambda () (setq-local mouse-1-clicks-follow-link 'double)))
     :hook
-    (dired-mode . (dired-hide-details-mode
-  		 auto-revert-mode
-  		 hl-line-mode)))
+    (dired-mode . hl-line-mode))
 
   (setq trash-directory "~/.local/share/Trash")
   (setq delete-by-moving-to-trash t)
@@ -805,16 +803,17 @@ Dired is a built-in file manager for Emacs that works like an interactive =ls -l
      '(("h" "~/"                          "Home")
        ("d" "~/Downloads/"                "Downloads")
        ("m" "/mnt/"                       "Drives")
-       ("e" "/sudo:root@localhost:/etc")  "Modify program settings"
+       ("e" "/sudo:root@localhost:/etc/"  "Modify program settings")
        ("t" "~/.local/share/Trash/files/" "TrashCan")))
-    :config
-    (setq dirvish-mode-line-format
+    (dirvish-mode-line-format
       	'(:left (file-time " " file-size symlink) :right (omit yank index printable)))
-    (setq dirvish-attributes
+    (dirvish-attributes
       	'(vc-state subtree-state nerd-icons collapse subgroup-name git-mgs file-time file-size))
-    (setq dirvish-side-attributes
+    (dirvish-side-attributes
           '(vc-state nerd-icons collapse file-size))
-    (setq dirvish-large-directory-threshold 20000)
+    (dirvish-large-directory-threshold 20000)
+    :config
+    (dirvish-override-dired-mode)
     :bind
     (("C-x C-d" . #'dirvish)
      ("M-0" . #'dirvish-side)
