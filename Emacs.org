@@ -69,11 +69,11 @@ will go in the init.el.
 
 ** Package Management
 
-Since I am using GNU Guix, we will seek to install packages outside of Emacs and in the system configuration itself. Thus we will not be installing packages from any package manager and instead from Guix channels. I am also explicit about the loading of packages, using =:demand= for explicit loading of packages where possible, as =:defer t= is the default for all packages. Other auto-loading key-words are also useable (e.g. :after, :commands, :binds).
+Since I am using GNU Guix, we will seek to install packages outside of Emacs and in the system configuration itself. Thus we will not be installing packages from any package manager and instead from Guix channels. I am also explicit about the loading of packages, using =:demand= for explicit loading of packages where possible, as =:defer t= is the default for all packages. Other auto-loading key-words are also usable (e.g. :after, :commands, :binds).
 
 #+begin_src emacs-lisp
   ;;; init.el --- Emacs configuration file -*- lexical-binding: t; -*-
-  (setq use-package-always-insure nil)
+  (setq use-package-always-ensure nil)
   (setq use-package-always-defer t)
 #+end_src
 
@@ -114,7 +114,7 @@ Everything in this section is some form of meta-package or utility that alters t
 
 *** Config Manipulation
 
-Binds to open/reload this configuraion.
+Binds to open/reload this configuration.
 
 #+begin_src emacs-lisp
   ;; Opens this config file
@@ -704,11 +704,11 @@ Transient is by the creators of Magit, providing a menu-based hierarchical input
 
 Emacs is a very powerful editor and has capabilities far exceeding what a mere text-editor can normally achieve. Using Emacs' hackability along with its extensive package ecosystem as well as GNU Guix's integration with Emacs, a sort of "Emacs Operating System" is able to be hacked together. Many terminal and standalone applications and programs are mostly if not entirely supplanted by Emacs.
 
-Some things are left as external processes for either superior capabilities outside of what Emacs can provide (e.g. web-browsing beyond html), or for speed due to Emacs' single-threaded nature.
+Some things are left as external processes for either superior capabilities outside of what Emacs can provide (e.g. web-browsing beyond HTML), or for speed due to Emacs' single-threaded nature.
 
 *** Proced
 
-Proced is Emacs' process editor, replacing the biggest use cases of ps and top, as well as being able to supplant kill. Essentiall Proced is like task manager for Windows.
+Proced is Emacs' process editor, replacing the biggest use cases of ps and top, as well as being able to supplant kill. Essentially Proced is like task manager for Windows.
 
 #+begin_src emacs-lisp
   (use-package proced
@@ -794,13 +794,10 @@ Dired is a built-in file manager for Emacs that works like an interactive =ls -l
 
 **** Dirvish
 
-[[https://github.com/alexluigit/dirvish][Dirvish]] is a modern and sleek Dired interface. Features include peeking, paned previews, images, etc.
+[[https://github.com/alexluigit/dirvish][Dirvish]] is a modern and sleek Dired interface. Features include peeking, pane previews, images, etc.
 
 #+begin_src emacs-lisp
   (use-package dirvish
-    :after dired
-    :init
-    (dirvish-override-dired-mode)
     :custom
     (dirvish-side-follow-mode t)
     (dirvish-peek-mode t)
@@ -903,23 +900,11 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 
 Info and Man pages are the main ways of reading documentation of the system and programs. Here are some configurations to aid in the UX of them.
 
-**** Olivetti
-
-[[https://github.com/rnkn/olivetti][Olivetti]] allows for margin resizing in windows, which suits info pages well as it allows them to center themselves in a window. Especially useful for wide monitors.
-
-#+begin_src emacs-lisp
-  (use-package olivetti
-    :demand
-    :hook
-    (Info-mode . olivetti-mode))
-#+end_src
-
-**** Configuration
-
 #+begin_src emacs-lisp
   (use-package info
     :demand
     :hook
+    (Info-mode . olivetti-mode)
     (Info-mode . (lambda ()
                    (variable-pitch-mode 1)
                    (setq line-spacing 0.2))))
@@ -1190,7 +1175,7 @@ You can add more =src= block templates below by copying one of the lines and cha
 
 ***** Org-Roam-UI
 
-[[https://github.com/org-roam/org-roam-ui][Org-Roam-UI]] Zettelkasten for Org-Roam, creating a graph like Obsidian.md for Roam nodes. =M-x org-roam-ui-mode RET= enables global mode and starts a web server. URL for web server is [[http://127.0.0.1:35901/]] 
+[[https://github.com/org-roam/org-roam-ui][Org-Roam-UI]] Zettelkasten for Org-Roam, creating a graph like Obsidian.md for Roam nodes. =M-x org-roam-ui-mode RET= mode and starts a web server. URL for web server is [[http://127.0.0.1:35901/]] 
 
 #+begin_src emacs-lisp
 
@@ -1207,7 +1192,7 @@ You can add more =src= block templates below by copying one of the lines and cha
 
 **** Org-Noter
 
-[[https://github.com/org-noter/org-noter][Org-Noter]] allows org files to synchronize and follow linked PDFs in an attached window.
+[[https://github.com/org-noter/org-noter][Org-Noter]] allows org files to synchronize and follow linked PDF in an attached window.
 
 #+begin_src emacs-lisp
   (use-package org-noter
@@ -1298,7 +1283,7 @@ You can add more =src= block templates below by copying one of the lines and cha
 
 **** Zotra
 
-Zotero is a bibliographic tool, allowing a citation to be generated by simply clicking the extension button in a browser or by using the Zotero client. [[https://github.com/mpedramfar/zotra][Zotra]] is a translator package for emacs that can use URLs and search identifiers to fetch bibliographic information directly within Emacs.
+Zotero is a bibliographic tool, allowing a citation to be generated by simply clicking the extension button in a browser or by using the Zotero client. [[https://github.com/mpedramfar/zotra][Zotra]] is a translator package for Emacs that can use URLs and search identifiers to fetch bibliographic information directly within Emacs.
 
 #+begin_src emacs-lisp
   (use-package zotra
@@ -1834,7 +1819,7 @@ First, it provides an interface for completion, used by nix-company.el.
 Second, it provides an interactive function to open a repl. You can open this with:
 M-x nix-repl
 
-nix-store provides a command M-x nix-store-show-path. The command displays an overview of a store path. The information it shows is the realisation status, the hash and the size of the store path. Also it shows lists of derivers, references, referrers and requisites of the respective path.
+nix-store provides a command M-x nix-store-show-path. The command displays an overview of a store path. The information it shows is the realization status, the hash and the size of the store path. Also it shows lists of derivers, references, referrers and requisites of the respective path.
 You can change the order in which that information is shown. See the documentation of the function nix-store-show-path for more information.
 When viewing a store buffer, the command M-x nix-store-show-log opens a local log file associated with a derivation.
 When nix-prettify-mode is enabled, hash-parts of the Nix store file names are prettified, i.e. displayed as nix-prettify-char character (… by default.).
