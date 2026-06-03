@@ -369,7 +369,9 @@ Emacs has built-in tiling window management, allowing for very efficient and key
 
 [[https://github.com/emacs-exwm/exwm][EXWM]] is the Emacs window manager for Xorg. This is my replacement for tiling window managers/compositors like Sway/i3, Hyprland, and Niri. By having Emacs supersede the window compositor essentially, Emacs remains the source of configuration for my desktop, allowing for a much more hack-able system.
 
-#+begin_src emacs-lisp
+Currently disabled.
+
+;#+begin_src emacs-lisp
   (use-package exwm-edit
     :demand
     :config
