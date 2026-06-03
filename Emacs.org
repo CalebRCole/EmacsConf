@@ -1711,8 +1711,6 @@ Treesitter has compatibility with Emacs as long as Emacs is compiled with it ena
     :hook (prog-mode . combobulate-mode))
 #+end_src
 
-**** 
-
 **** Debugging with dape
 
 [[https://github.com/svaante/dape][dape]] is the Debug Adapter Protocol for Emacs, functioning like dap-mode does. Invoking the =M-x dape= command begins a debugging session. Enabling repeat-mode and eldoc-mode is highly recommended.
@@ -1967,7 +1965,7 @@ GLSL is the shader language for OpenGL. [[https://github.com/jimhourihan/glsl-mo
 
 **** KBD
 
-[[https://github.com/chmouel/kanata-kbd-mode/][Kanata-KBD-Mode]] provides a major mdoe for syntax highlighting of .kbd files used in Kanata configuration files.
+[[https://github.com/chmouel/kanata-kbd-mode/][Kanata-KBD-Mode]] provides a major mode for syntax highlighting of .kbd files used in Kanata configuration files.
 
 #+begin_src emacs-lisp
   (use-package kanata-kbd-mode
